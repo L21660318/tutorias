@@ -43,6 +43,14 @@ INSTALLED_APPS = [
     'apps.users.apps.UsersConfig',
     'apps.academic.apps.AcademicConfig',
     'apps.tutoring.apps.TutoringConfig',
+    'apps.jefe_depto.apps.JefeDeptoConfig',
+    'apps.coordinst.apps.CoordinstConfig',
+    'apps.coordac.apps.CoordacConfig',
+    'apps.tutee.apps.TuteeConfig',
+    'apps.jefe_deptodes.apps.JefeDeptodesConfig',
+
+
+    
 ]
 
 MIDDLEWARE = [
@@ -60,7 +68,7 @@ ROOT_URLCONF = 'pit_sistema.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'templates')], # <-- ¡MODIFICA ESTA LÍNEA!
+        'DIRS': [], # <-- ¡MODIFICA ESTA LÍNEA!
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -137,3 +145,6 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'users.User'
 
+LOGIN_URL = 'login'
+LOGIN_REDIRECT_URL = 'dashboard'
+LOGOUT_REDIRECT_URL = 'login'

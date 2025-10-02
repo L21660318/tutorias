@@ -6,11 +6,11 @@
   <title>{% block title %}Sistema Integral de Tutorías (PIT){% endblock %}</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-  <style>
+    <style>
     :root {
-      --primary-color: #003366;
-      --secondary-color: #4a90e2;
-      --accent-color: #f5a623;
+      --primary-color: #0F6097;
+      --secondary-color: #50A6E1;
+      --accent-color: #A2D3F5;
       --light-color: #f8f9fa;
       --dark-color: #343a40;
       --success-color: #28a745;
@@ -19,7 +19,7 @@
     }
     
     body {
-      background-color: #f5f7fa;
+      background-color: white; /* Fondo blanco */
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       display: flex;
       flex-direction: column;
@@ -27,7 +27,7 @@
     }
     
     .navbar {
-      background: linear-gradient(135deg, var(--primary-color) 0%, #004080 100%);
+      background: linear-gradient(135deg, var(--primary-color) 0%, #0D4F7C 100%);
       box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
       padding: 0.8rem 0;
     }
@@ -83,7 +83,7 @@
     }
     
     .dashboard-card {
-      background: white;
+      background: var(--accent-color); /* Azul #A2D3F5 */
       border-radius: 12px;
       box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
       transition: transform 0.3s ease, box-shadow 0.3s ease;
@@ -99,18 +99,18 @@
     
     .card-icon {
       font-size: 2.5rem;
-      color: var(--secondary-color);
+      color: var(--primary-color);
       margin-bottom: 1rem;
     }
     
     .stats-number {
       font-size: 2rem;
       font-weight: 700;
-      color: var(--primary-color);
+      color: var(--dark-color);
     }
     
     .stats-label {
-      color: #6c757d;
+      color: #333;
       font-weight: 500;
     }
     
@@ -138,7 +138,7 @@
     }
     
     .footer {
-      background-color: var(--dark-color);
+      background-color: var(--primary-color);
       color: white;
       padding: 1.5rem 0;
       margin-top: auto;
@@ -173,7 +173,6 @@
       color: white;
     }
     
-    /* Responsive adjustments */
     @media (max-width: 768px) {
       .navbar-brand span {
         display: none;
@@ -347,7 +346,6 @@
           <div class="dashboard-card card">
             <div class="card-body">
               {% block content %}
-              <!-- Default content if not overridden -->
               <h4 class="card-title">Resumen de Actividades Recientes</h4>
               <div class="table-responsive">
                 <table class="table table-hover">
@@ -423,22 +421,14 @@
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <script>
-    // Activar tooltips de Bootstrap
-    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
-    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-      return new bootstrap.Tooltip(tooltipTriggerEl)
-    })
-    
     // Actualizar la hora actual
     function updateDateTime() {
       const now = new Date();
       const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
       document.getElementById('current-date').textContent = now.toLocaleDateString('es-ES', options);
     }
-    
-    // Actualizar cada minuto
     setInterval(updateDateTime, 60000);
-    updateDateTime(); // Ejecutar inmediatamente
+    updateDateTime();
   </script>
 </body>
 </html>

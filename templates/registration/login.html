@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+    <style>
+        body { background: #fff; font-family: Arial; display: flex; justify-content: center; align-items: center; height: 100vh; }
+        .login-box { background: #f9f9f9; padding: 20px; border: 2px solid #007BFF; border-radius: 8px; }
+        .login-box h2 { color: #007BFF; margin-bottom: 15px; }
+        .login-box input { width: 100%; padding: 8px; margin: 8px 0; border: 1px solid #ccc; border-radius: 4px; }
+        .login-box button { background: #007BFF; color: #fff; padding: 10px; border: none; width: 100%; border-radius: 4px; cursor: pointer; }
+        .login-box button:hover { background: #0056b3; }
+    </style>
+</head>
+<body>
+    <div class="login-box">
+        <h2>Iniciar Sesión</h2>
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">Entrar</button>
+        </form>
+    </div>
+</body>
+</html>

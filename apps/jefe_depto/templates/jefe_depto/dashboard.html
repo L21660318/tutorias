@@ -1,0 +1,1046 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jefe de Departamento - PIT Tutorías</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+:root {
+    --primary-color: #0F6097;
+    --secondary-color: #50A6E1;
+    --accent-color: #A2D3F5;
+    --light-color: #f8f9fa;
+    --dark-color: #343a40;
+    --success-color: #28a745;
+    --warning-color: #ffc107;
+    --danger-color: #dc3545;
+}
+
+body {
+    background-color: var(--light-color);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    margin: 0;
+}
+
+.navbar {
+    background: linear-gradient(135deg, var(--primary-color) 0%, #0D4F7C 100%);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    padding: 0.8rem 0;
+}
+
+.navbar-brand {
+    font-weight: 700;
+    font-size: 1.4rem;
+    display: flex;
+    align-items: center;
+    color: white;
+}
+
+.navbar-brand i {
+    margin-right: 10px;
+    font-size: 1.6rem;
+}
+
+.nav-link {
+    font-weight: 500;
+    padding: 0.5rem 1rem !important;
+    border-radius: 4px;
+    margin: 0 2px;
+    color: white;
+    transition: all 0.3s ease;
+}
+
+.nav-link:hover, .nav-link.active {
+    background-color: var(--secondary-color);
+    color: white;
+}
+
+.main-container {
+    flex: 1;
+    padding: 2rem;
+}
+
+.dashboard-card {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    height: 100%;
+    border: none;
+    overflow: hidden;
+    padding: 1.5rem;
+    text-align: center;
+}
+
+.dashboard-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+}
+
+.card-icon {
+    font-size: 2rem;
+    color: var(--primary-color);
+    margin-bottom: 1rem;
+}
+
+.card-title {
+    font-weight: 700;
+    color: var(--primary-color);
+    margin-bottom: 1rem;
+}
+
+.card-text {
+    color: var(--dark-color);
+    line-height: 1.5;
+}
+
+.stats-number {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--dark-color);
+}
+
+.stats-label {
+    color: #333;
+    font-weight: 500;
+}
+
+.footer {
+    background-color: var(--primary-color);
+    color: white;
+    padding: 1.5rem 0;
+    margin-top: auto;
+    text-align: center;
+}
+
+.table thead th {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+/* Nuevos estilos */
+.quick-action-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.quick-action-btn:hover {
+    background-color: rgba(80, 166, 225, 0.1);
+}
+
+.badge-status {
+    font-size: 0.7rem;
+    padding: 0.3rem 0.6rem;
+}
+
+.chart-container {
+    position: relative;
+    height: 250px;
+    width: 100%;
+}
+
+.notification-badge {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background-color: var(--danger-color);
+    color: white;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.7rem;
+}
+
+.task-item {
+    display: flex;
+    align-items: center;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid #eee;
+}
+
+.task-item:last-child {
+    border-bottom: none;
+}
+
+.task-checkbox {
+    margin-right: 10px;
+}
+
+.task-text {
+    flex-grow: 1;
+}
+
+.task-priority {
+    font-size: 0.7rem;
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+    margin-left: 10px;
+}
+
+.priority-high {
+    background-color: var(--danger-color);
+    color: white;
+}
+
+.priority-medium {
+    background-color: var(--warning-color);
+    color: black;
+}
+
+.priority-low {
+    background-color: var(--success-color);
+    color: white;
+}
+
+.search-box {
+    position: relative;
+}
+
+.search-box input {
+    padding-right: 40px;
+}
+
+.search-box i {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--primary-color);
+}
+
+.filter-options {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+    flex-wrap: wrap;
+}
+
+.filter-btn {
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 20px;
+    padding: 5px 15px;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+}
+
+.filter-btn.active {
+    background-color: var(--primary-color);
+    color: white;
+    border-color: var(--primary-color);
+}
+
+.progress-bar-custom {
+    background-color: var(--primary-color);
+}
+
+.status-pending {
+    color: var(--warning-color);
+    font-weight: 500;
+}
+
+.status-completed {
+    color: var(--success-color);
+    font-weight: 500;
+}
+
+.status-overdue {
+    color: var(--danger-color);
+    font-weight: 500;
+}
+
+/* Estilos para el modal personalizado */
+.modal-header-custom {
+    background: linear-gradient(135deg, var(--primary-color) 0%, #0D4F7C 100%);
+    color: white;
+}
+
+.btn-primary-custom {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.btn-primary-custom:hover {
+    background-color: #0D4F7C;
+    border-color: #0D4F7C;
+}
+</style>
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark">
+    <div class="container">
+        <a class="navbar-brand" href="/">
+            <i class="bi bi-mortarboard-fill"></i>
+            PIT Tutorías
+        </a>
+        <div class="collapse navbar-collapse" id="navbarContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link active" href="/jefe_depto/">Jefe de Departamento</a>
+                </li>
+            </ul>
+            <div class="d-flex align-items-center">
+                <div class="dropdown">
+                    <button class="btn btn-outline-light position-relative" type="button" id="notificationDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="bi bi-bell-fill"></i>
+                        <span class="notification-badge">3</span>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="notificationDropdown">
+                        <li><h6 class="dropdown-header">Notificaciones</h6></li>
+                        <li><a class="dropdown-item" href="#">Nuevo informe pendiente de revisión</a></li>
+                        <li><a class="dropdown-item" href="#">Recordatorio: Reunión con coordinadores</a></li>
+                        <li><a class="dropdown-item" href="#">3 tutores requieren constancias</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item text-center" href="#">Ver todas</a></li>
+                    </ul>
+                </div>
+                <div class="dropdown ms-3">
+                    <button class="btn btn-outline-light dropdown-toggle" type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="bi bi-person-circle me-1"></i> Dr. Martínez
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                        <li><a class="dropdown-item" href="#"><i class="bi bi-person me-2"></i>Mi perfil</a></li>
+                        <li><a class="dropdown-item" href="#"><i class="bi bi-gear me-2"></i>Configuración</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="#"><i class="bi bi-box-arrow-right me-2"></i>Cerrar sesión</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<!-- Main Content -->
+<div class="main-container">
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2>Panel del Jefe de Departamento</h2>
+            <div class="d-flex">
+                <div class="search-box me-3">
+                    <input type="text" class="form-control" placeholder="Buscar...">
+                    <i class="bi bi-search"></i>
+                </div>
+                <button class="btn btn-primary-custom" data-bs-toggle="modal" data-bs-target="#quickActionsModal">
+                    <i class="bi bi-lightning-fill me-1"></i> Acciones rápidas
+                </button>
+            </div>
+        </div>
+
+        <!-- Tarjetas principales -->
+        <div class="row g-4">
+            <div class="col-md-6 col-lg-4">
+                <div class="dashboard-card">
+                    <div class="card-icon"><i class="bi bi-megaphone-fill"></i></div>
+                    <h5 class="card-title">Difusión y Promoción</h5>
+                    <p class="card-text">
+                        Difunde y promueve el desarrollo del PIT en su departamento y a nivel interinstitucional.
+                    </p>
+                    <div class="mt-3">
+                        <span class="badge bg-primary me-1">5 Campañas</span>
+                        <span class="badge bg-success">3 Activas</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-4">
+                <div class="dashboard-card">
+                    <div class="card-icon"><i class="bi bi-people-fill"></i></div>
+                    <h5 class="card-title">Gestión de Tutores</h5>
+                    <p class="card-text">
+                        Genera estrategias y mecanismos para la sensibilización, formación, actualización y captación de tutores.
+                    </p>
+                    <div class="progress mt-3" style="height: 8px;">
+                        <div class="progress-bar progress-bar-custom" role="progressbar" style="width: 75%;" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                    <small class="text-muted">75% de metas cumplidas</small>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-4">
+                <div class="dashboard-card">
+                    <div class="card-icon"><i class="bi bi-bar-chart-fill"></i></div>
+                    <h5 class="card-title">Informe Semestral</h5>
+                    <p class="card-text">
+                        Entrega al Subdirector Académico un informe semestral por programa de estudio con resultados y metas.
+                    </p>
+                    <div class="mt-3">
+                        <span class="status-pending"><i class="bi bi-clock-history me-1"></i> 2 Pendientes</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-4">
+                <div class="dashboard-card">
+                    <div class="card-icon"><i class="bi bi-flag-fill"></i></div>
+                    <h5 class="card-title">Establecer Metas</h5>
+                    <p class="card-text">
+                        Establece nuevas metas, estrategias y actividades para el mejoramiento del PIT y comunica a la coordinación.
+                    </p>
+                    <button class="btn btn-sm btn-outline-primary mt-2">Ver metas actuales</button>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-4">
+                <div class="dashboard-card">
+                    <div class="card-icon"><i class="bi bi-file-medical-fill"></i></div>
+                    <h5 class="card-title">Constancias a Tutores</h5>
+                    <p class="card-text">
+                        Expide las constancias semestrales de cumplimiento a los tutores, de acuerdo con la información de Coordinación.
+                    </p>
+                    <div class="mt-3">
+                        <span class="status-overdue"><i class="bi bi-exclamation-triangle me-1"></i> 3 Urgentes</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-4">
+                <div class="dashboard-card">
+                    <div class="card-icon"><i class="bi bi-journal-check"></i></div>
+                    <h5 class="card-title">Constancias a Estudiantes</h5>
+                    <p class="card-text">
+                        Expide las constancias de cumplimiento de los estudiantes en el PIT.
+                    </p>
+                    <button class="btn btn-sm btn-outline-primary mt-2">Generar lote</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Estadísticas y gráficos -->
+        <div class="row mt-5 g-4">
+            <div class="col-md-3 col-6">
+                <div class="dashboard-card text-center">
+                    <div class="stats-number">12</div>
+                    <div class="stats-label">Informes Semestrales</div>
+                    <div class="mt-2">
+                        <span class="badge bg-success">10 Completados</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 col-6">
+                <div class="dashboard-card text-center">
+                    <div class="stats-number">8</div>
+                    <div class="stats-label">Constancias de Tutores</div>
+                    <div class="mt-2">
+                        <span class="badge bg-warning text-dark">3 Pendientes</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 col-6">
+                <div class="dashboard-card text-center">
+                    <div class="stats-number">35</div>
+                    <div class="stats-label">Tutores Registrados</div>
+                    <div class="mt-2">
+                        <span class="badge bg-info">5 Nuevos</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 col-6">
+                <div class="dashboard-card text-center">
+                    <div class="stats-number">140</div>
+                    <div class="stats-label">Constancias de Estudiantes</div>
+                    <div class="mt-2">
+                        <span class="badge bg-success">+15% vs anterior</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Gráficos y tareas pendientes -->
+        <div class="row mt-5 g-4">
+            <div class="col-lg-8">
+                <div class="dashboard-card">
+                    <h5 class="card-title d-flex justify-content-between align-items-center">
+                        <span>Rendimiento del PIT por Programa</span>
+                        <select class="form-select form-select-sm w-auto">
+                            <option>Último semestre</option>
+                            <option>Semestre anterior</option>
+                            <option>Año completo</option>
+                        </select>
+                    </h5>
+                    <div class="chart-container">
+                        <canvas id="performanceChart"></canvas>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="dashboard-card">
+                    <h5 class="card-title">Tareas Pendientes</h5>
+                    <div class="task-list">
+                        <div class="task-item">
+                            <input type="checkbox" class="task-checkbox">
+                            <div class="task-text">Revisar informe de Matemáticas</div>
+                            <span class="task-priority priority-high">Alta</span>
+                        </div>
+                        <div class="task-item">
+                            <input type="checkbox" class="task-checkbox">
+                            <div class="task-text">Preparar presentación para reunión</div>
+                            <span class="task-priority priority-medium">Media</span>
+                        </div>
+                        <div class="task-item">
+                            <input type="checkbox" class="task-checkbox">
+                            <div class="task-text">Enviar constancias a tutores</div>
+                            <span class="task-priority priority-high">Alta</span>
+                        </div>
+                        <div class="task-item">
+                            <input type="checkbox" class="task-checkbox">
+                            <div class="task-text">Actualizar base de datos de estudiantes</div>
+                            <span class="task-priority priority-low">Baja</span>
+                        </div>
+                    </div>
+                    <button class="btn btn-sm btn-outline-primary w-100 mt-3">Ver todas las tareas</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Últimos informes y tutores pendientes -->
+        <div class="row mt-4 g-4">
+            <div class="col-lg-6">
+                <div class="dashboard-card">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h5 class="card-title mb-0">Últimos Informes Recibidos</h5>
+                        <div class="filter-options">
+                            <button class="filter-btn active">Todos</button>
+                            <button class="filter-btn">Pendientes</button>
+                            <button class="filter-btn">Aprobados</button>
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Programa</th>
+                                    <th>Fecha</th>
+                                    <th>Estado</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Ingeniería</td>
+                                    <td>15/01/2025</td>
+                                    <td><span class="status-completed">Completado</span></td>
+                                    <td>
+                                        <button class="btn btn-sm btn-outline-primary"><i class="bi bi-eye"></i></button>
+                                        <button class="btn btn-sm btn-outline-success"><i class="bi bi-download"></i></button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Matemáticas</td>
+                                    <td>18/01/2025</td>
+                                    <td><span class="status-pending">Pendiente</span></td>
+                                    <td>
+                                        <button class="btn btn-sm btn-outline-primary"><i class="bi bi-eye"></i></button>
+                                        <button class="btn btn-sm btn-outline-warning"><i class="bi bi-pencil"></i></button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Física</td>
+                                    <td>20/01/2025</td>
+                                    <td><span class="status-completed">Completado</span></td>
+                                    <td>
+                                        <button class="btn btn-sm btn-outline-primary"><i class="bi bi-eye"></i></button>
+                                        <button class="btn btn-sm btn-outline-success"><i class="bi bi-download"></i></button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="dashboard-card">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h5 class="card-title mb-0">Tutores Pendientes de Constancia</h5>
+                        <button class="btn btn-sm btn-primary-custom">Generar Todas</button>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Tutor</th>
+                                    <th>Programa</th>
+                                    <th>Estudiantes</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Juan Pérez</td>
+                                    <td>Ingeniería</td>
+                                    <td>12</td>
+                                    <td>
+                                        <button class="btn btn-sm btn-outline-success">Generar</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>María López</td>
+                                    <td>Matemáticas</td>
+                                    <td>8</td>
+                                    <td>
+                                        <button class="btn btn-sm btn-outline-success">Generar</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Carlos Gómez</td>
+                                    <td>Física</td>
+                                    <td>10</td>
+                                    <td>
+                                        <button class="btn btn-sm btn-outline-success">Generar</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Próximos eventos -->
+        <div class="row mt-4 g-4">
+            <div class="col-lg-12">
+                <div class="dashboard-card">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h5 class="card-title mb-0">Próximos Eventos PIT</h5>
+                        <button class="btn btn-sm btn-primary-custom" data-bs-toggle="modal" data-bs-target="#eventModal">
+                            <i class="bi bi-plus-circle me-1"></i> Nuevo Evento
+                        </button>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Evento</th>
+                                    <th>Fecha</th>
+                                    <th>Programa</th>
+                                    <th>Ubicación</th>
+                                    <th>Estado</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Capacitación Tutores</td>
+                                    <td>15/10/2025</td>
+                                    <td>Todos</td>
+                                    <td>Aula Magna</td>
+                                    <td><span class="badge bg-success">Confirmado</span></td>
+                                    <td>
+                                        <button class="btn btn-sm btn-outline-primary"><i class="bi bi-eye"></i></button>
+                                        <button class="btn btn-sm btn-outline-warning"><i class="bi bi-pencil"></i></button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Entrega de Informes</td>
+                                    <td>20/10/2025</td>
+                                    <td>Ingeniería</td>
+                                    <td>Oficina Jefatura</td>
+                                    <td><span class="badge bg-warning text-dark">Pendiente</span></td>
+                                    <td>
+                                        <button class="btn btn-sm btn-outline-primary"><i class="bi bi-eye"></i></button>
+                                        <button class="btn btn-sm btn-outline-warning"><i class="bi bi-pencil"></i></button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Reunión Coordinadores</td>
+                                    <td>25/10/2025</td>
+                                    <td>Todos</td>
+                                    <td>Sala de Juntas</td>
+                                    <td><span class="badge bg-success">Confirmado</span></td>
+                                    <td>
+                                        <button class="btn btn-sm btn-outline-primary"><i class="bi bi-eye"></i></button>
+                                        <button class="btn btn-sm btn-outline-warning"><i class="bi bi-pencil"></i></button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Accesos rápidos -->
+        <div class="row mt-4 g-4">
+            <div class="col-md-3 col-6">
+                <button class="quick-action-btn dashboard-card w-100 py-4" data-bs-toggle="modal" data-bs-target="#tutorModal">
+                    <i class="bi bi-plus-circle-fill" style="font-size:2rem;color:var(--primary-color)"></i>
+                    <p class="mt-2">Nuevo Tutor</p>
+                </button>
+            </div>
+            <div class="col-md-3 col-6">
+                <button class="quick-action-btn dashboard-card w-100 py-4" data-bs-toggle="modal" data-bs-target="#reportModal">
+                    <i class="bi bi-file-earmark-plus-fill" style="font-size:2rem;color:var(--primary-color)"></i>
+                    <p class="mt-2">Nuevo Informe</p>
+                </button>
+            </div>
+            <div class="col-md-3 col-6">
+                <button class="quick-action-btn dashboard-card w-100 py-4" data-bs-toggle="modal" data-bs-target="#eventModal">
+                    <i class="bi bi-calendar-plus-fill" style="font-size:2rem;color:var(--primary-color)"></i>
+                    <p class="mt-2">Nuevo Evento</p>
+                </button>
+            </div>
+            <div class="col-md-3 col-6">
+                <button class="quick-action-btn dashboard-card w-100 py-4" data-bs-toggle="modal" data-bs-target="#settingsModal">
+                    <i class="bi bi-gear-fill" style="font-size:2rem;color:var(--primary-color)"></i>
+                    <p class="mt-2">Configuración PIT</p>
+                </button>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- Footer -->
+<footer class="footer">
+    &copy; 2025 Programa Institucional de Tutorías - Instituto Tecnológico Matelunia
+</footer>
+
+<!-- Modal para acciones rápidas -->
+<div class="modal fade" id="quickActionsModal" tabindex="-1" aria-labelledby="quickActionsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header modal-header-custom">
+                <h5 class="modal-title" id="quickActionsModalLabel">Acciones Rápidas</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <div class="card h-100">
+                            <div class="card-body text-center">
+                                <i class="bi bi-person-plus-fill text-primary" style="font-size: 2rem;"></i>
+                                <h5 class="card-title mt-2">Registrar Tutor</h5>
+                                <p class="card-text">Agregar un nuevo tutor al sistema</p>
+                                <button class="btn btn-primary-custom w-100" data-bs-dismiss="modal" data-bs-toggle="modal" data-bs-target="#tutorModal">Continuar</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card h-100">
+                            <div class="card-body text-center">
+                                <i class="bi bi-file-earmark-plus-fill text-primary" style="font-size: 2rem;"></i>
+                                <h5 class="card-title mt-2">Generar Informe</h5>
+                                <p class="card-text">Crear un nuevo informe semestral</p>
+                                <button class="btn btn-primary-custom w-100" data-bs-dismiss="modal" data-bs-toggle="modal" data-bs-target="#reportModal">Continuar</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card h-100">
+                            <div class="card-body text-center">
+                                <i class="bi bi-calendar-plus-fill text-primary" style="font-size: 2rem;"></i>
+                                <h5 class="card-title mt-2">Programar Evento</h5>
+                                <p class="card-text">Agendar un nuevo evento PIT</p>
+                                <button class="btn btn-primary-custom w-100" data-bs-dismiss="modal" data-bs-toggle="modal" data-bs-target="#eventModal">Continuar</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card h-100">
+                            <div class="card-body text-center">
+                                <i class="bi bi-envelope-fill text-primary" style="font-size: 2rem;"></i>
+                                <h5 class="card-title mt-2">Enviar Comunicado</h5>
+                                <p class="card-text">Enviar notificación a tutores</p>
+                                <button class="btn btn-primary-custom w-100">Continuar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal para nuevo tutor -->
+<div class="modal fade" id="tutorModal" tabindex="-1" aria-labelledby="tutorModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header modal-header-custom">
+                <h5 class="modal-title" id="tutorModalLabel">Registrar Nuevo Tutor</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="mb-3">
+                        <label for="tutorName" class="form-label">Nombre completo</label>
+                        <input type="text" class="form-control" id="tutorName" placeholder="Ingrese nombre completo">
+                    </div>
+                    <div class="mb-3">
+                        <label for="tutorEmail" class="form-label">Correo electrónico</label>
+                        <input type="email" class="form-control" id="tutorEmail" placeholder="correo@instituto.edu">
+                    </div>
+                    <div class="mb-3">
+                        <label for="tutorProgram" class="form-label">Programa</label>
+                        <select class="form-select" id="tutorProgram">
+                            <option selected>Seleccione un programa</option>
+                            <option>Ingeniería</option>
+                            <option>Matemáticas</option>
+                            <option>Física</option>
+                            <option>Química</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="tutorExperience" class="form-label">Experiencia (años)</label>
+                        <input type="number" class="form-control" id="tutorExperience" min="0" max="50">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary-custom">Registrar Tutor</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal para nuevo informe -->
+<div class="modal fade" id="reportModal" tabindex="-1" aria-labelledby="reportModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header modal-header-custom">
+                <h5 class="modal-title" id="reportModalLabel">Generar Nuevo Informe</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="mb-3">
+                        <label for="reportProgram" class="form-label">Programa</label>
+                        <select class="form-select" id="reportProgram">
+                            <option selected>Seleccione un programa</option>
+                            <option>Ingeniería</option>
+                            <option>Matemáticas</option>
+                            <option>Física</option>
+                            <option>Química</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="reportPeriod" class="form-label">Periodo</label>
+                        <select class="form-select" id="reportPeriod">
+                            <option selected>Seleccione un periodo</option>
+                            <option>Enero - Junio 2025</option>
+                            <option>Agosto - Diciembre 2024</option>
+                            <option>Enero - Junio 2024</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="reportType" class="form-label">Tipo de informe</label>
+                        <select class="form-select" id="reportType">
+                            <option selected>Seleccione un tipo</option>
+                            <option>Informe Semestral</option>
+                            <option>Informe de Actividades</option>
+                            <option>Informe de Resultados</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="reportFile" class="form-label">Archivo adjunto</label>
+                        <input class="form-control" type="file" id="reportFile">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary-custom">Generar Informe</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal para nuevo evento -->
+<div class="modal fade" id="eventModal" tabindex="-1" aria-labelledby="eventModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header modal-header-custom">
+                <h5 class="modal-title" id="eventModalLabel">Programar Nuevo Evento</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="mb-3">
+                        <label for="eventName" class="form-label">Nombre del evento</label>
+                        <input type="text" class="form-control" id="eventName" placeholder="Ingrese nombre del evento">
+                    </div>
+                    <div class="mb-3">
+                        <label for="eventDate" class="form-label">Fecha</label>
+                        <input type="date" class="form-control" id="eventDate">
+                    </div>
+                    <div class="mb-3">
+                        <label for="eventTime" class="form-label">Hora</label>
+                        <input type="time" class="form-control" id="eventTime">
+                    </div>
+                    <div class="mb-3">
+                        <label for="eventLocation" class="form-label">Ubicación</label>
+                        <input type="text" class="form-control" id="eventLocation" placeholder="Ingrese ubicación">
+                    </div>
+                    <div class="mb-3">
+                        <label for="eventProgram" class="form-label">Programa(s)</label>
+                        <select class="form-select" id="eventProgram" multiple>
+                            <option>Ingeniería</option>
+                            <option>Matemáticas</option>
+                            <option>Física</option>
+                            <option>Química</option>
+                            <option>Todos</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary-custom">Programar Evento</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal para configuración -->
+<div class="modal fade" id="settingsModal" tabindex="-1" aria-labelledby="settingsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header modal-header-custom">
+                <h5 class="modal-title" id="settingsModalLabel">Configuración del PIT</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <ul class="nav nav-tabs" id="settingsTabs" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="general-tab" data-bs-toggle="tab" data-bs-target="#general" type="button" role="tab" aria-controls="general" aria-selected="true">General</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="notifications-tab" data-bs-toggle="tab" data-bs-target="#notifications" type="button" role="tab" aria-controls="notifications" aria-selected="false">Notificaciones</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="reports-tab" data-bs-toggle="tab" data-bs-target="#reports" type="button" role="tab" aria-controls="reports" aria-selected="false">Informes</button>
+                    </li>
+                </ul>
+                <div class="tab-content p-3" id="settingsTabsContent">
+                    <div class="tab-pane fade show active" id="general" role="tabpanel" aria-labelledby="general-tab">
+                        <div class="mb-3">
+                            <label for="instituteName" class="form-label">Nombre del Instituto</label>
+                            <input type="text" class="form-control" id="instituteName" value="Instituto Tecnológico Matelunia">
+                        </div>
+                        <div class="mb-3">
+                            <label for="departmentName" class="form-label">Departamento</label>
+                            <input type="text" class="form-control" id="departmentName" value="Departamento de Ciencias Básicas">
+                        </div>
+                        <div class="mb-3">
+                            <label for="semester" class="form-label">Semestre Actual</label>
+                            <select class="form-select" id="semester">
+                                <option>Enero - Junio 2025</option>
+                                <option>Agosto - Diciembre 2024</option>
+                                <option>Enero - Junio 2024</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="notifications" role="tabpanel" aria-labelledby="notifications-tab">
+                        <div class="form-check form-switch mb-3">
+                            <input class="form-check-input" type="checkbox" id="emailNotifications" checked>
+                            <label class="form-check-label" for="emailNotifications">Notificaciones por correo electrónico</label>
+                        </div>
+                        <div class="form-check form-switch mb-3">
+                            <input class="form-check-input" type="checkbox" id="reportReminders" checked>
+                            <label class="form-check-label" for="reportReminders">Recordatorios de informes pendientes</label>
+                        </div>
+                        <div class="form-check form-switch mb-3">
+                            <input class="form-check-input" type="checkbox" id="eventReminders">
+                            <label class="form-check-label" for="eventReminders">Recordatorios de eventos</label>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="reports" role="tabpanel" aria-labelledby="reports-tab">
+                        <div class="mb-3">
+                            <label for="reportFormat" class="form-label">Formato predeterminado de informes</label>
+                            <select class="form-select" id="reportFormat">
+                                <option>PDF</option>
+                                <option>Word</option>
+                                <option>Excel</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="autoSave" class="form-label">Guardado automático cada (minutos)</label>
+                            <input type="number" class="form-control" id="autoSave" value="5" min="1" max="60">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary-custom">Guardar Configuración</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+// Gráfico de rendimiento
+document.addEventListener('DOMContentLoaded', function() {
+    const ctx = document.getElementById('performanceChart').getContext('2d');
+    const performanceChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: ['Ingeniería', 'Matemáticas', 'Física', 'Química', 'Biología'],
+            datasets: [{
+                label: 'Estudiantes atendidos',
+                data: [65, 59, 80, 81, 56],
+                backgroundColor: '#0F6097',
+                borderColor: '#0D4F7C',
+                borderWidth: 1
+            }, {
+                label: 'Tutores activos',
+                data: [28, 48, 40, 19, 26],
+                backgroundColor: '#50A6E1',
+                borderColor: '#3A8BC8',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+
+    // Funcionalidad para las tareas pendientes
+    const taskCheckboxes = document.querySelectorAll('.task-checkbox');
+    taskCheckboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', function() {
+            const taskItem = this.closest('.task-item');
+            if (this.checked) {
+                taskItem.style.opacity = '0.6';
+                taskItem.style.textDecoration = 'line-through';
+            } else {
+                taskItem.style.opacity = '1';
+                taskItem.style.textDecoration = 'none';
+            }
+        });
+    });
+
+    // Funcionalidad para los filtros
+    const filterBtns = document.querySelectorAll('.filter-btn');
+    filterBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+            filterBtns.forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+            // Aquí iría la lógica para filtrar la tabla
+        });
+    });
+
+    // Simulación de búsqueda
+    const searchInput = document.querySelector('.search-box input');
+    searchInput.addEventListener('input', function() {
+        // Aquí iría la lógica para buscar en el contenido
+        console.log('Buscando:', this.value);
+    });
+});
+</script>
+</body>
+</html>
