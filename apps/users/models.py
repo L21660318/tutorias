@@ -15,6 +15,8 @@ class User(AbstractUser):
         COORDINST = "COORDINST", "Coordinación Institucional"
         JEFEDEPTO = "JEFEDEPTO", "Jefe de Departamento Académico"
         JEFEDEPTODES = "JEFEDEPTODES", "Jefe de Departamento de Desarrollo"
+        PSYCHOLOGIST = "PSYCHOLOGIST", "Psicólogo"
+
 
     # El username, password, email, etc., ya vienen con AbstractUser
     role = models.CharField(max_length=50, choices=Role.choices)

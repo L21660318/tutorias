@@ -16,5 +16,6 @@ urlpatterns = [
     path('coordac/', include('apps.coordac.urls')),  # <-- esta línea
     path('tutee/', include('apps.tutee.urls')),
     path('jefe_deptodes/', include('apps.jefe_deptodes.urls')),
+    path('psychologist/', include('apps.psychologist.urls')),
 
 ]

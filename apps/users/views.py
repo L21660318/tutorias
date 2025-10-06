@@ -21,6 +21,8 @@ class CustomLoginView(LoginView):
             return '/tutee/'  # Asegúrate de crear esta vista y URL
         elif user.role == 'JEFEDEPTODES':
             return '/jefe_deptodes/'  # Asegúrate de crear esta vista y URL
+        elif user.role == 'PSYCHOLOGIST':
+            return '/psychologist/'  # Asegúrate de crear esta vista y URL
         elif user.is_superuser:
             return '/admin/'
         else:
