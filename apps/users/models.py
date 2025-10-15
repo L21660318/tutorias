@@ -5,7 +5,7 @@ from django.db import models
 
 class User(AbstractUser):
     """
-    Modelo de Usuario personalizado para diferenciar roles.
+    Modelo de Usuario personalizado para diferenciar roles y permitir imagen de perfil.
     """
     class Role(models.TextChoices):
         TUTOR = "TUTOR", "Tutor"
@@ -17,9 +17,10 @@ class User(AbstractUser):
         JEFEDEPTODES = "JEFEDEPTODES", "Jefe de Departamento de Desarrollo"
         PSYCHOLOGIST = "PSYCHOLOGIST", "Psicólogo"
 
-
-    # El username, password, email, etc., ya vienen con AbstractUser
-    role = models.CharField(max_length=50, choices=Role.choices)
+    role = models.CharField(max_length=50, choices=Role.choices, blank=True, null=True)
+    profile_picture = models.ImageField(upload_to='profile_pics/', blank=True, null=True)
 
     def __str__(self):
-        return f"{self.get_full_name()} ({self.get_role_display()})"
+        full_name = self.get_full_name() or self.username
+        role_display = self.get_role_display() if self.role else "Sin rol"
+        return f"{full_name} ({role_display})"
