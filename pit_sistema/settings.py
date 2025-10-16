@@ -89,10 +89,10 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'tutorias',       # Nombre de la BD que creaste en MySQL
-        'USER': 'root',                 # Usuario de MySQL (normalmente 'root')
-        'PASSWORD': '',            # Contraseña de MySQL
-        'HOST': 'localhost',                        # O la IP del servidor si es remoto
-        'PORT': '3306',                             # Puerto default de MySQL
+        'USER': 'dbpbf01921700',                 # Usuario de MySQL (normalmente 'root')
+        'PASSWORD': 'wf10Z~rNgM8a1IVYxQRLyVd',            # Contraseña de MySQL
+        'HOST': 'serverless-eastus.sysp0000.db3.skysql.com',                        # O la IP del servidor si es remoto
+        'PORT': '4046',                             # Puerto default de MySQL
         'OPTIONS': {
             'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
             'charset': 'utf8mb4',
