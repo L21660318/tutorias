@@ -68,8 +68,10 @@ class CustomLoginView(LoginView):
 
 @login_required
 def profile_view(request):
-    """Vista para que el usuario edite su perfil (nombre, email, foto, etc.)."""
     user = request.user
+    if not user.pk:
+        # Usuario en memoria, no editable
+        return render(request, 'users/profile.html', {'message': 'Usuario temporal, perfil no editable.'})
 
     if request.method == 'POST':
         form = ProfileForm(request.POST, request.FILES, instance=user)
@@ -80,3 +82,4 @@ def profile_view(request):
         form = ProfileForm(instance=user)
 
     return render(request, 'users/profile.html', {'form': form})
+
