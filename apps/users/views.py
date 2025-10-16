@@ -2,7 +2,9 @@
 from django.contrib.auth import login
 from django.contrib.auth.models import User
 from django.contrib.auth.views import LoginView
-from django.shortcuts import redirect
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import render, redirect
+from .forms import ProfileForm
 
 class CustomLoginView(LoginView):
     template_name = 'users/login.html'
@@ -63,3 +65,18 @@ class CustomLoginView(LoginView):
             return '/admin/'
         else:
             return '/'
+
+@login_required
+def profile_view(request):
+    """Vista para que el usuario edite su perfil (nombre, email, foto, etc.)."""
+    user = request.user
+
+    if request.method == 'POST':
+        form = ProfileForm(request.POST, request.FILES, instance=user)
+        if form.is_valid():
+            form.save()
+            return redirect('profile')
+    else:
+        form = ProfileForm(instance=user)
+
+    return render(request, 'users/profile.html', {'form': form})
