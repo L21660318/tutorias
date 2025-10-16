@@ -74,7 +74,7 @@ TEMPLATES = [
 WSGI_APPLICATION = 'pit_sistema.wsgi.application'
 
 # ---------------------------
-# Base de datos placeholder (no se usa para login fijo)
+# Base de datos mínima (solo para Django internamente)
 # ---------------------------
 DATABASES = {
     'default': {
@@ -84,21 +84,10 @@ DATABASES = {
 }
 
 # ---------------------------
-# Redis como backend de cache y sesiones
+# Sesiones en cookies (no depende de DB ni Redis)
 # ---------------------------
-CACHES = {
-    "default": {
-        "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": "redis://:<password>@<host>:<port>/0",  # Reemplaza con tus datos de Redis
-        "OPTIONS": {
-            "CLIENT_CLASS": "django_redis.client.DefaultClient",
-        }
-    }
-}
-
-SESSION_ENGINE = "django.contrib.sessions.backends.cache"
-SESSION_CACHE_ALIAS = "default"
-SESSION_COOKIE_AGE = 3600
+SESSION_ENGINE = "django.contrib.sessions.backends.signed_cookies"
+SESSION_COOKIE_AGE = 3600  # 1 hora
 SESSION_SAVE_EVERY_REQUEST = True
 
 # ---------------------------
