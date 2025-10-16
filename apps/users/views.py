@@ -21,7 +21,7 @@ FIXED_USERS = {
 # Sesión simulada (solo para prototipo)
 TEMP_SESSION_KEY = 'temp_user'
 
-class CustomLoginView(View):
+class CustomLoginView(LoginView):
     template_name = 'users/login.html'
 
     def get(self, request):
