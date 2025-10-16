@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.views import LoginView
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
+from django.http import HttpResponse
 from .forms import ProfileForm
 
 # Usuarios fijos de prueba
@@ -18,9 +19,6 @@ FIXED_USERS = {
     'admin': 'SUPERUSER',
 }
 
-# Sesión simulada (solo para prototipo)
-TEMP_SESSION_KEY = 'temp_user'
-
 class CustomLoginView(LoginView):
     template_name = 'users/login.html'
 
@@ -32,22 +30,24 @@ class CustomLoginView(LoginView):
         password = request.POST.get('password')
 
         if username in FIXED_USERS:
-            # Guardar usuario temporal en "sesión" de prototipo
-            request.session[TEMP_SESSION_KEY] = {
-                'username': username,
-                'role': FIXED_USERS[username],
-                'is_superuser': FIXED_USERS[username] == 'SUPERUSER'
-            }
-            return redirect(self.get_success_url(request))
+            role = FIXED_USERS[username]
+            # Creamos un usuario en memoria (no guardamos en DB)
+            user = User(username=username)
+            user.is_staff = role == 'SUPERUSER'
+            user.is_superuser = role == 'SUPERUSER'
+            # Guardamos un atributo "role" extra
+            user.role = role
+            # Necesario para que Django login funcione sin DB
+            user.backend = 'django.contrib.auth.backends.ModelBackend'
+
+            # Logueamos al usuario
+            login(request, user)
+            return redirect(self.get_success_url(user))
 
         return HttpResponse("Usuario o contraseña incorrecta.")
 
-    def get_success_url(self, request):
-        temp_user = request.session.get(TEMP_SESSION_KEY)
-        if not temp_user:
-            return '/'
-
-        role = temp_user['role']
+    def get_success_url(self, user):
+        role = getattr(user, 'role', None)
         if role == 'TUTOR':
             return '/tutoring/'
         elif role == 'SUBAC':
@@ -64,18 +64,26 @@ class CustomLoginView(LoginView):
             return '/jefe_deptodes/'
         elif role == 'PSYCHOLOGIST':
             return '/psychologist/'
-        elif temp_user['is_superuser']:
+        elif user.is_superuser:
             return '/admin/'
-        else:
-            return '/'
+        return '/'
 
+@login_required
 def profile_view(request):
-    temp_user = request.session.get(TEMP_SESSION_KEY)
-    if temp_user:
-        # Usuario temporal, no editable
+    user = request.user
+    if not hasattr(user, 'pk') or user.pk is None:
+        # Usuario temporal
         return render(request, 'users/profile.html', {
-            'message': f"Usuario temporal: {temp_user['username']}. Perfil no editable."
+            'message': f"Usuario temporal: {user.username}. Perfil no editable."
         })
 
-    # Aquí podrías agregar login real con base de datos si quieres
-    return HttpResponse("Usuario no logueado.")
+    # Usuario real (DB)
+    if request.method == 'POST':
+        form = ProfileForm(request.POST, request.FILES, instance=user)
+        if form.is_valid():
+            form.save()
+            return redirect('profile')
+    else:
+        form = ProfileForm(instance=user)
+
+    return render(request, 'users/profile.html', {'form': form})
