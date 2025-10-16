@@ -1,50 +1,65 @@
 # apps/users/views.py
-
+from django.contrib.auth import login
+from django.contrib.auth.models import User
 from django.contrib.auth.views import LoginView
-from django.contrib.auth.decorators import login_required
-from django.shortcuts import render, redirect
-from .forms import ProfileForm
-
+from django.shortcuts import redirect
 
 class CustomLoginView(LoginView):
     template_name = 'users/login.html'
 
+    def post(self, request, *args, **kwargs):
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+
+        # Usuarios fijos de prueba
+        fixed_users = {
+            'tutor': 'TUTOR',
+            'subac': 'SUBAC',
+            'jefe': 'JEFEDEPTO',
+            'coordinst': 'COORDINST',
+            'coordac': 'COORDAC',
+            'tutee': 'TUTEE',
+            'psych': 'PSYCHOLOGIST',
+            'admin': 'SUPERUSER',
+        }
+
+        if username in fixed_users:
+            # Crear usuario temporal en memoria (no requiere DB)
+            user = User(username=username)
+            role = fixed_users[username]
+            user.role = role
+            user.is_superuser = role == 'SUPERUSER'
+            user.is_staff = user.is_superuser
+            user.backend = 'django.contrib.auth.backends.ModelBackend'
+
+            # Loguear usuario
+            login(request, user)
+            return redirect(self.get_success_url())
+
+        # Si no es usuario fijo, usar login normal
+        return super().post(request, *args, **kwargs)
+
     def get_success_url(self):
         user = self.request.user
+        role = getattr(user, 'role', None)
 
-        if user.role == 'TUTOR':
+        if role == 'TUTOR':
             return '/tutoring/'
-        elif user.role == 'SUBAC':
+        elif role == 'SUBAC':
             return '/academic/'
-        elif user.role == 'JEFEDEPTO':
+        elif role == 'JEFEDEPTO':
             return '/jefe_depto/'
-        elif user.role == 'COORDINST':
+        elif role == 'COORDINST':
             return '/coordinst/'
-        elif user.role == 'COORDAC':
+        elif role == 'COORDAC':
             return '/coordac/'
-        elif user.role == 'TUTEE':
+        elif role == 'TUTEE':
             return '/tutee/'
-        elif user.role == 'JEFEDEPTODES':
+        elif role == 'JEFEDEPTODES':
             return '/jefe_deptodes/'
-        elif user.role == 'PSYCHOLOGIST':
+        elif role == 'PSYCHOLOGIST':
             return '/psychologist/'
         elif user.is_superuser:
             return '/admin/'
         else:
-            return '/'  # fallback
-
-
-@login_required
-def profile_view(request):
-    """Vista para que el usuario edite su perfil (nombre, email, foto, etc.)."""
-    user = request.user
-
-    if request.method == 'POST':
-        form = ProfileForm(request.POST, request.FILES, instance=user)
-        if form.is_valid():
-            form.save()
-            return redirect('profile')
-    else:
-        form = ProfileForm(instance=user)
-
-    return render(request, 'users/profile.html', {'form': form})
+            return '/'
