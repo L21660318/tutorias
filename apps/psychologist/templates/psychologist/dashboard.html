@@ -1,225 +1,282 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Psicología - Sistema Confidencial</title>
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<style>
-:root {
-    --primary-color: #0F6097;
-    --secondary-color: #50A6E1;
-    --accent-color: #A2D3F5;
-    --light-color: #f8f9fa;
-    --dark-color: #343a40;
-    --success-color: #28a745;
-    --warning-color: #ffc107;
-    --danger-color: #dc3545;
-}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Psicología - Sistema Confidencial</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --primary-color: #0F6097;
+            --primary-light: #3A8BC2;
+            --secondary-color: #50A6E1;
+            --accent-color: #A2D3F5;
+            --light-color: #f8f9fa;
+            --light-gray: #f0f2f5;
+            --dark-color: #343a40;
+            --success-color: #28a745;
+            --warning-color: #ffc107;
+            --danger-color: #dc3545;
+            --border-radius: 12px;
+            --box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            --transition: all 0.3s ease;
+        }
 
-body {
-    background-color: var(--light-color);
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
-    margin: 0;
-}
+        body {
+            background-color: var(--light-gray);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            margin: 0;
+            line-height: 1.6;
+        }
 
-.navbar {
-    background: linear-gradient(135deg, var(--primary-color) 0%, #0D4F7C 100%);
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    padding: 0.8rem 0;
-}
+        .navbar {
+            background: linear-gradient(135deg, var(--primary-color) 0%, #0D4F7C 100%);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 0.8rem 0;
+        }
 
-.navbar-brand {
-    font-weight: 700;
-    font-size: 1.4rem;
-    display: flex;
-    align-items: center;
-    color: white;
-}
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.4rem;
+            display: flex;
+            align-items: center;
+            color: white;
+        }
 
-.navbar-brand i {
-    margin-right: 10px;
-    font-size: 1.6rem;
-}
+        .navbar-brand i {
+            margin-right: 10px;
+            font-size: 1.6rem;
+        }
 
-.nav-link {
-    font-weight: 500;
-    padding: 0.5rem 1rem !important;
-    border-radius: 4px;
-    margin: 0 2px;
-    color: white;
-    transition: all 0.3s ease;
-}
+        .main-container {
+            flex: 1;
+            padding: 2rem 0;
+        }
 
-.nav-link:hover, .nav-link.active {
-    background-color: var(--secondary-color);
-    color: white;
-}
+        .welcome-card {
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            padding: 2rem;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
 
-.main-container {
-    flex: 1;
-    padding: 2rem;
-}
+        .welcome-icon {
+            font-size: 3rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
 
-.dashboard-card {
-    background: white;
-    border-radius: 12px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    height: 100%;
-    border: none;
-    overflow: hidden;
-    padding: 1.5rem;
-    text-align: center;
-}
+        .dashboard-card {
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            transition: var(--transition);
+            height: 100%;
+            border: none;
+            overflow: hidden;
+            padding: 1.5rem;
+            text-align: center;
+        }
 
-.dashboard-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
-}
+        .dashboard-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+        }
 
-.card-icon {
-    font-size: 2rem;
-    color: var(--primary-color);
-    margin-bottom: 1rem;
-}
+        .card-icon {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
 
-.card-title {
-    font-weight: 700;
-    color: var(--primary-color);
-    margin-bottom: 1rem;
-}
+        .card-title {
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+        }
 
-.card-text {
-    color: var(--dark-color);
-    line-height: 1.5;
-}
+        .stats-number {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: var(--dark-color);
+            margin: 0.5rem 0;
+        }
 
-.stats-number {
-    font-size: 2rem;
-    font-weight: 700;
-    color: var(--dark-color);
-}
+        .stats-label {
+            color: #666;
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
 
-.stats-label {
-    color: #333;
-    font-weight: 500;
-}
+        .quick-action-card {
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            padding: 1.5rem;
+            text-align: center;
+            transition: var(--transition);
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
 
-.footer {
-    background-color: var(--primary-color);
-    color: white;
-    padding: 1.5rem 0;
-    margin-top: auto;
-    text-align: center;
-}
+        .quick-action-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+            background-color: rgba(15, 96, 151, 0.05);
+        }
 
-/* Nuevos estilos para tutorado */
-.student-info {
-    background: linear-gradient(135deg, var(--accent-color) 0%, var(--secondary-color) 100%);
-    color: white;
-    border-radius: 12px;
-    padding: 1.5rem;
-    margin-bottom: 1.5rem;
-}
+        .action-icon {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
 
-.tutor-card {
-    background: white;
-    border-radius: 12px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-    padding: 1.5rem;
-    margin-bottom: 1.5rem;
-    border-left: 4px solid var(--primary-color);
-}
+        .footer {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 1.5rem 0;
+            margin-top: auto;
+            text-align: center;
+        }
 
-.session-card {
-    background: white;
-    border-radius: 12px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-    padding: 1.5rem;
-    margin-bottom: 1rem;
-    transition: all 0.3s ease;
-}
+        .confidential-badge {
+            background-color: var(--danger-color);
+            color: white;
+            padding: 0.3rem 0.7rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
 
-.session-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 25px rgba(0, 0, 0, 0.12);
-}
+        .session-card {
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            padding: 1.2rem;
+            margin-bottom: 1rem;
+            transition: var(--transition);
+            border-left: 4px solid var(--primary-color);
+        }
 
-.session-upcoming {
-    border-left: 4px solid var(--success-color);
-}
+        .session-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
 
-.session-pending {
-    border-left: 4px solid var(--warning-color);
-}
+        .session-urgent {
+            border-left-color: var(--danger-color);
+        }
 
-.session-completed {
-    border-left: 4px solid var(--primary-color);
-}
+        .session-followup {
+            border-left-color: var(--warning-color);
+        }
 
-.quick-action-btn {
-    background: none;
-    border: none;
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
+        .risk-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-left: 5px;
+        }
 
-.quick-action-btn:hover {
-    background-color: rgba(80, 166, 225, 0.1);
-}
+        .risk-high {
+            background-color: var(--danger-color);
+        }
 
-.credits-badge {
-    font-size: 1rem;
-    padding: 0.5rem 1rem;
-}
+        .risk-medium {
+            background-color: var(--warning-color);
+        }
 
-.feedback-card {
-    background: white;
-    border-radius: 12px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-    padding: 1.5rem;
-    margin-bottom: 1.5rem;
-}
+        .risk-low {
+            background-color: var(--success-color);
+        }
 
-.btn-primary-custom {
-    background-color: var(--primary-color);
-    border-color: var(--primary-color);
-}
+        .btn-primary-custom {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+            border-radius: 8px;
+            font-weight: 500;
+            padding: 0.5rem 1.2rem;
+            transition: var(--transition);
+        }
 
-.btn-primary-custom:hover {
-    background-color: #0D4F7C;
-    border-color: #0D4F7C;
-}
+        .btn-primary-custom:hover {
+            background-color: #0D4F7C;
+            border-color: #0D4F7C;
+            transform: translateY(-2px);
+        }
 
-.modal-header-custom {
-    background: linear-gradient(135deg, var(--primary-color) 0%, #0D4F7C 100%);
-    color: white;
-}
+        .modal-header-custom {
+            background: linear-gradient(135deg, var(--primary-color) 0%, #0D4F7C 100%);
+            color: white;
+            border-radius: var(--border-radius) var(--border-radius) 0 0;
+        }
 
-.progress-bar-custom {
-    background-color: var(--primary-color);
-}
+        .chart-container {
+            position: relative;
+            height: 250px;
+            width: 100%;
+        }
 
-.attendance-badge {
-    font-size: 0.8rem;
-    padding: 0.3rem 0.6rem;
-}
+        @media (max-width: 768px) {
+            .main-container {
+                padding: 1rem 0;
+            }
+            
+            .dashboard-card {
+                padding: 1rem;
+            }
+            
+            .stats-number {
+                font-size: 1.8rem;
+            }
+        }
 
-.channel-card {
-    background: white;
-    border-radius: 12px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-    padding: 1.5rem;
-    margin-bottom: 1rem;
-    border-left: 4px solid var(--warning-color);
-}
-</style>
+        .section-title {
+            color: var(--primary-color);
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--accent-color);
+        }
+
+        .nav-link {
+            font-weight: 500;
+            padding: 0.5rem 1rem !important;
+            border-radius: 4px;
+            margin: 0 2px;
+            color: white;
+            transition: var(--transition);
+        }
+
+        .nav-link:hover, .nav-link.active {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+        
+        .user-avatar {
+        width: 35px;
+        height: 35px;
+        border-radius: 50%;
+        background-color: var(--secondary-color);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: bold;
+        }
+    </style>
 </head>
 <body>
 
@@ -230,10 +287,22 @@ body {
             <i class="bi bi-heart-pulse"></i>
             Departamento de Psicología
         </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
         <div class="collapse navbar-collapse" id="navbarContent">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 <li class="nav-item">
-                    <a class="nav-link active" href="#">Sistema Confidencial</a>
+                    <a class="nav-link active" href="#"><i class="bi bi-house-door me-1"></i> Inicio</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#"><i class="bi bi-people me-1"></i> Estudiantes</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#"><i class="bi bi-calendar-check me-1"></i> Sesiones</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#"><i class="bi bi-graph-up me-1"></i> Reportes</a>
                 </li>
             </ul>
             <div class="d-flex align-items-center">
@@ -245,18 +314,19 @@ body {
                         </span>
                     </button>
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="notificationDropdown">
-                        <li><h6 class="dropdown-header">Notificaciones Confidenciales</h6></li>
+                        <li><h6 class="dropdown-header">Notificaciones</h6></li>
                         <li><a class="dropdown-item" href="#">2 estudiantes requieren seguimiento urgente</a></li>
-                        <li><a class="dropdown-item" href="#">Nuevo reporte mensual listo para enviar</a></li>
-                        <li><a class="dropdown-item" href="#">Recordatorio: Sesión grupal con 1° Semestre</a></li>
-                        <li><hr class="dropdown-divider"></li>
-                        <li><a class="dropdown-item text-center" href="#">Ver todas</a></li>
+                        <li><a class="dropdown-item" href="#">Nuevo reporte mensual listo</a></li>
+                        <li><a class="dropdown-item" href="#">Sesión grupal con 1° Semestre</a></li>
                     </ul>
                 </div>
                 <div class="dropdown ms-3">
-                    <button class="btn btn-outline-light dropdown-toggle" type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                        <i class="bi bi-shield-lock me-1"></i> Psic. Laura Martínez
-                    </button>
+                    <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" data-bs-toggle="dropdown">
+                        <div class="user-avatar me-2">
+                            {{ request.user.first_name|slice:":1" }}{{ request.user.last_name|slice:":1" }}
+                        </div>
+                        <span>{{ request.user.username }}</span>
+                    </a>
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
                         <li><a class="dropdown-item" href="#"><i class="bi bi-person me-2"></i>Mi perfil</a></li>
                         <li><a class="dropdown-item" href="#"><i class="bi bi-gear me-2"></i>Configuración</a></li>
@@ -272,94 +342,89 @@ body {
 <!-- Main Content -->
 <div class="main-container">
     <div class="container">
-        <!-- Información del psicólogo -->
-        <div class="psychologist-info">
-            <div class="row align-items-center">
-                <div class="col-md-8">
-                    <h3 class="mb-1">
-                        <i class="bi bi-shield-lock me-2"></i>Sistema Confidencial de Seguimiento
-                        <span class="confidential-badge">INFORMACIÓN PRIVADA</span>
-                    </h3>
-                    <p class="mb-0">Psic. Laura Martínez | Departamento de Psicología Educativa</p>
-                </div>
-                <div class="col-md-4 text-md-end">
-                    <span class="badge bg-light text-primary fs-6">
-                        <i class="bi bi-calendar me-1"></i>Semestre: Enero - Junio 2025
-                    </span>
-                </div>
+        <!-- Tarjeta de bienvenida -->
+        <div class="welcome-card">
+            <div class="welcome-icon">
+                <i class="bi bi-shield-lock"></i>
+            </div>
+            <h2>Bienvenida, Psic. Laura Martínez</h2>
+            <p class="lead">Sistema Confidencial de Seguimiento Psicológico</p>
+            <div class="alert alert-info mt-3">
+                <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                <strong>Información Confidencial:</strong> Este sistema contiene datos sensibles de estudiantes. 
+                Todo acceso está registrado y monitoreado.
             </div>
         </div>
 
-        <div class="alert alert-confidential alert-dismissible fade show" role="alert">
-            <i class="bi bi-exclamation-triangle-fill me-2"></i>
-            <strong>Información Confidencial:</strong> Este sistema contiene datos sensibles de estudiantes. 
-            Todo acceso está registrado y monitoreado según las políticas de privacidad institucionales.
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h2>Panel de Seguimiento Psicológico</h2>
-            <div class="d-flex">
-                <div class="filter-options me-3">
-                    <button class="filter-btn active">Hoy</button>
-                    <button class="filter-btn">Esta semana</button>
-                    <button class="filter-btn">Este mes</button>
-                </div>
-                <button class="btn btn-primary-custom" data-bs-toggle="modal" data-bs-target="#quickActionsModal">
-                    <i class="bi bi-lightning-fill me-1"></i> Acciones rápidas
-                </button>
-            </div>
-        </div>
-
-        <!-- Tarjetas principales -->
-        <div class="row g-4">
-            <div class="col-md-6 col-lg-3">
+        <!-- Resumen rápido -->
+        <div class="row g-4 mb-4">
+            <div class="col-md-3 col-6">
                 <div class="dashboard-card">
                     <div class="card-icon"><i class="bi bi-people"></i></div>
-                    <h5 class="card-title">Sesiones Activas</h5>
                     <div class="stats-number">24</div>
-                    <div class="stats-label">estudiantes en seguimiento</div>
+                    <div class="stats-label">Estudiantes en seguimiento</div>
                 </div>
             </div>
-            <div class="col-md-6 col-lg-3">
+            <div class="col-md-3 col-6">
                 <div class="dashboard-card">
                     <div class="card-icon"><i class="bi bi-clock-history"></i></div>
-                    <h5 class="card-title">Sesiones Este Mes</h5>
                     <div class="stats-number">68</div>
-                    <div class="stats-label">sesiones realizadas</div>
+                    <div class="stats-label">Sesiones este mes</div>
                 </div>
             </div>
-            <div class="col-md-6 col-lg-3">
+            <div class="col-md-3 col-6">
                 <div class="dashboard-card">
                     <div class="card-icon"><i class="bi bi-exclamation-triangle"></i></div>
-                    <h5 class="card-title">Casos Prioritarios</h5>
                     <div class="stats-number">5</div>
-                    <div class="stats-label">requieren atención urgente</div>
+                    <div class="stats-label">Casos prioritarios</div>
                 </div>
             </div>
-            <div class="col-md-6 col-lg-3">
+            <div class="col-md-3 col-6">
                 <div class="dashboard-card">
                     <div class="card-icon"><i class="bi bi-graph-up-arrow"></i></div>
-                    <h5 class="card-title">Indicadores</h5>
                     <div class="stats-number">85%</div>
-                    <div class="stats-label">mejoría reportada</div>
+                    <div class="stats-label">Mejoría reportada</div>
                 </div>
             </div>
         </div>
 
-        <!-- Gráficos y sesiones -->
-        <div class="row mt-5 g-4">
+        <!-- Acciones principales -->
+        <h3 class="section-title">Acciones Principales</h3>
+        <div class="row g-4 mb-5">
+            <div class="col-md-4">
+                <div class="quick-action-card" data-bs-toggle="modal" data-bs-target="#sessionModal">
+                    <div class="action-icon">
+                        <i class="bi bi-journal-plus"></i>
+                    </div>
+                    <h5>Registrar Sesión</h5>
+                    <p class="text-muted">Registrar nueva sesión con estudiante</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="quick-action-card" data-bs-toggle="modal" data-bs-target="#studentModal">
+                    <div class="action-icon">
+                        <i class="bi bi-person-plus"></i>
+                    </div>
+                    <h5>Agregar Estudiante</h5>
+                    <p class="text-muted">Agregar nuevo estudiante al sistema</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="quick-action-card" data-bs-toggle="modal" data-bs-target="#reportModal">
+                    <div class="action-icon">
+                        <i class="bi bi-file-earmark-text"></i>
+                    </div>
+                    <h5>Generar Reporte</h5>
+                    <p class="text-muted">Crear reporte para Subdirector Académico</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Próximas sesiones y gráfico -->
+        <div class="row g-4">
             <div class="col-lg-8">
                 <div class="dashboard-card">
-                    <h5 class="card-title d-flex justify-content-between align-items-center">
-                        <span>Distribución por Nivel de Desempeño</span>
-                        <select class="form-select form-select-sm w-auto">
-                            <option>Todas las carreras</option>
-                            <option>Ingeniería en Sistemas</option>
-                            <option>Lic. en Matemáticas</option>
-                            <option>Ingeniería Industrial</option>
-                        </select>
-                    </h5>
+                    <h5 class="card-title">Distribución por Nivel de Desempeño</h5>
                     <div class="chart-container">
                         <canvas id="performanceChart"></canvas>
                     </div>
@@ -375,7 +440,7 @@ body {
                             <span class="risk-indicator risk-high"></span>
                         </div>
                         <p class="mb-1"><i class="bi bi-calendar me-2"></i>Hoy, 15:00 hrs</p>
-                        <p class="mb-2"><strong>Motivo:</strong> Crisis de ansiedad - Seguimiento</p>
+                        <p class="mb-2"><strong>Motivo:</strong> Crisis de ansiedad</p>
                         <button class="btn btn-sm btn-outline-danger w-100">Ver Expediente</button>
                     </div>
 
@@ -391,196 +456,57 @@ body {
 
                     <div class="session-card">
                         <div class="d-flex justify-content-between align-items-start mb-2">
-                            <h6 class="text-primary mb-0">Sesión Grupal - 1° Semestre</h6>
+                            <h6 class="text-primary mb-0">Sesión Grupal</h6>
                             <span class="risk-indicator risk-low"></span>
                         </div>
                         <p class="mb-1"><i class="bi bi-calendar me-2"></i>Viernes, 10:00 hrs</p>
-                        <p class="mb-2"><strong>Tema:</strong> Manejo del estrés académico</p>
+                        <p class="mb-2"><strong>Tema:</strong> Manejo del estrés</p>
                         <button class="btn btn-sm btn-outline-primary w-100">Preparar Material</button>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Sección confidencial - Estudiantes en seguimiento -->
-        <div class="confidential-section mt-4">
-            <h4 class="text-center mb-4">
-                <i class="bi bi-shield-lock me-2"></i>Expedientes Confidenciales en Seguimiento
-            </h4>
-            
-            <div class="filter-options justify-content-center mb-4">
-                <button class="filter-btn active">Todos</button>
-                <button class="filter-btn">Prioritarios</button>
-                <button class="filter-btn">Por carrera</button>
-                <button class="filter-btn">Por semestre</button>
-            </div>
-
-            <div class="table-responsive">
-                <table class="table table-hover">
-                    <thead class="table-dark">
-                        <tr>
-                            <th>Estudiante</th>
-                            <th>Carrera</th>
-                            <th>Semestre</th>
-                            <th>Sesiones</th>
-                            <th>Nivel Desempeño</th>
-                            <th>Riesgo</th>
-                            <th>Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>Carlos Rodríguez</td>
-                            <td>Ing. Sistemas</td>
-                            <td>3°</td>
-                            <td>8</td>
-                            <td><span class="performance-badge performance-critical">Crítico</span></td>
-                            <td><span class="risk-indicator risk-high"></span> Alto</td>
-                            <td>
-                                <button class="btn btn-sm btn-outline-primary">Expediente</button>
-                                <button class="btn btn-sm btn-outline-success">Sesión</button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Ana García López</td>
-                            <td>Lic. Matemáticas</td>
-                            <td>2°</td>
-                            <td>5</td>
-                            <td><span class="performance-badge performance-low">Bajo</span></td>
-                            <td><span class="risk-indicator risk-medium"></span> Medio</td>
-                            <td>
-                                <button class="btn btn-sm btn-outline-primary">Expediente</button>
-                                <button class="btn btn-sm btn-outline-success">Sesión</button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Miguel Torres</td>
-                            <td>Ing. Industrial</td>
-                            <td>4°</td>
-                            <td>3</td>
-                            <td><span class="performance-badge performance-regular">Regular</span></td>
-                            <td><span class="risk-indicator risk-low"></span> Bajo</td>
-                            <td>
-                                <button class="btn btn-sm btn-outline-primary">Expediente</button>
-                                <button class="btn btn-sm btn-outline-success">Sesión</button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Laura Mendoza</td>
-                            <td>Ing. Sistemas</td>
-                            <td>1°</td>
-                            <td>6</td>
-                            <td><span class="performance-badge performance-good">Bueno</span></td>
-                            <td><span class="risk-indicator risk-low"></span> Bajo</td>
-                            <td>
-                                <button class="btn btn-sm btn-outline-primary">Expediente</button>
-                                <button class="btn btn-sm btn-outline-success">Sesión</button>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-        <!-- Estadísticas para Subdirector Académico -->
-        <div class="row mt-5 g-4">
-            <div class="col-lg-6">
-                <div class="dashboard-card">
-                    <h5 class="card-title">Estadísticas por Carrera</h5>
-                    <div class="chart-container">
-                        <canvas id="careerStatsChart"></canvas>
+        <!-- Accesos rápidos adicionales -->
+        <h3 class="section-title mt-5">Más Acciones</h3>
+        <div class="row g-4">
+            <div class="col-md-3 col-6">
+                <div class="quick-action-card">
+                    <div class="action-icon">
+                        <i class="bi bi-calendar-week"></i>
                     </div>
+                    <h5>Calendario</h5>
+                    <p class="text-muted">Ver agenda de sesiones</p>
                 </div>
             </div>
-            <div class="col-lg-6">
-                <div class="dashboard-card">
-                    <h5 class="card-title">Distribución por Semestre</h5>
-                    <div class="chart-container">
-                        <canvas id="semesterStatsChart"></canvas>
+            <div class="col-md-3 col-6">
+                <div class="quick-action-card">
+                    <div class="action-icon">
+                        <i class="bi bi-list-check"></i>
                     </div>
+                    <h5>Casos Prioritarios</h5>
+                    <p class="text-muted">Revisar casos urgentes</p>
+                </div>
+            </div>
+            <div class="col-md-3 col-6">
+                <div class="quick-action-card">
+                    <div class="action-icon">
+                        <i class="bi bi-bar-chart"></i>
+                    </div>
+                    <h5>Estadísticas</h5>
+                    <p class="text-muted">Ver análisis detallados</p>
+                </div>
+            </div>
+            <div class="col-md-3 col-6">
+                <div class="quick-action-card">
+                    <div class="action-icon">
+                        <i class="bi bi-gear"></i>
+                    </div>
+                    <h5>Configuración</h5>
+                    <p class="text-muted">Ajustes del sistema</p>
                 </div>
             </div>
         </div>
-
-        <!-- Reportes para Subdirector Académico -->
-        <div class="row mt-4 g-4">
-            <div class="col-12">
-                <div class="report-card">
-                    <div class="d-flex justify-content-between align-items-center mb-3">
-                        <h5 class="card-title mb-0">
-                            <i class="bi bi-graph-up me-2"></i>Reportes Estadísticos para Subdirección Académica
-                        </h5>
-                        <button class="btn btn-primary-custom" data-bs-toggle="modal" data-bs-target="#reportModal">
-                            <i class="bi bi-file-earmark-pdf me-1"></i> Generar Reporte
-                        </button>
-                    </div>
-                    
-                    <div class="row text-center">
-                        <div class="col-md-3">
-                            <div class="metric-item">
-                                <div class="stats-number text-primary">15%</div>
-                                <div class="stats-label">Estudiantes con seguimiento</div>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="metric-item">
-                                <div class="stats-number text-success">72%</div>
-                                <div class="stats-label">Mejoría reportada</div>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="metric-item">
-                                <div class="stats-number text-warning">8%</div>
-                                <div class="stats-label">Casos prioritarios</div>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="metric-item">
-                                <div class="stats-number text-info">45%</div>
-                                <div class="stats-label">1° y 2° semestre</div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="mt-4">
-                        <h6>Resumen Ejecutivo</h6>
-                        <p class="mb-2">• 68 sesiones realizadas este mes con 24 estudiantes en seguimiento activo</p>
-                        <p class="mb-2">• Mayor concentración de casos en Ingeniería en Sistemas (35%)</p>
-                        <p class="mb-2">• Los semestres iniciales (1° y 2°) representan el 45% de la atención</p>
-                        <p class="mb-0">• Tasa de mejoría general del 72% en indicadores de desempeño académico</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Accesos rápidos -->
-        <div class="row mt-4 g-4">
-            <div class="col-md-3 col-6">
-                <button class="quick-action-btn dashboard-card w-100 py-4" data-bs-toggle="modal" data-bs-target="#sessionModal">
-                    <i class="bi bi-journal-plus" style="font-size:2rem;color:var(--primary-color)"></i>
-                    <p class="mt-2">Nueva Sesión</p>
-                </button>
-            </div>
-            <div class="col-md-3 col-6">
-                <button class="quick-action-btn dashboard-card w-100 py-4" data-bs-toggle="modal" data-bs-target="#studentModal">
-                    <i class="bi bi-person-plus" style="font-size:2rem;color:var(--primary-color)"></i>
-                    <p class="mt-2">Agregar Estudiante</p>
-                </button>
-            </div>
-            <div class="col-md-3 col-6">
-                <button class="quick-action-btn dashboard-card w-100 py-4" data-bs-toggle="modal" data-bs-target="#reportModal">
-                    <i class="bi bi-file-earmark-text" style="font-size:2rem;color:var(--primary-color)"></i>
-                    <p class="mt-2">Generar Reporte</p>
-                </button>
-            </div>
-            <div class="col-md-3 col-6">
-                <button class="quick-action-btn dashboard-card w-100 py-4" data-bs-toggle="modal" data-bs-target="#statsModal">
-                    <i class="bi bi-graph-up" style="font-size:2rem;color:var(--primary-color)"></i>
-                    <p class="mt-2">Ver Estadísticas</p>
-                </button>
-            </div>
-        </div>
-
     </div>
 </div>
 
@@ -597,62 +523,6 @@ body {
         </div>
     </div>
 </footer>
-
-<!-- Modal para acciones rápidas -->
-<div class="modal fade" id="quickActionsModal" tabindex="-1" aria-labelledby="quickActionsModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header modal-header-custom">
-                <h5 class="modal-title" id="quickActionsModalLabel">Acciones Rápidas - Psicología</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <div class="row g-3">
-                    <div class="col-md-6">
-                        <div class="card h-100">
-                            <div class="card-body text-center">
-                                <i class="bi bi-journal-plus text-primary" style="font-size: 2rem;"></i>
-                                <h5 class="card-title mt-2">Registrar Sesión</h5>
-                                <p class="card-text">Registrar nueva sesión con estudiante</p>
-                                <button class="btn btn-primary-custom w-100" data-bs-dismiss="modal" data-bs-toggle="modal" data-bs-target="#sessionModal">Continuar</button>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="card h-100">
-                            <div class="card-body text-center">
-                                <i class="bi bi-file-earmark-text text-primary" style="font-size: 2rem;"></i>
-                                <h5 class="card-title mt-2">Generar Reporte</h5>
-                                <p class="card-text">Crear reporte para Subdirector Académico</p>
-                                <button class="btn btn-primary-custom w-100" data-bs-dismiss="modal" data-bs-toggle="modal" data-bs-target="#reportModal">Continuar</button>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="card h-100">
-                            <div class="card-body text-center">
-                                <i class="bi bi-person-plus text-primary" style="font-size: 2rem;"></i>
-                                <h5 class="card-title mt-2">Nuevo Estudiante</h5>
-                                <p class="card-text">Agregar nuevo estudiante al sistema</p>
-                                <button class="btn btn-primary-custom w-100" data-bs-dismiss="modal" data-bs-toggle="modal" data-bs-target="#studentModal">Continuar</button>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="card h-100">
-                            <div class="card-body text-center">
-                                <i class="bi bi-graph-up text-primary" style="font-size: 2rem;"></i>
-                                <h5 class="card-title mt-2">Estadísticas</h5>
-                                <p class="card-text">Ver análisis estadísticos detallados</p>
-                                <button class="btn btn-primary-custom w-100" data-bs-dismiss="modal" data-bs-toggle="modal" data-bs-target="#statsModal">Continuar</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
 
 <!-- Modal para nueva sesión -->
 <div class="modal fade" id="sessionModal" tabindex="-1" aria-labelledby="sessionModalLabel" aria-hidden="true">
@@ -701,24 +571,10 @@ body {
                         <label for="sessionReason" class="form-label">Motivo de la Sesión</label>
                         <textarea class="form-control" id="sessionReason" rows="3" required></textarea>
                     </div>
-                    <div class="mb-3">
-                        <label for="sessionObservations" class="form-label">Observaciones y Notas</label>
-                        <textarea class="form-control" id="sessionObservations" rows="4"></textarea>
-                    </div>
-                    <div class="mb-3">
-                        <label for="sessionPerformance" class="form-label">Nivel de Desempeño Reportado</label>
-                        <select class="form-select" id="sessionPerformance" required>
-                            <option>Excelente</option>
-                            <option>Bueno</option>
-                            <option>Regular</option>
-                            <option>Bajo</option>
-                            <option>Crítico</option>
-                        </select>
-                    </div>
                     <div class="mb-3 form-check">
                         <input type="checkbox" class="form-check-input" id="sessionConfidential">
                         <label class="form-check-label" for="sessionConfidential">
-                            Marcar como información altamente confidencial
+                            Marcar como información confidencial
                         </label>
                     </div>
                 </form>
@@ -736,7 +592,7 @@ body {
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header modal-header-custom">
-                <h5 class="modal-title" id="reportModalLabel">Generar Reporte para Subdirector Académico</h5>
+                <h5 class="modal-title" id="reportModalLabel">Generar Reporte</h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -750,34 +606,6 @@ body {
                         </select>
                     </div>
                     <div class="mb-3">
-                        <label for="reportScope" class="form-label">Alcance del Reporte</label>
-                        <select class="form-select" id="reportScope">
-                            <option selected>Completo - Todas las carreras</option>
-                            <option>Por carrera específica</option>
-                            <option>Por semestre</option>
-                            <option>Casos prioritarios únicamente</option>
-                        </select>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Indicadores a Incluir</label>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" id="indicator1" checked>
-                            <label class="form-check-label" for="indicator1">Distribución por carrera</label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" id="indicator2" checked>
-                            <label class="form-check-label" for="indicator2">Distribución por semestre</label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" id="indicator3" checked>
-                            <label class="form-check-label" for="indicator3">Niveles de desempeño</label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" id="indicator4">
-                            <label class="form-check-label" for="indicator4">Casos individuales (sin nombres)</label>
-                        </div>
-                    </div>
-                    <div class="mb-3">
                         <label for="reportFormat" class="form-label">Formato</label>
                         <select class="form-select" id="reportFormat">
                             <option>PDF Ejecutivo</option>
@@ -787,7 +615,7 @@ body {
                     </div>
                     <div class="alert alert-info">
                         <i class="bi bi-info-circle me-2"></i>
-                        El reporte se generará sin información personal identificable para proteger la confidencialidad de los estudiantes.
+                        El reporte se generará sin información personal identificable para proteger la confidencialidad.
                     </div>
                 </form>
             </div>
@@ -832,75 +660,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // Gráfico de estadísticas por carrera
-    const careerCtx = document.getElementById('careerStatsChart').getContext('2d');
-    const careerChart = new Chart(careerCtx, {
-        type: 'bar',
-        data: {
-            labels: ['Ing. Sistemas', 'Lic. Matemáticas', 'Ing. Industrial', 'Ing. Química', 'Lic. Física'],
-            datasets: [{
-                label: 'Estudiantes en seguimiento',
-                data: [35, 20, 18, 15, 12],
-                backgroundColor: '#6A0DAD',
-                borderColor: '#5A0A9C',
-                borderWidth: 1
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            scales: {
-                y: {
-                    beginAtZero: true,
-                    title: {
-                        display: true,
-                        text: 'Porcentaje (%)'
-                    }
-                }
-            }
-        }
-    });
-
-    // Gráfico de distribución por semestre
-    const semesterCtx = document.getElementById('semesterStatsChart').getContext('2d');
-    const semesterChart = new Chart(semesterCtx, {
-        type: 'pie',
-        data: {
-            labels: ['1° Semestre', '2° Semestre', '3° Semestre', '4° Semestre', '5°+ Semestre'],
-            datasets: [{
-                data: [25, 20, 18, 15, 22],
-                backgroundColor: [
-                    '#6A0DAD',
-                    '#9D4EDD',
-                    '#C77DFF',
-                    '#E0AAFF',
-                    '#F3E5F5'
-                ],
-                borderWidth: 2,
-                borderColor: '#fff'
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: {
-                    position: 'bottom'
-                }
-            }
-        }
-    });
-
-    // Funcionalidad para los filtros
-    const filterBtns = document.querySelectorAll('.filter-btn');
-    filterBtns.forEach(btn => {
-        btn.addEventListener('click', function() {
-            filterBtns.forEach(b => b.classList.remove('active'));
-            this.classList.add('active');
-        });
-    });
-
-    // Simular carga de datos confidenciales
+    // Simular carga de datos
     console.log('Sistema de psicología cargado - Acceso autorizado: Psic. Laura Martínez');
 });
 </script>

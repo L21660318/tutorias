@@ -1,13 +1,36 @@
-# apps/users/views.py
-
 from django.contrib.auth.views import LoginView
+from django.contrib.auth import authenticate, login, get_user_model
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
+from django.contrib import messages
+from django.db.models import Q
 from .forms import ProfileForm
+
+User = get_user_model()  # ✅ obtiene tu modelo personalizado 'users.User'
 
 
 class CustomLoginView(LoginView):
     template_name = 'users/login.html'
+
+    def post(self, request, *args, **kwargs):
+        username_or_email = request.POST.get('username')
+        password = request.POST.get('password')
+
+        # Buscar usuario por nombre de usuario o correo
+        try:
+            user = User.objects.get(Q(username=username_or_email) | Q(email=username_or_email))
+        except User.DoesNotExist:
+            messages.error(request, "Usuario o correo no encontrado.")
+            return render(request, self.template_name)
+
+        # Autenticar con el nombre de usuario real
+        user_auth = authenticate(request, username=user.username, password=password)
+        if user_auth is not None:
+            login(request, user_auth)
+            return redirect(self.get_success_url())
+        else:
+            messages.error(request, "Contraseña incorrecta.")
+            return render(request, self.template_name)
 
     def get_success_url(self):
         user = self.request.user
