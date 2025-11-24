@@ -96,3 +96,28 @@ class InterventionGuide(models.Model):
 
     def __str__(self):
         return self.title
+    
+from django.db import models
+from apps.users.models import User
+from apps.academic.models import AcademicDepartment
+from apps.academic.models import AcademicPeriod, AcademicCareer
+
+
+class ActionProgram(models.Model):
+    STATUS_CHOICES = [
+        ('draft', 'Borrador'),
+        ('in_review', 'En Revisión'),
+        ('approved', 'Aprobado'),
+        ('active', 'Activo'),
+        ('completed', 'Completado'),
+    ]
+    department = models.ForeignKey(AcademicDepartment, on_delete=models.CASCADE)
+    period = models.ForeignKey(AcademicPeriod, on_delete=models.CASCADE)
+    objectives = models.TextField(blank=True, null=True)
+    activities = models.TextField(blank=True, null=True)
+    resources = models.TextField(blank=True, null=True)
+    evaluation_metrics = models.TextField(blank=True, null=True)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='draft')
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name='created_actionprograms')
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
