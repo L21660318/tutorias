@@ -78,10 +78,18 @@ WSGI_APPLICATION = 'pit_sistema.wsgi.application'
 # ---------------------------
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'tutorias',     # p.ej. 'mi_proyecto'
+        'USER': 'root',    # p.ej. 'root'
+        'PASSWORD': '',     # p.ej. '123456'
+        'HOST': 'localhost',           # o IP/host del servidor
+        'PORT': '3306',                # puerto por defecto de MySQL
+        'OPTIONS': {
+            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
+        },
     }
 }
+
 
 # ---------------------------
 # Sesiones en cookies (no depende de DB ni Redis)
@@ -123,6 +131,6 @@ STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'users.User'
 
-LOGIN_URL = '/'
+LOGIN_URL = 'login'
 LOGIN_REDIRECT_URL = '/tutoring/'
 LOGOUT_REDIRECT_URL = '/'

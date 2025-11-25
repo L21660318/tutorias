@@ -225,10 +225,11 @@ body {
 <!-- Navbar -->
 <nav class="navbar navbar-expand-lg navbar-dark">
     <div class="container">
-        <a class="navbar-brand" href="/">
+        <a class="navbar-brand" href="{% url 'tutoring' %}">
             <i class="bi bi-mortarboard-fill"></i>
             PIT Tutorías
         </a>
+
         <div class="collapse navbar-collapse" id="navbarContent">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 <li class="nav-item">
@@ -240,29 +241,42 @@ body {
                     <button class="btn btn-outline-light position-relative" type="button" id="notificationDropdown" data-bs-toggle="dropdown" aria-expanded="false">
                         <i class="bi bi-bell-fill"></i>
                         <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                            3
+                            {{ notifications|length }}
                         </span>
+
                     </button>
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="notificationDropdown">
                         <li><h6 class="dropdown-header">Notificaciones</h6></li>
-                        <li><a class="dropdown-item" href="#">Nueva sesión programada para mañana</a></li>
-                        <li><a class="dropdown-item" href="#">Recordatorio: Encuesta de satisfacción pendiente</a></li>
-                        <li><a class="dropdown-item" href="#">Tu tutor ha enviado un mensaje</a></li>
+
+                        {% for notif in notifications %}
+                            <li><a class="dropdown-item" href="#">{{ notif }}</a></li>
+                        {% empty %}
+                            <li><span class="dropdown-item text-muted">Sin notificaciones</span></li>
+                        {% endfor %}
+
                         <li><hr class="dropdown-divider"></li>
                         <li><a class="dropdown-item text-center" href="#">Ver todas</a></li>
                     </ul>
                 </div>
-                <div class="dropdown ms-3">
-                    <button class="btn btn-outline-light dropdown-toggle" type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                        <i class="bi bi-person-circle me-1"></i> Ana García López
-                    </button>
-                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
-                        <li><a class="dropdown-item" href="#"><i class="bi bi-person me-2"></i>Mi perfil</a></li>
-                        <li><a class="dropdown-item" href="#"><i class="bi bi-gear me-2"></i>Configuración</a></li>
-                        <li><hr class="dropdown-divider"></li>
-                        <li><a class="dropdown-item" href="#"><i class="bi bi-box-arrow-right me-2"></i>Cerrar sesión</a></li>
-                    </ul>
-                </div>
+                    <div class="dropdown ms-3">
+                        <button class="btn btn-outline-light dropdown-toggle" type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-person-circle me-1"></i> {{ student.full_name }}
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                            <li>
+                                <a class="dropdown-item" href="{% url 'profile' %}">
+                                    <i class="bi bi-person me-2"></i>Mi perfil
+                                </a>
+                            </li>
+                            <li><a class="dropdown-item" href="#"><i class="bi bi-gear me-2"></i>Configuración</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <a class="dropdown-item" href="{% url 'logout' %}">
+                                    <i class="bi bi-box-arrow-right me-2"></i>Cerrar sesión
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
             </div>
         </div>
     </div>
@@ -275,12 +289,15 @@ body {
         <div class="student-info">
             <div class="row align-items-center">
                 <div class="col-md-8">
-                    <h3 class="mb-1">Ana García López</h3>
-                    <p class="mb-0">Ingeniería en Sistemas Computacionales | 3er Semestre | Matrícula: 202345678</p>
+                    <h3 class="mb-1">{{ student.full_name }}</h3>
+                    <p class="mb-0">
+                        {{ student.career }} | {{ student.semester }} | Matrícula: {{ student.matricula }}
+                    </p>
                 </div>
                 <div class="col-md-4 text-md-end">
                     <span class="badge bg-light text-primary credits-badge">
-                        <i class="bi bi-award-fill me-1"></i>Créditos Tutoría: 2/5
+                        <i class="bi bi-award-fill me-1"></i>
+                        Créditos Tutoría: {{ student.credits_obtained }}/{{ student.credits_required }}
                     </span>
                 </div>
             </div>
@@ -302,10 +319,10 @@ body {
                     </div>
                 </div>
                 <div class="col-md-6">
-                    <h4 class="text-primary">Dr. Juan Carlos Martínez</h4>
-                    <p class="mb-1"><strong>Departamento:</strong> Sistemas y Computación</p>
-                    <p class="mb-1"><strong>Especialidad:</strong> Inteligencia Artificial</p>
-                    <p class="mb-0"><strong>Correo:</strong> jmartinez@tecnm.mx</p>
+                    <h4 class="text-primary">{{ tutor.full_name }}</h4>
+                    <p class="mb-1"><strong>Departamento:</strong> {{ tutor.department }}</p>
+                    <p class="mb-1"><strong>Especialidad:</strong> {{ tutor.specialty }}</p>
+                    <p class="mb-0"><strong>Correo:</strong> {{ tutor.email }}</p>
                 </div>
                 <div class="col-md-4 text-md-end">
                     <button class="btn btn-outline-primary me-2">
