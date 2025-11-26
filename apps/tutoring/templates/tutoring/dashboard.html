@@ -16,10 +16,13 @@
       --success-color: #28a745;
       --warning-color: #ffc107;
       --danger-color: #dc3545;
+      --info-color: #17a2b8;
+      --purple-color: #6f42c1;
+      --teal-color: #20c997;
     }
 
     body {
-      background-color: white;
+      background-color: #f5f7fa;
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       display: flex;
       flex-direction: column;
@@ -28,7 +31,7 @@
 
     .navbar {
       background: linear-gradient(135deg, var(--primary-color) 0%, #0D4F7C 100%);
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
       padding: 0.8rem 0;
     }
 
@@ -58,7 +61,8 @@
     }
 
     .nav-link.active {
-      background-color: var(--secondary-color);
+      background-color: rgba(255, 255, 255, 0.2);
+      font-weight: 600;
     }
 
     .user-dropdown {
@@ -83,7 +87,7 @@
     }
 
     .dashboard-card {
-      background: var(--accent-color);
+      background: white;
       border-radius: 12px;
       box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
       transition: transform 0.3s ease, box-shadow 0.3s ease;
@@ -99,18 +103,15 @@
 
     .card-icon {
       font-size: 2.5rem;
-      color: var(--primary-color);
       margin-bottom: 1rem;
     }
 
     .stats-number {
       font-size: 2rem;
       font-weight: 700;
-      color: var(--dark-color);
     }
 
     .stats-label {
-      color: #333;
       font-weight: 500;
     }
 
@@ -120,6 +121,7 @@
       border-radius: 12px;
       padding: 2rem;
       margin-bottom: 2rem;
+      box-shadow: 0 5px 15px rgba(15, 96, 151, 0.2);
     }
 
     .alert-badge {
@@ -138,7 +140,7 @@
     }
 
     .footer {
-      background-color: var(--primary-color);
+      background-color: var(--dark-color);
       color: white;
       padding: 1.5rem 0;
       margin-top: auto;
@@ -147,30 +149,90 @@
     .quick-action-btn {
       background: white;
       border: 1px solid #e9ecef;
-      border-radius: 8px;
-      padding: 1rem;
+      border-radius: 10px;
+      padding: 1.2rem 0.5rem;
       text-align: center;
       transition: all 0.3s ease;
       color: var(--dark-color);
       text-decoration: none;
       display: block;
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
     }
 
     .quick-action-btn:hover {
-      background-color: var(--secondary-color);
-      color: white;
       transform: translateY(-3px);
       box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      text-decoration: none;
+      color: var(--dark-color);
     }
 
     .quick-action-btn i {
       font-size: 1.8rem;
       margin-bottom: 0.5rem;
-      color: var(--secondary-color);
     }
 
-    .quick-action-btn:hover i {
-      color: white;
+    .action-1 {
+      border-top: 4px solid var(--info-color);
+    }
+    .action-1 i {
+      color: var(--info-color);
+    }
+
+    .action-2 {
+      border-top: 4px solid var(--danger-color);
+    }
+    .action-2 i {
+      color: var(--danger-color);
+    }
+
+    .action-3 {
+      border-top: 4px solid var(--purple-color);
+    }
+    .action-3 i {
+      color: var(--purple-color);
+    }
+
+    .action-4 {
+      border-top: 4px solid var(--teal-color);
+    }
+    .action-4 i {
+      color: var(--teal-color);
+    }
+
+    .stat-1 .card-icon {
+      color: var(--info-color);
+    }
+    .stat-1 .stats-number {
+      color: var(--info-color);
+    }
+
+    .stat-2 .card-icon {
+      color: var(--success-color);
+    }
+    .stat-2 .stats-number {
+      color: var(--success-color);
+    }
+
+    .stat-3 .card-icon {
+      color: var(--warning-color);
+    }
+    .stat-3 .stats-number {
+      color: var(--warning-color);
+    }
+
+    .stat-4 .card-icon {
+      color: var(--purple-color);
+    }
+    .stat-4 .stats-number {
+      color: var(--purple-color);
+    }
+
+    .section-title {
+      color: var(--primary-color);
+      font-weight: 600;
+      margin-bottom: 1.5rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 2px solid var(--accent-color);
     }
 
     @media (max-width: 768px) {
@@ -217,7 +279,7 @@
           <li class="nav-item">
             <a class="nav-link" href="/alerts/">
               <i class="bi bi-bell-fill me-1"></i> Alertas
-              <span class="alert-badge">3</span>
+              <span class="alert-badge">{{ alerts_count }}</span>
             </a>
           </li>
         </ul>
@@ -258,7 +320,7 @@
             <p class="mb-0">Sistema Integral de Tutorías Académicas - Instituto Tecnológico Matelunia</p>
           </div>
           <div class="col-md-4 text-md-end">
-            <span class="badge bg-warning">{{ request.user.get_role_display }}</span>
+            <span class="badge bg-light text-dark">{{ request.user.get_role_display }}</span>
             <p class="mb-0 mt-2" id="current-date"></p>
           </div>
         </div>
@@ -267,28 +329,28 @@
       <!-- Quick Actions -->
       <div class="row mb-4">
         <div class="col-12">
-          <h4 class="mb-3">Acciones Rápidas</h4>
+          <h4 class="section-title">Acciones Rápidas</h4>
         </div>
         <div class="col-md-3 col-6 mb-3">
-          <a href="/tutoring/sessions/new/" class="quick-action-btn">
-            <i class="bi bi-calendar-plus"></i>
-            <div>Nueva Sesión</div>
+          <a href="{% url 'tutoring_session_new' %}" class="quick-action-btn action-1">
+              <i class="bi bi-calendar-plus"></i>
+              <div>Nueva Sesión</div>
           </a>
         </div>
         <div class="col-md-3 col-6 mb-3">
-          <a href="/alerts/" class="quick-action-btn">
+          <a href="/alerts/" class="quick-action-btn action-2">
             <i class="bi bi-exclamation-triangle"></i>
             <div>Ver Alertas <span class="badge bg-danger">3</span></div>
           </a>
         </div>
         <div class="col-md-3 col-6 mb-3">
-          <a href="/reports/generate/" class="quick-action-btn">
+          <a href="/reports/generate/" class="quick-action-btn action-3">
             <i class="bi bi-file-earmark-text"></i>
             <div>Generar Reporte</div>
           </a>
         </div>
         <div class="col-md-3 col-6 mb-3">
-          <a href="/academic/students/" class="quick-action-btn">
+          <a href="/academic/students/" class="quick-action-btn action-4">
             <i class="bi bi-person-plus"></i>
             <div>Agregar Tutorado</div>
           </a>
@@ -298,46 +360,46 @@
       <!-- Stats Dashboard -->
       <div class="row">
         <div class="col-md-3 col-6 mb-4">
-          <div class="dashboard-card card">
+          <div class="dashboard-card card stat-1">
             <div class="card-body text-center">
               <div class="card-icon">
                 <i class="bi bi-people-fill"></i>
               </div>
-              <h3 class="stats-number">142</h3>
-              <p class="stats-label">Estudiantes Tutorados</p>
+              <h3 class="stats-number">{{ stats.students_count }}</h3>
+              <p class="stats-label">Estudiantes tutorados</p>
             </div>
           </div>
         </div>
         <div class="col-md-3 col-6 mb-4">
-          <div class="dashboard-card card">
+          <div class="dashboard-card card stat-2">
             <div class="card-body text-center">
               <div class="card-icon">
                 <i class="bi bi-person-check"></i>
               </div>
-              <h3 class="stats-number">15</h3>
-              <p class="stats-label">Tutores Activos</p>
+              <h3 class="stats-number">{{ stats.tutors_count }}</h3>
+              <p class="stats-label">Tutores activos</p>
             </div>
           </div>
         </div>
         <div class="col-md-3 col-6 mb-4">
-          <div class="dashboard-card card">
+          <div class="dashboard-card card stat-3">
             <div class="card-body text-center">
               <div class="card-icon">
                 <i class="bi bi-calendar-event"></i>
               </div>
-              <h3 class="stats-number">327</h3>
-              <p class="stats-label">Sesiones Este Mes</p>
+              <h3 class="stats-number">{{ stats.sessions_this_month }}</h3>
+              <p class="stats-label">Sesiones este mes</p>
             </div>
           </div>
         </div>
         <div class="col-md-3 col-6 mb-4">
-          <div class="dashboard-card card">
+          <div class="dashboard-card card stat-4">
             <div class="card-body text-center">
               <div class="card-icon">
                 <i class="bi bi-clipboard-check"></i>
               </div>
-              <h3 class="stats-number">86%</h3>
-              <p class="stats-label">Avance del Programa</p>
+              <h3 class="stats-number">{{ stats.program_progress }}%</h3>
+              <p class="stats-label">Avance del programa</p>
             </div>
           </div>
         </div>
@@ -349,7 +411,7 @@
           <div class="dashboard-card card">
             <div class="card-body">
               {% block content %}
-              <h4 class="card-title">Resumen de Actividades Recientes</h4>
+              <h4 class="section-title">Resumen de Actividades Recientes</h4>
               <div class="table-responsive">
                 <table class="table table-hover">
                   <thead>
@@ -362,34 +424,31 @@
                     </tr>
                   </thead>
                   <tbody>
-                    <tr>
-                      <td>16/09/2025</td>
-                      <td>María González</td>
-                      <td>Dr. Carlos Ruiz</td>
-                      <td>Sesión Regular</td>
-                      <td><span class="badge bg-success">Completada</span></td>
-                    </tr>
-                    <tr>
-                      <td>15/09/2025</td>
-                      <td>Javier López</td>
-                      <td>Dra. Ana Martínez</td>
-                      <td>Sesión de Crisis</td>
-                      <td><span class="badge bg-warning text-dark">En Seguimiento</span></td>
-                    </tr>
-                    <tr>
-                      <td>14/09/2025</td>
-                      <td>Laura Rodríguez</td>
-                      <td>Dr. Carlos Ruiz</td>
-                      <td>Revisión de Avance</td>
-                      <td><span class="badge bg-success">Completada</span></td>
-                    </tr>
-                    <tr>
-                      <td>13/09/2025</td>
-                      <td>Roberto Sánchez</td>
-                      <td>Mtro. Luis García</td>
-                      <td>Sesión Regular</td>
-                      <td><span class="badge bg-danger">Cancelada</span></td>
-                    </tr>
+                    {% for s in recent_sessions %}
+                      <tr>
+                        <td>{{ s.date|date:"d/m/Y" }}</td>
+                        <td>{{ s.student.get_full_name|default:s.student.username }}</td>
+                        <td>{{ s.tutor.get_full_name|default:s.tutor.username }}</td>
+                        <td>{{ s.session_type }}</td>
+                        <td>
+                          {% if s.status == "COMPLETED" %}
+                            <span class="badge bg-success">Completada</span>
+                          {% elif s.status == "PENDING" %}
+                            <span class="badge bg-warning text-dark">Pendiente</span>
+                          {% elif s.status == "CANCELLED" %}
+                            <span class="badge bg-danger">Cancelada</span>
+                          {% else %}
+                            <span class="badge bg-secondary">{{ s.status }}</span>
+                          {% endif %}
+                        </td>
+                      </tr>
+                    {% empty %}
+                      <tr>
+                        <td colspan="5" class="text-center text-muted">
+                          No hay sesiones registradas recientemente.
+                        </td>
+                      </tr>
+                    {% endfor %}
                   </tbody>
                 </table>
               </div>

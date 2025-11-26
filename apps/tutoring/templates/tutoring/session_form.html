@@ -1,0 +1,64 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Nueva Sesión de Tutoría</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+<div class="container py-4">
+  <h2 class="mb-3">Programar nueva sesión</h2>
+
+  {% if messages %}
+    {% for message in messages %}
+      <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+    {% endfor %}
+  {% endif %}
+
+  <form method="post">
+    {% csrf_token %}
+
+    {% if form.non_field_errors %}
+      <div class="alert alert-danger">
+        {{ form.non_field_errors }}
+      </div>
+    {% endif %}
+
+    <div class="mb-3">
+        <label class="form-label">Tutorado</label>
+        {{ form.tutee }}
+        {{ form.tutee.errors }}
+    </div>
+
+
+    <div class="mb-3">
+      <label class="form-label">Período</label>
+      {{ form.period }}
+      {{ form.period.errors }}
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Fecha y hora programada</label>
+      {{ form.scheduled_date }}
+      {{ form.scheduled_date.errors }}
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Resumen de la sesión (opcional)</label>
+      {{ form.session_summary }}
+      {{ form.session_summary.errors }}
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Acuerdos (opcional)</label>
+      {{ form.agreements }}
+      {{ form.agreements.errors }}
+    </div>
+
+    <a href="{% url 'tutoring' %}" class="btn btn-secondary">Cancelar</a>
+    <button type="submit" class="btn btn-primary">Guardar sesión</button>
+  </form>
+</div>
+</body>
+</html>

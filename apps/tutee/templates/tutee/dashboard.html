@@ -341,15 +341,15 @@ body {
                 <div class="dashboard-card">
                     <div class="card-icon"><i class="bi bi-calendar-check"></i></div>
                     <h5 class="card-title">Sesiones Completadas</h5>
-                    <div class="stats-number">8</div>
-                    <div class="stats-label">de 12 programadas</div>
+                    <div class="stats-number">{{ stats.sessions_completed }}</div>
+                    <div class="stats-label">de {{ stats.sessions_programmed }} programadas</div>
                 </div>
             </div>
             <div class="col-md-6 col-lg-3">
                 <div class="dashboard-card">
                     <div class="card-icon"><i class="bi bi-clock-history"></i></div>
                     <h5 class="card-title">Asistencia</h5>
-                    <div class="stats-number">92%</div>
+                    <div class="stats-number">{{ stats.attendance_percent }}%</div>
                     <div class="stats-label">de sesiones asistidas</div>
                 </div>
             </div>
@@ -357,58 +357,50 @@ body {
                 <div class="dashboard-card">
                     <div class="card-icon"><i class="bi bi-chat-left-text"></i></div>
                     <h5 class="card-title">Feedback Enviado</h5>
-                    <div class="stats-number">6</div>
+                    <div class="stats-number">{{ stats.feedback_sent }}</div>
                     <div class="stats-label">encuestas completadas</div>
                 </div>
             </div>
             <div class="col-md-6 col-lg-3">
                 <div class="dashboard-card">
                     <div class="card-icon"><i class="bi bi-award"></i></div>
-                    <h5 class="card-title">Progreso</h5>
-                    <div class="stats-number">67%</div>
-                    <div class="stats-label">del programa completado</div>
-                </div>
-            </div>
-        </div>
+                                        <h5 class="card-title">Progreso</h5>
+                                        <div class="stats-number">{{ stats.program_progress_percent }}%</div>
+                                        <div class="stats-label">del programa completado</div>
+                                    </div>
+                                </div>
+                            </div>
 
-        <!-- Próximas sesiones y sesiones recientes -->
-        <div class="row g-4">
-            <div class="col-lg-6">
-                <div class="dashboard-card text-start">
-                    <h5 class="card-title d-flex justify-content-between align-items-center">
-                        <span>Próximas Sesiones</span>
-                        <span class="badge bg-primary">2 Programadas</span>
-                    </h5>
-                    
-                    <div class="session-card session-upcoming">
-                        <div class="d-flex justify-content-between align-items-start mb-2">
-                            <h6 class="text-success mb-0">Sesión Individual</h6>
-                            <span class="badge bg-success">Próxima</span>
-                        </div>
-                        <p class="mb-1"><i class="bi bi-calendar me-2"></i>Lunes, 20 de Octubre 2025</p>
-                        <p class="mb-1"><i class="bi bi-clock me-2"></i>14:00 - 15:00 hrs</p>
-                        <p class="mb-2"><i class="bi bi-geo-alt me-2"></i>Oficina de Tutorías - Edificio B</p>
-                        <p class="mb-0"><strong>Tema:</strong> Avance en proyecto de bases de datos</p>
-                        <div class="mt-2">
-                            <button class="btn btn-sm btn-outline-primary">Confirmar Asistencia</button>
-                            <button class="btn btn-sm btn-outline-secondary">Reprogramar</button>
-                        </div>
-                    </div>
+                            <!-- Próximas sesiones y sesiones recientes -->
+                            <div class="row g-4">
+                                <div class="col-lg-6">
+                                    <div class="dashboard-card text-start">
+                        <h5 class="card-title d-flex justify-content-between align-items-center">
+                            <span>Próximas Sesiones</span>
+                            <span class="badge bg-primary">{{ upcoming_sessions|length }} Programadas</span>
+                        </h5>
 
-                    <div class="session-card session-upcoming">
-                        <div class="d-flex justify-content-between align-items-start mb-2">
-                            <h6 class="text-success mb-0">Sesión Grupal</h6>
-                            <span class="badge bg-info">Grupal</span>
-                        </div>
-                        <p class="mb-1"><i class="bi bi-calendar me-2"></i>Viernes, 24 de Octubre 2025</p>
-                        <p class="mb-1"><i class="bi bi-clock me-2"></i>16:00 - 17:30 hrs</p>
-                        <p class="mb-2"><i class="bi bi-geo-alt me-2"></i>Aula 204 - Edificio Principal</p>
-                        <p class="mb-0"><strong>Tema:</strong> Técnicas de estudio y preparación para exámenes</p>
-                        <div class="mt-2">
-                            <button class="btn btn-sm btn-outline-primary">Confirmar Asistencia</button>
-                        </div>
+                        {% for session in upcoming_sessions %}
+                            <div class="session-card session-upcoming">
+                                <div class="d-flex justify-content-between align-items-start mb-2">
+                                    <h6 class="text-success mb-0">{{ session.type }}</h6>
+                                    <span class="badge bg-success">{{ session.label }}</span>
+                                </div>
+                                <p class="mb-1"><i class="bi bi-calendar me-2"></i>{{ session.date }}</p>
+                                <p class="mb-1"><i class="bi bi-clock me-2"></i>{{ session.time }}</p>
+                                <p class="mb-2"><i class="bi bi-geo-alt me-2"></i>{{ session.place }}</p>
+                                <p class="mb-0"><strong>Tema:</strong> {{ session.topic }}</p>
+                                <div class="mt-2">
+                                    <button class="btn btn-sm btn-outline-primary">Confirmar Asistencia</button>
+                                    {% if session.can_reschedule %}
+                                        <button class="btn btn-sm btn-outline-secondary">Reprogramar</button>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        {% empty %}
+                            <p class="text-muted mt-2">No tienes próximas sesiones programadas.</p>
+                        {% endfor %}
                     </div>
-                </div>
             </div>
 
             <div class="col-lg-6">
@@ -418,20 +410,35 @@ body {
                         <span class="badge bg-secondary">4 Completadas</span>
                     </h5>
                     
-                    <div class="session-card session-completed">
-                        <div class="d-flex justify-content-between align-items-start mb-2">
-                            <h6 class="text-primary mb-0">Sesión Individual</h6>
-                            <span class="attendance-badge bg-success">Asistió</span>
+                    {% for session in recent_sessions %}
+                        <div class="session-card session-completed">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <h6 class="text-primary mb-0">{{ session.type }}</h6>
+                                {% if session.attended %}
+                                    <span class="attendance-badge bg-success">Asistió</span>
+                                {% else %}
+                                    <span class="attendance-badge bg-danger">No asistió</span>
+                                {% endif %}
+                            </div>
+                            <p class="mb-1"><i class="bi bi-calendar me-2"></i>{{ session.date }}</p>
+                            <p class="mb-2"><strong>Tema:</strong> {{ session.topic }}</p>
+                            <div class="d-flex justify-content-between">
+                                <button class="btn btn-sm btn-outline-primary">Ver Resumen</button>
+                                {% if session.feedback_sent %}
+                                    <button class="btn btn-sm btn-outline-success">
+                                        <i class="bi bi-chat-left-text me-1"></i>Feedback Enviado
+                                    </button>
+                                {% else %}
+                                    <button class="btn btn-sm btn-outline-success" data-bs-toggle="modal" data-bs-target="#feedbackModal">
+                                        <i class="bi bi-chat-left-text me-1"></i>Dar Feedback
+                                    </button>
+                                {% endif %}
+                            </div>
                         </div>
-                        <p class="mb-1"><i class="bi bi-calendar me-2"></i>Miércoles, 15 de Octubre 2025</p>
-                        <p class="mb-2"><strong>Tema:</strong> Revisión de avance académico</p>
-                        <div class="d-flex justify-content-between">
-                            <button class="btn btn-sm btn-outline-primary">Ver Resumen</button>
-                            <button class="btn btn-sm btn-outline-success" data-bs-toggle="modal" data-bs-target="#feedbackModal">
-                                <i class="bi bi-chat-left-text me-1"></i>Dar Feedback
-                            </button>
-                        </div>
-                    </div>
+                    {% empty %}
+                        <p class="text-muted mt-2">Aún no hay sesiones anteriores registradas.</p>
+                    {% endfor %}
+
 
                     <div class="session-card session-completed">
                         <div class="d-flex justify-content-between align-items-start mb-2">
@@ -526,30 +533,37 @@ body {
                 <div class="dashboard-card">
                     <h5 class="card-title d-flex justify-content-between align-items-center">
                         <span>Progreso de Créditos de Actividad Complementaria</span>
-                        <span class="badge bg-success">2/5 Créditos Obtenidos</span>
-                    </h5>
+                        <span class="badge bg-success">
+                            {{ student.credits_obtained }}/{{ student.credits_required }} Créditos Obtenidos
+                        </span>
+
                     <div class="progress mb-3" style="height: 20px;">
-                        <div class="progress-bar progress-bar-custom" role="progressbar" style="width: 40%;" 
-                             aria-valuenow="40" aria-valuemin="0" aria-valuemax="100">
-                            40%
+                        <div class="progress-bar progress-bar-custom"
+                            role="progressbar"
+                            style="width: {{ student.credits_progress_percent }}%;"
+                            aria-valuenow="{{ student.credits_progress_percent }}"
+                            aria-valuemin="0"
+                            aria-valuemax="100">
+                            {{ student.credits_progress_percent }}%
                         </div>
                     </div>
+
                     <div class="row text-center">
                         <div class="col-md-3">
                             <small class="text-muted">Sesiones Requeridas</small>
-                            <div class="fw-bold">12</div>
+                            <div class="fw-bold">{{ stats.sessions_programmed }}</div>
                         </div>
                         <div class="col-md-3">
                             <small class="text-muted">Completadas</small>
-                            <div class="fw-bold">8</div>
+                            <div class="fw-bold">{{ stats.sessions_completed }}</div>
                         </div>
                         <div class="col-md-3">
                             <small class="text-muted">Feedback Entregado</small>
-                            <div class="fw-bold">6/8</div>
+                            <div class="fw-bold">{{ stats.feedback_sent }}/{{ stats.feedback_expected }}</div>
                         </div>
                         <div class="col-md-3">
                             <small class="text-muted">Créditos Obtenidos</small>
-                            <div class="fw-bold text-success">2/5</div>
+                            <div class="fw-bold text-success">{{ student.credits_obtained }}/{{ student.credits_required }}</div>
                         </div>
                     </div>
                 </div>

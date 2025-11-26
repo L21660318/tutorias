@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.urls import path, include
-from apps.tutoring.views import dashboard_view
+from apps.tutoring.views import dashboard_view, create_session
 from apps.academic.views import academic_view
 # from apps.users.views import CustomLoginView   # 👈 ya no lo usamos por ahora
 from django.contrib.auth.views import LogoutView, LoginView
@@ -16,7 +16,11 @@ urlpatterns = [
     path('', CustomLoginView.as_view(), name='login'),
 
     path('logout/', LogoutView.as_view(), name='logout'),
+    #------------- Tutoring URLs --------------
     path('tutoring/', dashboard_view, name='tutoring'),
+    path('tutoring/sessions/new/', create_session, name='tutoring_session_new'),
+    #------------------------------------------
+
     path('academic/', academic_view, name='academic'),
     path('jefe_depto/', include('apps.jefe_depto.urls')),
     path('coordinst/', include('apps.coordinst.urls')),
