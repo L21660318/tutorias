@@ -233,7 +233,7 @@ body {
         <div class="collapse navbar-collapse" id="navbarContent">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 <li class="nav-item">
-                    <a class="nav-link active" href="/tutorado/">Mi Tutoría</a>
+                    <a class="nav-link active" href="{% url 'tutee_dashboard' %}">Mi Tutoría</a>
                 </li>
             </ul>
             <div class="d-flex align-items-center">
@@ -596,6 +596,13 @@ body {
                     <p class="mt-2">Solicitar Apoyo</p>
                 </button>
             </div>
+            <div class="col-md-3 col-6">
+                <a href="{% url 'tutee_activities' %}" class="quick-action-btn dashboard-card w-100 py-4">
+                    <i class="bi bi-list-check" style="font-size:2rem;color:var(--primary-color)"></i>
+                    <p class="mt-2">Ver Mis Actividades</p>
+                </a>
+            </div>
+
         </div>
 
     </div>

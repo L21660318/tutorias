@@ -1,0 +1,51 @@
+{% extends "tutoring/dashboard.html" %}
+{% load static %}
+
+{% block title %}Reportes de tutores{% endblock %}
+
+{% block content %}
+<h4 class="section-title">Reportes recibidos de tutores</h4>
+
+<div class="card dashboard-card">
+  <div class="card-body">
+    {% if reports %}
+      <div class="table-responsive">
+        <table class="table table-hover align-middle">
+          <thead>
+            <tr>
+              <th>Fecha</th>
+              <th>Periodo</th>
+              <th>Tutor</th>
+              <th>Título</th>
+              <th>Estado</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for r in reports %}
+              <tr>
+                <td>{{ r.created_at|date:"d/m/Y H:i" }}</td>
+                <td>{{ r.period }}</td>
+                <td>{{ r.tutor.get_full_name|default:r.tutor.username }}</td>
+                <td>{{ r.title }}</td>
+                <td>
+                  {% if r.status == "SENT" %}
+                    <span class="badge bg-info text-dark">Enviado</span>
+                  {% elif r.status == "REVIEWED" %}
+                    <span class="badge bg-success">Revisado</span>
+                  {% elif r.status == "RETURNED" %}
+                    <span class="badge bg-warning text-dark">Devuelto</span>
+                  {% endif %}
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% else %}
+      <p class="text-muted mb-0">
+        No tienes reportes de tutores registrados.
+      </p>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

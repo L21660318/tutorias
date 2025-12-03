@@ -1,217 +1,472 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Académico - PIT Tutorías</title>
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-<style>
-:root {
-    --primary-color: #0F6097;
-    --secondary-color: #50A6E1;
-    --accent-color: #A2D3F5;
-    --light-color: #f8f9fa;
-    --dark-color: #343a40;
-    --success-color: #28a745;
-    --warning-color: #ffc107;
-    --danger-color: #dc3545;
-}
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Académico - PIT Tutorías</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+  <style>
+    :root {
+      --primary-color: #0F6097;
+      --secondary-color: #50A6E1;
+      --accent-color: #A2D3F5;
+      --light-color: #f8f9fa;
+      --dark-color: #343a40;
+      --success-color: #28a745;
+      --warning-color: #ffc107;
+      --danger-color: #dc3545;
+      --info-color: #17a2b8;
+      --purple-color: #6f42c1;
+      --teal-color: #20c997;
+    }
 
-body {
-    background-color: var(--light-color);
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
-    margin: 0;
-}
+    body {
+      background-color: #f5f7fa;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      margin: 0;
+    }
 
-.navbar {
-    background: linear-gradient(135deg, var(--primary-color) 0%, #0D4F7C 100%);
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    padding: 0.8rem 0;
-}
+    .navbar {
+      background: linear-gradient(135deg, var(--primary-color) 0%, #0D4F7C 100%);
+      box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+      padding: 0.8rem 0;
+    }
 
-.navbar-brand {
-    font-weight: 700;
-    font-size: 1.4rem;
-    display: flex;
-    align-items: center;
-    color: white;
-}
+    .navbar-brand {
+      font-weight: 700;
+      font-size: 1.4rem;
+      display: flex;
+      align-items: center;
+    }
 
-.navbar-brand i {
-    margin-right: 10px;
-    font-size: 1.6rem;
-}
+    .navbar-brand i {
+      margin-right: 10px;
+      font-size: 1.6rem;
+    }
 
-.nav-link {
-    font-weight: 500;
-    padding: 0.5rem 1rem !important;
-    border-radius: 4px;
-    margin: 0 2px;
-    color: white;
-    transition: all 0.3s ease;
-}
+    .nav-link {
+      font-weight: 500;
+      padding: 0.5rem 1rem !important;
+      border-radius: 4px;
+      margin: 0 2px;
+      transition: all 0.3s ease;
+    }
 
-.nav-link:hover, .nav-link.active {
-    background-color: var(--secondary-color);
-    color: white;
-}
+    .nav-link:hover {
+      background-color: rgba(255, 255, 255, 0.15);
+      transform: translateY(-2px);
+    }
 
-.main-container {
-    flex: 1;
-    padding: 2rem;
-}
+    .nav-link.active {
+      background-color: rgba(255, 255, 255, 0.2);
+      font-weight: 600;
+    }
 
-.dashboard-card {
-    background: white;
-    border-radius: 12px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    height: 100%;
-    border: none;
-    overflow: hidden;
-    padding: 1.5rem;
-}
+    .user-dropdown {
+      margin-left: 15px;
+    }
 
-.dashboard-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
-}
+    .user-avatar {
+      width: 35px;
+      height: 35px;
+      border-radius: 50%;
+      background-color: var(--secondary-color);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: bold;
+    }
 
-.card-icon {
-    font-size: 2rem;
-    color: var(--primary-color);
-    margin-bottom: 1rem;
-}
+    .alert-badge {
+      position: absolute;
+      top: -5px;
+      right: -5px;
+      background-color: var(--danger-color);
+      color: white;
+      border-radius: 50%;
+      width: 20px;
+      height: 20px;
+      font-size: 0.7rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
 
-.card-title {
-    font-weight: 700;
-    color: var(--primary-color);
-    margin-bottom: 1rem;
-}
+    .main-container {
+      flex: 1;
+      padding: 2rem 0;
+    }
 
-.card-text {
-    color: var(--dark-color);
-    line-height: 1.5;
-}
+    .welcome-section {
+      background: linear-gradient(120deg, var(--primary-color), var(--secondary-color));
+      color: white;
+      border-radius: 12px;
+      padding: 2rem;
+      margin-bottom: 2rem;
+      box-shadow: 0 5px 15px rgba(15, 96, 151, 0.2);
+    }
 
-.stats-number {
-    font-size: 2rem;
-    font-weight: 700;
-    color: var(--dark-color);
-}
+    .dashboard-card {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      height: 100%;
+      border: none;
+      overflow: hidden;
+    }
 
-.stats-label {
-    color: #333;
-    font-weight: 500;
-}
+    .dashboard-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+    }
 
-.footer {
-    background-color: var(--primary-color);
-    color: white;
-    padding: 1.5rem 0;
-    margin-top: auto;
-    text-align: center;
-}
-</style>
+    .card-icon {
+      font-size: 2.2rem;
+      margin-bottom: 1rem;
+    }
+
+    .stats-number {
+      font-size: 2rem;
+      font-weight: 700;
+    }
+
+    .stats-label {
+      font-weight: 500;
+    }
+
+    .stat-1 .card-icon,
+    .stat-1 .stats-number {
+      color: var(--info-color);
+    }
+
+    .stat-2 .card-icon,
+    .stat-2 .stats-number {
+      color: var(--success-color);
+    }
+
+    .stat-3 .card-icon,
+    .stat-3 .stats-number {
+      color: var(--warning-color);
+    }
+
+    .stat-4 .card-icon,
+    .stat-4 .stats-number {
+      color: var(--purple-color);
+    }
+
+    .section-title {
+      color: var(--primary-color);
+      font-weight: 600;
+      margin-bottom: 1.5rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 2px solid var(--accent-color);
+    }
+
+    .card-title {
+      font-weight: 700;
+      color: var(--primary-color);
+      margin-bottom: 0.75rem;
+    }
+
+    .card-text {
+      color: var(--dark-color);
+      line-height: 1.5;
+    }
+
+    .btn-primary-custom {
+      background-color: var(--primary-color);
+      border-color: var(--primary-color);
+    }
+
+    .btn-primary-custom:hover {
+      background-color: #0D4F7C;
+      border-color: #0D4F7C;
+    }
+
+    .footer {
+      background-color: var(--dark-color);
+      color: white;
+      padding: 1.5rem 0;
+      margin-top: auto;
+    }
+
+    @media (max-width: 768px) {
+      .navbar-brand span {
+        display: none;
+      }
+      .navbar-brand i {
+        margin-right: 0;
+        font-size: 1.8rem;
+      }
+      .welcome-section {
+        text-align: center;
+      }
+    }
+  </style>
 </head>
 <body>
-
-<!-- Navbar -->
-<nav class="navbar navbar-expand-lg navbar-dark">
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-dark">
     <div class="container">
-        <a class="navbar-brand" href="/">
-            <i class="bi bi-mortarboard-fill"></i>
-            PIT Tutorías
-        </a>
-        <div class="collapse navbar-collapse" id="navbarContent">
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                <li class="nav-item">
-                    <a class="nav-link active" href="/academic/">Académico</a>
-                </li>
+      <a class="navbar-brand" href="/">
+        <i class="bi bi-mortarboard-fill"></i>
+        <span>PIT Tutorías</span>
+      </a>
+
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navbarContent">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link" href="/"><i class="bi bi-house-door me-1"></i> Inicio</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/tutoring/"><i class="bi bi-people-fill me-1"></i> Tutorías</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link active" href="/academic/"><i class="bi bi-journal-bookmark-fill me-1"></i> Académico</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/reports/"><i class="bi bi-graph-up me-1"></i> Reportes</a>
+          </li>
+          <li class="nav-item position-relative">
+            <a class="nav-link" href="/alerts/">
+              <i class="bi bi-bell-fill me-1"></i> Alertas
+              <span class="alert-badge">{{ alerts_count }}</span>
+            </a>
+          </li>
+        </ul>
+
+        <div class="d-flex align-items-center">
+          <div class="user-dropdown dropdown">
+            <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" data-bs-toggle="dropdown">
+              <div class="user-avatar me-2">
+                {{ request.user.first_name|slice:":1" }}{{ request.user.last_name|slice:":1" }}
+              </div>
+              <span>{{ request.user.username }}</span>
+            </a>
+            <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end">
+              <li><a class="dropdown-item" href="/profile/"><i class="bi bi-person-circle me-2"></i> Mi Perfil</a></li>
+              <li><a class="dropdown-item" href="/settings/"><i class="bi bi-gear me-2"></i> Configuración</a></li>
+              <li><hr class="dropdown-divider"></li>
+              {% if request.user.is_staff %}
+                <li><a class="dropdown-item" href="/admin/"><i class="bi bi-speedometer2 me-2"></i> Administración</a></li>
+                <li><hr class="dropdown-divider"></li>
+              {% endif %}
+              <li>
+                <a class="dropdown-item" href="{% url 'logout' %}">
+                  <i class="bi bi-box-arrow-right me-2"></i> Cerrar Sesión
+                </a>
+              </li>
             </ul>
+          </div>
         </div>
-    </div>
-</nav>
 
-<!-- Main Content -->
-<div class="main-container">
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <div class="main-container">
     <div class="container">
-        <h2 class="mb-4">Panel Académico</h2>
+      <!-- Welcome Section -->
+      <div class="welcome-section">
+        <div class="row align-items-center">
+          <div class="col-md-8">
+            <h2>Panel Académico</h2>
+            <p class="mb-0">
+              Coordinación y seguimiento académico del Programa Institucional de Tutorías.
+            </p>
+          </div>
+          <div class="col-md-4 text-md-end">
+            <span class="badge bg-light text-dark">{{ request.user.get_role_display }}</span>
+            <p class="mb-0 mt-2" id="current-date"></p>
+          </div>
+        </div>
+      </div>
 
-        <!-- Stats Dashboard -->
-        <div class="row g-4 mb-4">
-            <div class="col-md-3 col-6">
-                <div class="dashboard-card text-center">
-                    <div class="card-icon"><i class="bi bi-file-check-fill"></i></div>
-                    <h3 class="stats-number">12</h3>
-                    <p class="stats-label">Constancias Validadas</p>
-                </div>
+      <!-- Stats Dashboard -->
+      <div class="row mb-4">
+        <div class="col-md-3 col-6 mb-4">
+          <div class="dashboard-card card stat-1">
+            <div class="card-body text-center">
+              <div class="card-icon">
+                <i class="bi bi-file-check-fill"></i>
+              </div>
+              <h3 class="stats-number">
+                {{ stats.constancias_validadas|default:12 }}
+              </h3>
+              <p class="stats-label">Constancias validadas</p>
             </div>
-            <div class="col-md-3 col-6">
-                <div class="dashboard-card text-center">
-                    <div class="card-icon"><i class="bi bi-bar-chart-line-fill"></i></div>
-                    <h3 class="stats-number">5</h3>
-                    <p class="stats-label">Informes Recibidos</p>
-                </div>
+          </div>
+        </div>
+        <div class="col-md-3 col-6 mb-4">
+          <div class="dashboard-card card stat-2">
+            <div class="card-body text-center">
+              <div class="card-icon">
+                <i class="bi bi-bar-chart-line-fill"></i>
+              </div>
+              <h3 class="stats-number">
+                {{ stats.informes_recibidos|default:5 }}
+              </h3>
+              <p class="stats-label">Informes recibidos</p>
             </div>
-            <div class="col-md-3 col-6">
-                <div class="dashboard-card text-center">
-                    <div class="card-icon"><i class="bi bi-hand-thumbs-up-fill"></i></div>
-                    <h3 class="stats-number">8</h3>
-                    <p class="stats-label">Apoyos Gestionados</p>
-                </div>
+          </div>
+        </div>
+        <div class="col-md-3 col-6 mb-4">
+          <div class="dashboard-card card stat-3">
+            <div class="card-body text-center">
+              <div class="card-icon">
+                <i class="bi bi-hand-thumbs-up-fill"></i>
+              </div>
+              <h3 class="stats-number">
+                {{ stats.apoyos_gestionados|default:8 }}
+              </h3>
+              <p class="stats-label">Apoyos gestionados</p>
             </div>
-            <div class="col-md-3 col-6">
-                <div class="dashboard-card text-center">
-                    <div class="card-icon"><i class="bi bi-people-fill"></i></div>
-                    <h3 class="stats-number">3</h3>
-                    <p class="stats-label">Reuniones Programadas</p>
-                </div>
+          </div>
+        </div>
+        <div class="col-md-3 col-6 mb-4">
+          <div class="dashboard-card card stat-4">
+            <div class="card-body text-center">
+              <div class="card-icon">
+                <i class="bi bi-people-fill"></i>
+              </div>
+              <h3 class="stats-number">
+                {{ stats.reuniones_programadas|default:3 }}
+              </h3>
+              <p class="stats-label">Reuniones programadas</p>
             </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Funciones Académicas -->
+      <div class="row mb-4">
+        <div class="col-12">
+          <h4 class="section-title">Funciones Académicas</h4>
         </div>
 
-        <!-- Tarjetas de Funciones -->
-        <div class="row g-4">
-            <div class="col-md-6 col-lg-4">
-                <div class="dashboard-card">
-                    <div class="card-icon"><i class="bi bi-hand-thumbs-up-fill"></i></div>
-                    <h5 class="card-title">Gestión de Apoyos</h5>
-                    <p class="card-text">
-                        Gestiona ante las instancias institucionales e interinstitucionales los apoyos necesarios para el trabajo tutorial, mediante mecanismos de vinculación.
-                    </p>
-                </div>
+        <div class="col-md-6 col-lg-4 mb-4">
+          <div class="dashboard-card card">
+            <div class="card-body">
+              <div class="card-icon"><i class="bi bi-hand-thumbs-up-fill"></i></div>
+              <h5 class="card-title">Gestión de apoyos</h5>
+              <p class="card-text">
+                Gestiona ante las instancias institucionales e interinstitucionales los apoyos necesarios
+                para el trabajo tutorial, mediante mecanismos de vinculación.
+              </p>
+              <!-- <a href="#" class="btn btn-sm btn-primary-custom">Ver apoyos</a> -->
             </div>
-            <div class="col-md-6 col-lg-4">
-                <div class="dashboard-card">
-                    <div class="card-icon"><i class="bi bi-file-check-fill"></i></div>
-                    <h5 class="card-title">Validación de Constancias</h5>
-                    <p class="card-text">
-                        Valida las constancias de cumplimiento de los tutores expedidas por el (la) Jefe(a) de Desarrollo Académico o su equivalente al final del semestre.
-                    </p>
-                </div>
-            </div>
-            <div class="col-md-6 col-lg-4">
-                <div class="dashboard-card">
-                    <div class="card-icon"><i class="bi bi-bar-chart-line-fill"></i></div>
-                    <h5 class="card-title">Informe Semestral</h5>
-                    <p class="card-text">
-                        Recibe del (de la) Jefe(a) de Desarrollo Académico un informe ejecutivo semestral sobre los resultados del PIT y lo envía al(a la) Director(a) del Instituto.
-                    </p>
-                </div>
-            </div>
+          </div>
         </div>
+
+        <div class="col-md-6 col-lg-4 mb-4">
+          <div class="dashboard-card card">
+            <div class="card-body">
+              <div class="card-icon"><i class="bi bi-file-check-fill"></i></div>
+              <h5 class="card-title">Validación de constancias</h5>
+              <p class="card-text">
+                Valida las constancias de cumplimiento de los tutores expedidas por el(la) Jefe(a) de
+                Desarrollo Académico o su equivalente al final del semestre.
+              </p>
+              <!-- <a href="#" class="btn btn-sm btn-primary-custom">Validar constancias</a> -->
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-6 col-lg-4 mb-4">
+          <div class="dashboard-card card">
+            <div class="card-body">
+              <div class="card-icon"><i class="bi bi-bar-chart-line-fill"></i></div>
+              <h5 class="card-title">Informe semestral</h5>
+              <p class="card-text">
+                Recibe del(la) Jefe(a) de Desarrollo Académico un informe ejecutivo semestral sobre los
+                resultados del PIT y lo envía al(la) Director(a) del Instituto.
+              </p>
+              <!-- <a href="#" class="btn btn-sm btn-primary-custom">Ver informes</a> -->
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Plan de 12 sesiones -->
+      <div class="row mb-4">
+        <div class="col-md-12 col-lg-8 mb-4">
+          <div class="dashboard-card card">
+            <div class="card-body">
+              <div class="card-icon"><i class="bi bi-calendar2-week-fill"></i></div>
+              <h5 class="card-title">Plan de 12 sesiones del PIT</h5>
+              <p class="card-text">
+                Define las 12 sesiones del Programa Institucional de Tutorías para cada tutor y período.
+                El sistema generará automáticamente las sesiones del plan para todos los tutorados asignados
+                a ese tutor.
+              </p>
+              <a href="{% url 'academic_plan_sessions' %}" class="btn btn-primary-custom">
+                <i class="bi bi-pencil-square me-1"></i> Definir / editar plan de 12 sesiones
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-6 col-lg-4 mb-4">
+          <div class="dashboard-card card">
+            <div class="card-body">
+              <div class="card-icon"><i class="bi bi-clipboard-check"></i></div>
+              <h5 class="card-title">Seguimiento del plan</h5>
+              <p class="card-text">
+                Consulta el avance global de las 12 sesiones por tutor y período, así como el cumplimiento
+                de los tutorados.
+              </p>
+              {# En el futuro puedes crear una vista de resumen y enlazarla aquí #}
+              {# <a href="{% url 'academic_plan_summary' %}" class="btn btn-sm btn-outline-primary">Ver resumen</a> #}
+            </div>
+          </div>
+        </div>
+      </div>
+      
+
     </div>
-</div>
+  </div>
 
-<!-- Footer -->
-<footer class="footer">
-    &copy; 2025 Programa Institucional de Tutorías - Instituto Tecnológico Matelunia
-</footer>
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-6 text-center text-md-start">
+          <p class="mb-0">&copy; 2025 Programa Institucional de Tutorías - Instituto Tecnológico Matelunia</p>
+        </div>
+        <div class="col-md-6 text-center text-md-end">
+          <p class="mb-0">
+            <a href="/about/" class="text-white text-decoration-none me-3">Acerca del PIT</a>
+            <a href="/contact/" class="text-white text-decoration-none me-3">Contacto</a>
+            <a href="/privacy/" class="text-white text-decoration-none">Privacidad</a>
+          </p>
+        </div>
+      </div>
+    </div>
+  </footer>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    function updateDateTime() {
+      const now = new Date();
+      const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+      const el = document.getElementById('current-date');
+      if (el) {
+        el.textContent = now.toLocaleDateString('es-ES', options);
+      }
+    }
+    setInterval(updateDateTime, 60000);
+    updateDateTime();
+  </script>
 </body>
 </html>

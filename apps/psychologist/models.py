@@ -24,8 +24,10 @@ class PsychologySession(models.Model):
     ]
 
     student = models.ForeignKey(TuteeProfile, on_delete=models.CASCADE)
-    session_date = models.DateField()
-    session_time = models.TimeField()
+
+    session_date = models.DateField(null=True, blank=True)
+    session_time = models.TimeField(null=True, blank=True)
+
     session_type = models.CharField(max_length=20, choices=SESSION_TYPE_CHOICES, default='individual')
     reason = models.TextField()
     observations = models.TextField(blank=True, null=True)

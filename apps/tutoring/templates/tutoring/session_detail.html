@@ -1,0 +1,74 @@
+{% extends "tutoring/dashboard.html" %}
+
+{% block title %}Sesión de Tutoría - Pasar lista{% endblock %}
+
+{% block content %}
+<h4 class="section-title">Sesión {{ session.activity_number }} - {{ session.activity_title }}</h4>
+
+<div class="mb-3">
+  <p><strong>Grupo:</strong> {{ group.name }}</p>
+  <p><strong>Fecha y hora:</strong> {{ session.scheduled_date|date:"d/m/Y H:i" }}</p>
+  <p><strong>Tipo:</strong> {{ session.get_kind_display }}</p>
+</div>
+
+<form method="post">
+  {% csrf_token %}
+  <div class="table-responsive">
+    <table class="table table-striped align-middle">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Nombre del estudiante</th>
+          <th>Matrícula</th>
+          <th>Asistencia</th>
+          <th>Notas</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for s in students %}
+          <tr>
+            <td>{{ forloop.counter }}</td>
+            <td>{{ s.user.get_full_name }}</td>
+            <td>{{ s.enrollment_id }}</td>
+            <td>
+              <select name="status_{{ s.id }}" class="form-select form-select-sm">
+                <option value="">-- Seleccionar --</option>
+                <option value="PRESENT"
+                  {% if existing_attendance.s.id == "PRESENT" %}selected{% endif %}
+                >Asistió</option>
+                <option value="ABSENT"
+                  {% if existing_attendance.s.id == "ABSENT" %}selected{% endif %}
+                >No asistió</option>
+                <option value="LATE"
+                  {% if existing_attendance.s.id == "LATE" %}selected{% endif %}
+                >Llegó tarde</option>
+              </select>
+            </td>
+            <td>
+              <input
+                type="text"
+                name="notes_{{ s.id }}"
+                class="form-control form-control-sm"
+                placeholder="Opcional"
+              >
+            </td>
+          </tr>
+        {% empty %}
+          <tr>
+            <td colspan="5" class="text-center text-muted">
+              No hay estudiantes asignados a este grupo.
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <div class="text-end mt-3">
+    <a href="{% url 'tutoring' %}" class="btn btn-secondary me-2">Volver</a>
+    <button type="submit" class="btn btn-primary">
+      <i class="bi bi-save me-1"></i> Guardar asistencia
+    </button>
+  </div>
+</form>
+{% endblock %}

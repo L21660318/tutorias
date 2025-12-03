@@ -1,0 +1,48 @@
+{% extends "tutoring/dashboard.html" %}
+
+{% block title %}Canalizar a Psicología{% endblock %}
+
+{% block content %}
+<h4 class="section-title">Canalizar estudiante a psicología</h4>
+
+<form method="post" class="card p-4">
+  {% csrf_token %}
+  {{ form.non_field_errors }}
+
+  <div class="mb-3">
+    <label class="form-label">Estudiante</label>
+    {{ form.student }}
+  </div>
+
+  <div class="mb-3">
+    <label class="form-label">Psicólogo</label>
+    {{ form.psychologist }}
+  </div>
+
+  <div class="mb-3">
+    <label class="form-label">Motivo / razón de canalización</label>
+    {{ form.reason }}
+  </div>
+
+  <div class="row">
+    <div class="col-md-6 mb-3">
+      <label class="form-label">Rendimiento académico</label>
+      {{ form.performance_level }}
+    </div>
+    <div class="col-md-6 mb-3">
+      <label class="form-label">Nivel de riesgo</label>
+      {{ form.risk_level }}
+    </div>
+  </div>
+
+  <p class="text-muted mb-3">
+    <i class="bi bi-info-circle"></i>
+    La fecha y hora de la sesión serán definidas posteriormente por el psicólogo asignado.
+  </p>
+
+  <button type="submit" class="btn btn-primary">
+    <i class="bi bi-heart-pulse me-1"></i> Canalizar estudiante
+  </button>
+  <a href="{% url 'tutoring' %}" class="btn btn-outline-secondary ms-2">Cancelar</a>
+</form>
+{% endblock %}

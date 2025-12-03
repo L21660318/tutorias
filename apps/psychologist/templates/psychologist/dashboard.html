@@ -233,11 +233,11 @@
             .main-container {
                 padding: 1rem 0;
             }
-            
+
             .dashboard-card {
                 padding: 1rem;
             }
-            
+
             .stats-number {
                 font-size: 1.8rem;
             }
@@ -264,17 +264,17 @@
             background-color: var(--secondary-color);
             color: white;
         }
-        
+
         .user-avatar {
-        width: 35px;
-        height: 35px;
-        border-radius: 50%;
-        background-color: var(--secondary-color);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: white;
-        font-weight: bold;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            background-color: var(--secondary-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
         }
     </style>
 </head>
@@ -306,20 +306,6 @@
                 </li>
             </ul>
             <div class="d-flex align-items-center">
-                <div class="dropdown">
-                    <button class="btn btn-outline-light position-relative" type="button" id="notificationDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                        <i class="bi bi-bell-fill"></i>
-                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                            3
-                        </span>
-                    </button>
-                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="notificationDropdown">
-                        <li><h6 class="dropdown-header">Notificaciones</h6></li>
-                        <li><a class="dropdown-item" href="#">2 estudiantes requieren seguimiento urgente</a></li>
-                        <li><a class="dropdown-item" href="#">Nuevo reporte mensual listo</a></li>
-                        <li><a class="dropdown-item" href="#">Sesión grupal con 1° Semestre</a></li>
-                    </ul>
-                </div>
                 <div class="dropdown ms-3">
                     <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" data-bs-toggle="dropdown">
                         <div class="user-avatar me-2">
@@ -331,7 +317,11 @@
                         <li><a class="dropdown-item" href="#"><i class="bi bi-person me-2"></i>Mi perfil</a></li>
                         <li><a class="dropdown-item" href="#"><i class="bi bi-gear me-2"></i>Configuración</a></li>
                         <li><hr class="dropdown-divider"></li>
-                        <li><a class="dropdown-item" href="#"><i class="bi bi-box-arrow-right me-2"></i>Cerrar sesión</a></li>
+                        <li>
+                            <a class="dropdown-item" href="{% url 'logout' %}">
+                                <i class="bi bi-box-arrow-right me-2"></i>Cerrar sesión
+                            </a>
+                        </li>
                     </ul>
                 </div>
             </div>
@@ -347,11 +337,11 @@
             <div class="welcome-icon">
                 <i class="bi bi-shield-lock"></i>
             </div>
-            <h2>Bienvenida, Psic. Laura Martínez</h2>
+            <h2>Bienvenido(a), {{ request.user.get_full_name|default:request.user.username }}</h2>
             <p class="lead">Sistema Confidencial de Seguimiento Psicológico</p>
             <div class="alert alert-info mt-3">
                 <i class="bi bi-exclamation-triangle-fill me-2"></i>
-                <strong>Información Confidencial:</strong> Este sistema contiene datos sensibles de estudiantes. 
+                <strong>Información Confidencial:</strong> Este sistema contiene datos sensibles de estudiantes.
                 Todo acceso está registrado y monitoreado.
             </div>
         </div>
@@ -361,29 +351,29 @@
             <div class="col-md-3 col-6">
                 <div class="dashboard-card">
                     <div class="card-icon"><i class="bi bi-people"></i></div>
-                    <div class="stats-number">24</div>
+                    <div class="stats-number">{{ stats.students_count }}</div>
                     <div class="stats-label">Estudiantes en seguimiento</div>
                 </div>
             </div>
             <div class="col-md-3 col-6">
                 <div class="dashboard-card">
                     <div class="card-icon"><i class="bi bi-clock-history"></i></div>
-                    <div class="stats-number">68</div>
-                    <div class="stats-label">Sesiones este mes</div>
+                    <div class="stats-number">{{ stats.sessions_count }}</div>
+                    <div class="stats-label">Sesiones registradas</div>
                 </div>
             </div>
             <div class="col-md-3 col-6">
                 <div class="dashboard-card">
                     <div class="card-icon"><i class="bi bi-exclamation-triangle"></i></div>
-                    <div class="stats-number">5</div>
-                    <div class="stats-label">Casos prioritarios</div>
+                    <div class="stats-number">{{ stats.priority_cases }}</div>
+                    <div class="stats-label">Casos de riesgo alto</div>
                 </div>
             </div>
             <div class="col-md-3 col-6">
                 <div class="dashboard-card">
-                    <div class="card-icon"><i class="bi bi-graph-up-arrow"></i></div>
-                    <div class="stats-number">85%</div>
-                    <div class="stats-label">Mejoría reportada</div>
+                    <div class="card-icon"><i class="bi bi-calendar-minus"></i></div>
+                    <div class="stats-number">{{ stats.pending_schedule }}</div>
+                    <div class="stats-label">Pendientes de programar fecha</div>
                 </div>
             </div>
         </div>
@@ -401,12 +391,12 @@
                 </div>
             </div>
             <div class="col-md-4">
-                <div class="quick-action-card" data-bs-toggle="modal" data-bs-target="#studentModal">
+                <div class="quick-action-card">
                     <div class="action-icon">
-                        <i class="bi bi-person-plus"></i>
+                        <i class="bi bi-people"></i>
                     </div>
-                    <h5>Agregar Estudiante</h5>
-                    <p class="text-muted">Agregar nuevo estudiante al sistema</p>
+                    <h5>Estudiantes asignados</h5>
+                    <p class="text-muted">Total: {{ stats.students_count }}</p>
                 </div>
             </div>
             <div class="col-md-4">
@@ -420,9 +410,9 @@
             </div>
         </div>
 
-        <!-- Próximas sesiones y gráfico -->
-        <div class="row g-4">
-            <div class="col-lg-8">
+        <!-- Gráfico de desempeño -->
+        <div class="row g-4 mb-4">
+            <div class="col-12">
                 <div class="dashboard-card">
                     <h5 class="card-title">Distribución por Nivel de Desempeño</h5>
                     <div class="chart-container">
@@ -430,39 +420,124 @@
                     </div>
                 </div>
             </div>
-            <div class="col-lg-4">
+        </div>
+
+        <!-- Estudiantes asignados y próximas sesiones -->
+        <div class="row g-4">
+            <!-- Estudiantes asignados -->
+            <div class="col-lg-7">
+                <div class="dashboard-card" style="text-align:left;">
+                    <h5 class="card-title">Estudiantes asignados</h5>
+                    {% if assigned_students %}
+                        <div class="table-responsive">
+                            <table class="table table-sm align-middle">
+                                <thead>
+                                    <tr>
+                                        <th>Nombre</th>
+                                        <th>Carrera</th>
+                                        <th>Matrícula</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for st in assigned_students %}
+                                        <tr>
+                                            <td>{{ st.user.get_full_name|default:st.user.username }}</td>
+                                            <td>{{ st.career.name }}</td>
+                                            <td>{{ st.enrollment_id }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <p class="text-muted mb-0">Aún no tienes estudiantes canalizados a tu cargo.</p>
+                    {% endif %}
+                </div>
+            </div>
+                    <!-- NUEVO: Sesiones pendientes de programar -->
+                <div class="dashboard-card mt-4" style="text-align:left;">
+                    <h5 class="card-title">Sesiones pendientes de programar</h5>
+                    {% if pending_sessions %}
+                        <div class="table-responsive">
+                            <table class="table table-sm align-middle">
+                                <thead>
+                                    <tr>
+                                        <th>Estudiante</th>
+                                        <th>Motivo</th>
+                                        <th>Nivel de riesgo</th>
+                                        <th>Acción</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for s in pending_sessions %}
+                                        <tr>
+                                            <td>{{ s.student.user.get_full_name|default:s.student.user.username }}</td>
+                                            <td>{{ s.reason|truncatechars:60 }}</td>
+                                            <td>
+                                                {% if s.risk_level == 'high' %}
+                                                    <span class="badge bg-danger">Alto</span>
+                                                {% elif s.risk_level == 'medium' %}
+                                                    <span class="badge bg-warning text-dark">Medio</span>
+                                                {% else %}
+                                                    <span class="badge bg-success">Bajo</span>
+                                                {% endif %}
+                                            </td>
+                                            <td>
+                                                <a href="{% url 'psychologist_schedule_session' s.id %}"
+                                                class="btn btn-sm btn-primary">
+                                                    Asignar fecha y hora
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <p class="text-muted mb-0">No tienes sesiones pendientes de programar.</p>
+                    {% endif %}
+                </div>
+
+            <!-- Próximas sesiones -->
+            <div class="col-lg-5">
                 <div class="dashboard-card">
                     <h5 class="card-title">Próximas Sesiones</h5>
-                    
-                    <div class="session-card session-urgent">
-                        <div class="d-flex justify-content-between align-items-start mb-2">
-                            <h6 class="text-danger mb-0">Carlos Rodríguez</h6>
-                            <span class="risk-indicator risk-high"></span>
-                        </div>
-                        <p class="mb-1"><i class="bi bi-calendar me-2"></i>Hoy, 15:00 hrs</p>
-                        <p class="mb-2"><strong>Motivo:</strong> Crisis de ansiedad</p>
-                        <button class="btn btn-sm btn-outline-danger w-100">Ver Expediente</button>
-                    </div>
 
-                    <div class="session-card session-followup">
-                        <div class="d-flex justify-content-between align-items-start mb-2">
-                            <h6 class="text-warning mb-0">Ana García López</h6>
-                            <span class="risk-indicator risk-medium"></span>
-                        </div>
-                        <p class="mb-1"><i class="bi bi-calendar me-2"></i>Mañana, 11:00 hrs</p>
-                        <p class="mb-2"><strong>Motivo:</strong> Seguimiento académico</p>
-                        <button class="btn btn-sm btn-outline-warning w-100">Ver Expediente</button>
-                    </div>
-
-                    <div class="session-card">
-                        <div class="d-flex justify-content-between align-items-start mb-2">
-                            <h6 class="text-primary mb-0">Sesión Grupal</h6>
-                            <span class="risk-indicator risk-low"></span>
-                        </div>
-                        <p class="mb-1"><i class="bi bi-calendar me-2"></i>Viernes, 10:00 hrs</p>
-                        <p class="mb-2"><strong>Tema:</strong> Manejo del estrés</p>
-                        <button class="btn btn-sm btn-outline-primary w-100">Preparar Material</button>
-                    </div>
+                    {% if upcoming_sessions %}
+                        {% for s in upcoming_sessions %}
+                            <div class="session-card
+                                {% if s.session_type == 'urgent' %}session-urgent
+                                {% elif s.session_type == 'followup' %}session-followup{% endif %}">
+                                <div class="d-flex justify-content-between align-items-start mb-2">
+                                    <h6 class="mb-0">
+                                        {{ s.student.user.get_full_name|default:s.student.user.username }}
+                                    </h6>
+                                    <span class="risk-indicator
+                                        {% if s.risk_level == 'high' %}risk-high
+                                        {% elif s.risk_level == 'medium' %}risk-medium
+                                        {% else %}risk-low{% endif %}">
+                                    </span>
+                                </div>
+                                <p class="mb-1">
+                                    <i class="bi bi-calendar me-2"></i>
+                                    {% if s.session_date %}
+                                        {{ s.session_date|date:"d/m/Y" }}
+                                    {% else %}
+                                        Sin fecha
+                                    {% endif %}
+                                    {% if s.session_time %}
+                                        , {{ s.session_time|time:"H:i" }} hrs
+                                    {% endif %}
+                                </p>
+                                <p class="mb-2">
+                                    <strong>Motivo:</strong> {{ s.reason|truncatechars:80 }}
+                                </p>
+                                <button class="btn btn-sm btn-outline-primary w-100">Ver Expediente</button>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <p class="text-muted mb-0">No hay próximas sesiones programadas.</p>
+                    {% endif %}
                 </div>
             </div>
         </div>
@@ -485,7 +560,7 @@
                         <i class="bi bi-list-check"></i>
                     </div>
                     <h5>Casos Prioritarios</h5>
-                    <p class="text-muted">Revisar casos urgentes</p>
+                    <p class="text-muted">Casos de riesgo alto: {{ stats.priority_cases }}</p>
                 </div>
             </div>
             <div class="col-md-3 col-6">
@@ -533,46 +608,50 @@
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
+                <!-- Luego lo puedes cambiar a un form real de Django -->
                 <form>
                     <div class="mb-3">
                         <label for="sessionStudent" class="form-label">Estudiante</label>
                         <select class="form-select" id="sessionStudent" required>
                             <option selected disabled>Seleccionar estudiante</option>
-                            <option>Carlos Rodríguez - Ing. Sistemas - 3°</option>
-                            <option>Ana García López - Lic. Matemáticas - 2°</option>
-                            <option>Miguel Torres - Ing. Industrial - 4°</option>
-                            <option>Laura Mendoza - Ing. Sistemas - 1°</option>
+                            {% for st in assigned_students %}
+                                <option value="{{ st.id }}">
+                                    {{ st.user.get_full_name|default:st.user.username }} - {{ st.career.name }}
+                                </option>
+                            {% empty %}
+                                <option disabled>No tienes estudiantes asignados todavía</option>
+                            {% endfor %}
                         </select>
                     </div>
                     <div class="row">
                         <div class="col-md-6">
                             <div class="mb-3">
                                 <label for="sessionDate" class="form-label">Fecha</label>
-                                <input type="date" class="form-control" id="sessionDate" required>
+                                <input type="date" class="form-control" id="sessionDate">
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="mb-3">
                                 <label for="sessionTime" class="form-label">Hora</label>
-                                <input type="time" class="form-control" id="sessionTime" required>
+                                <input type="time" class="form-control" id="sessionTime">
                             </div>
                         </div>
                     </div>
                     <div class="mb-3">
                         <label for="sessionType" class="form-label">Tipo de Sesión</label>
-                        <select class="form-select" id="sessionType" required>
-                            <option>Individual</option>
-                            <option>Grupal</option>
-                            <option>Urgente</option>
-                            <option>Seguimiento</option>
+                        <select class="form-select" id="sessionType">
+                            <option value="individual">Individual</option>
+                            <option value="group">Grupal</option>
+                            <option value="urgent">Urgente</option>
+                            <option value="followup">Seguimiento</option>
                         </select>
                     </div>
                     <div class="mb-3">
                         <label for="sessionReason" class="form-label">Motivo de la Sesión</label>
-                        <textarea class="form-control" id="sessionReason" rows="3" required></textarea>
+                        <textarea class="form-control" id="sessionReason" rows="3"></textarea>
                     </div>
                     <div class="mb-3 form-check">
-                        <input type="checkbox" class="form-check-input" id="sessionConfidential">
+                        <input type="checkbox" class="form-check-input" id="sessionConfidential" checked>
                         <label class="form-check-label" for="sessionConfidential">
                             Marcar como información confidencial
                         </label>
@@ -630,7 +709,6 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Gráfico de desempeño
     const performanceCtx = document.getElementById('performanceChart').getContext('2d');
     const performanceChart = new Chart(performanceCtx, {
         type: 'doughnut',
@@ -660,8 +738,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // Simular carga de datos
-    console.log('Sistema de psicología cargado - Acceso autorizado: Psic. Laura Martínez');
+    console.log('Dashboard de psicología cargado para {{ request.user.username }}');
 });
 </script>
 </body>

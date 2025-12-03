@@ -1,0 +1,74 @@
+{% extends "tutoring/dashboard.html" %}
+{% load static %}
+
+{% block title %}Generar reporte de acción tutorial{% endblock %}
+
+{% block content %}
+<h4 class="section-title">Generar reporte de acción tutorial</h4>
+
+<div class="row">
+  <div class="col-lg-7">
+    <div class="card dashboard-card">
+      <div class="card-body">
+        <form method="post" novalidate>
+          {% csrf_token %}
+
+          <div class="mb-3">
+            <label class="form-label">Periodo</label>
+            {{ form.period }}
+            {{ form.period.errors }}
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Título del reporte</label>
+            {{ form.title }}
+            {{ form.title.errors }}
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Contenido del reporte</label>
+            {{ form.content }}
+            {{ form.content.errors }}
+            <div class="form-text">
+              Describe actividades realizadas, número de sesiones, problemáticas detectadas,
+              canalizaciones, resultados y recomendaciones.
+            </div>
+          </div>
+
+          <button type="submit" class="btn btn-primary">
+            <i class="bi bi-send-fill me-1"></i> Enviar al coordinador
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-5">
+    <div class="card dashboard-card">
+      <div class="card-body">
+        <h5 class="mb-3">
+          <i class="bi bi-info-circle me-1"></i> Detalles de envío
+        </h5>
+
+        {% if assignment and assignment.coordinator %}
+          <p class="mb-1">
+            <strong>Coordinador asignado:</strong><br>
+            {{ assignment.coordinator.get_full_name|default:assignment.coordinator.username }}
+          </p>
+        {% else %}
+          <div class="alert alert-warning">
+            Aún no tienes un coordinador asignado por tu Jefe de Departamento.
+            El reporte se guardará y se vinculará cuando se registre la asignación.
+          </div>
+        {% endif %}
+
+        <hr>
+        <p class="small text-muted mb-0">
+          Este reporte quedará registrado como parte de la evidencia de la acción tutorial.
+          El coordinador podrá revisarlo y marcarlo como revisado.
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

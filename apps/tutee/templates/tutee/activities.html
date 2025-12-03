@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Mis Actividades - PIT Tutorías</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <style>
+        :root {
+            --primary-color: #0F6097;
+            --secondary-color: #50A6E1;
+            --accent-color: #A2D3F5;
+            --light-color: #f8f9fa;
+            --dark-color: #343a40;
+        }
+        body {
+            background-color: var(--light-color);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .navbar {
+            background: linear-gradient(135deg, var(--primary-color) 0%, #0D4F7C 100%);
+        }
+        .navbar-brand, .nav-link {
+            color: white !important;
+        }
+        .page-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            padding: 1.5rem;
+            margin-top: 1.5rem;
+        }
+        .badge-plan {
+            background-color: #198754;
+        }
+        .badge-extra {
+            background-color: #ffc107;
+            color: #000;
+        }
+    </style>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-dark mb-3">
+    <div class="container">
+        <a class="navbar-brand" href="{% url 'tutoring' %}">
+            <i class="bi bi-mortarboard-fill me-2"></i>PIT Tutorías
+        </a>
+        <div class="collapse navbar-collapse">
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item">
+                    <a href="{% url 'tutee_dashboard' %}" class="nav-link">Mi Tutoría</a>
+                </li>
+                <li class="nav-item">
+                    <a href="{% url 'tutee_activities' %}" class="nav-link active">Mis Actividades</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="container mb-5">
+    <div class="page-card">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <div>
+                <h3 class="mb-0">Mis Actividades de Tutoría</h3>
+                <small class="text-muted">
+                    {{ student_name }}
+                    {% if has_group %} | Grupo: {{ group.name }}{% endif %}
+                </small>
+            </div>
+            <a href="{% url 'tutee_dashboard' %}" class="btn btn-outline-secondary btn-sm">
+                <i class="bi bi-arrow-left me-1"></i> Volver al dashboard
+            </a>
+        </div>
+
+        {% if not has_group %}
+            <div class="alert alert-warning">
+                Aún no tienes un grupo de tutoría asignado. Consulta con tu tutor o departamento académico.
+            </div>
+        {% else %}
+            {% if activities %}
+                <div class="table-responsive">
+                    <table class="table align-middle">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Fecha</th>
+                                <th>Tipo</th>
+                                <th>Actividad</th>
+                                <th>Estado</th>
+                                <th>Material</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for s in activities %}
+                                <tr>
+                                    <td>{{ forloop.counter }}</td>
+                                    <td>
+                                        {{ s.scheduled_date|date:"d/m/Y H:i" }}
+                                    </td>
+                                    <td>
+                                        {% if s.kind == 'PLAN' %}
+                                            <span class="badge badge-plan">Programa (12)</span>
+                                        {% else %}
+                                            <span class="badge badge-extra">Sesión extra</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <strong>{{ s.activity_title|default:"Sin título" }}</strong><br>
+                                        <small class="text-muted">
+                                            {{ s.activity_description|default:"Sin descripción" }}
+                                        </small>
+                                    </td>
+                                    <td>
+                                        {% if s.status == 'SCHEDULED' %}
+                                            <span class="badge bg-primary">Programada</span>
+                                        {% elif s.status == 'COMPLETED' %}
+                                            <span class="badge bg-success">Realizada</span>
+                                        {% elif s.status == 'CANCELED' %}
+                                            <span class="badge bg-danger">Cancelada</span>
+                                        {% elif s.status == 'NO_SHOW' %}
+                                            <span class="badge bg-warning text-dark">Inasistencia</span>
+                                        {% else %}
+                                            <span class="badge bg-secondary">-</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if s.activity_file %}
+                                            <a href="{{ s.activity_file.url }}" class="btn btn-sm btn-outline-primary" target="_blank">
+                                                <i class="bi bi-file-earmark-pdf me-1"></i> Ver PDF
+                                            </a>
+                                        {% else %}
+                                            <span class="text-muted">Sin material</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <p class="text-muted mb-0">
+                    Aún no hay actividades registradas para tu grupo en el período actual.
+                </p>
+            {% endif %}
+        {% endif %}
+    </div>
+</div>
+
+</body>
+</html>

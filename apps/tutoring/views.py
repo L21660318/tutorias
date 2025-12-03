@@ -1,15 +1,28 @@
 # apps/tutoring/views.py
 
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.utils import timezone
 from datetime import timedelta
 from django.contrib import messages
 from .forms import SessionForm
 
+from .models import Session, Alert, TuteeProfile, SessionAttendance
+from apps.academic.models import Period
 
-from .models import Session, Alert, TuteeProfile
+from .models import TutoringReport, TutorCoordinatorAssignment
+from .forms import TutoringReportForm
+from django.contrib.auth import get_user_model
 
+User = get_user_model()
+
+
+def is_tutor(user):
+    return getattr(user, 'role', None) == 'TUTOR'
+
+
+def is_coordac(user):
+    return getattr(user, 'role', None) == 'COORDAC'
 
 @login_required
 def dashboard_view(request):
@@ -27,9 +40,13 @@ def dashboard_view(request):
     # === TARJETAS ===
 
     # 1) Número de tutorados asignados a este tutor (aunque aún no tengan sesiones)
-    students_count = TuteeProfile.objects.filter(
-        assigned_tutor=user
-    ).count()
+    #   Antes: assigned_tutor=user  → ahora se usa la relación group__tutor
+    students_count = (
+        TuteeProfile.objects
+        .filter(group__tutor=user)
+        .distinct()
+        .count()
+    )
 
     # 2) Número de tutores activos: usuarios que aparecen como tutor en alguna sesión
     tutors_count = Session.objects.values("tutor").distinct().count()
@@ -56,10 +73,11 @@ def dashboard_view(request):
     )
 
     # Alertas NO resueltas para sus tutorados
+    # Antes: tutee__tutee_profile__assigned_tutor=user
     alerts_count = Alert.objects.filter(
-        tutee__tutee_profile__assigned_tutor=user,
+        tutee__tutee_profile__group__tutor=user,
         is_resolved=False,
-    ).count()
+    ).distinct().count()
 
     context = {
         "stats": {
@@ -90,7 +108,7 @@ def create_session(request):
             period = session.period
             sd = session.scheduled_date
 
-            # --- Regla 1: máximo 12 sesiones por tutorado y periodo ---
+            # --- Regla 1: máximo 12 sesiones por tutorado y período ---
             total_period = Session.objects.filter(
                 tutor=request.user,
                 tutee=tutee,
@@ -133,3 +151,135 @@ def create_session(request):
         form = SessionForm(tutor=request.user)
 
     return render(request, "tutoring/session_form.html", {"form": form})
+
+
+@login_required
+def tutoring_session_detail(request, pk):
+    """
+    Vista para que el tutor abra una sesión, vea el grupo y pase lista.
+    """
+    user = request.user
+
+    # Solo tutores (o staff) pueden entrar
+    if getattr(user, "role", None) != "TUTOR" and not user.is_staff:
+        messages.error(request, "No tienes permisos para acceder a esta sesión.")
+        return redirect("/")
+
+    session = get_object_or_404(Session, pk=pk, tutor=user)
+
+    if not session.group:
+        messages.error(request, "Esta sesión no tiene un grupo asociado.")
+        return redirect("/tutoring/")
+
+    group = session.group
+
+    # Alumnos del grupo
+    students = (
+        TuteeProfile.objects
+        .filter(group=group)
+        .select_related("user", "career")
+        .order_by("user__last_name", "user__first_name")
+    )
+
+    # Asistencias ya registradas (para prellenar)
+    existing_attendance = {
+        att.tutee_id: att.status
+        for att in SessionAttendance.objects.filter(session=session)
+    }
+
+    if request.method == "POST":
+        for t in students:
+            status_value = request.POST.get(f"status_{t.id}")
+            notes_value = request.POST.get(f"notes_{t.id}", "").strip()
+
+            if not status_value:
+                continue
+
+            attendance, created = SessionAttendance.objects.get_or_create(
+                session=session,
+                tutee=t,
+            )
+            attendance.status = status_value
+            attendance.notes = notes_value
+            attendance.save()
+
+        # marcar la sesión como realizada
+        session.status = Session.Status.COMPLETED
+        session.save()
+
+        messages.success(request, "Asistencia guardada correctamente.")
+        return redirect("tutoring")
+
+    context = {
+        "session": session,
+        "group": group,
+        "students": students,
+        "existing_attendance": existing_attendance,
+    }
+    return render(request, "tutoring/session_detail.html", context)
+
+@login_required
+def tutor_report_create(request):
+    if not is_tutor(request.user):
+        messages.error(request, "No tienes permisos para generar reportes de tutoría.")
+        return redirect('home')
+
+    # Buscamos su coordinador asignado
+    assignment = TutorCoordinatorAssignment.objects.filter(
+        tutor=request.user
+    ).select_related('coordinator').first()
+
+    if not assignment:
+        messages.warning(
+            request,
+            "Aún no tienes un coordinador asignado. El reporte se guardará sin destinatario hasta que el Jefe de Departamento te asigne uno."
+        )
+
+    if request.method == 'POST':
+        form = TutoringReportForm(request.POST)
+        if form.is_valid():
+            report = form.save(commit=False)
+            report.tutor = request.user
+            # El save() del modelo intentará asignar coordinator automáticamente
+            report.status = 'SENT'
+            report.save()
+            messages.success(
+                request,
+                "El reporte ha sido generado y enviado al coordinador asignado."
+            )
+            return redirect('tutor_report_list')
+    else:
+        form = TutoringReportForm()
+
+    context = {
+        'form': form,
+        'assignment': assignment,
+    }
+    return render(request, 'tutoring/tutor_report_form.html', context)
+
+
+@login_required
+def tutor_report_list(request):
+    if not is_tutor(request.user):
+        messages.error(request, "No tienes permisos para ver estos reportes.")
+        return redirect('home')
+
+    reports = TutoringReport.objects.filter(tutor=request.user).select_related('coordinator')
+    return render(request, 'tutoring/tutor_report_list.html', {
+        'reports': reports,
+    })
+
+
+@login_required
+def coordinator_report_inbox(request):
+    if not is_coordac(request.user):
+        messages.error(request, "Solo los coordinadores académicos pueden ver esta sección.")
+        return redirect('home')
+
+    reports = TutoringReport.objects.filter(
+        coordinator=request.user
+    ).select_related('tutor')
+
+    return render(request, 'tutoring/coordinator_report_inbox.html', {
+        'reports': reports,
+    })

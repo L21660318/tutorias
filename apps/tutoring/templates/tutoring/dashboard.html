@@ -340,19 +340,19 @@
         <div class="col-md-3 col-6 mb-3">
           <a href="/alerts/" class="quick-action-btn action-2">
             <i class="bi bi-exclamation-triangle"></i>
-            <div>Ver Alertas <span class="badge bg-danger">3</span></div>
+            <div>Ver Alertas <span class="badge bg-danger">{{ alerts_count }}</span></div>
           </a>
         </div>
         <div class="col-md-3 col-6 mb-3">
-          <a href="/reports/generate/" class="quick-action-btn action-3">
+          <a href="{% url 'tutor_report_create' %}" class="quick-action-btn action-3">
             <i class="bi bi-file-earmark-text"></i>
             <div>Generar Reporte</div>
           </a>
         </div>
         <div class="col-md-3 col-6 mb-3">
-          <a href="/academic/students/" class="quick-action-btn action-4">
-            <i class="bi bi-person-plus"></i>
-            <div>Agregar Tutorado</div>
+          <a href="{% url 'psychology_assign_student' %}" class="quick-action-btn action-4">
+            <i class="bi bi-heart-pulse"></i>
+            <div>Asignar a Psicólogo</div>
           </a>
         </div>
       </div>
@@ -417,34 +417,61 @@
                   <thead>
                     <tr>
                       <th>Fecha</th>
-                      <th>Estudiante</th>
+                      <th>Estudiante / Grupo</th>
                       <th>Tutor</th>
                       <th>Tipo</th>
                       <th>Estado</th>
+                      <th>Acciones</th>
                     </tr>
                   </thead>
                   <tbody>
                     {% for s in recent_sessions %}
                       <tr>
-                        <td>{{ s.date|date:"d/m/Y" }}</td>
-                        <td>{{ s.student.get_full_name|default:s.student.username }}</td>
+                        {# Fecha programada #}
+                        <td>{{ s.scheduled_date|date:"d/m/Y H:i" }}</td>
+
+                        {# Estudiante (si es sesión individual) o nombre del grupo si no hay tutee #}
+                        <td>
+                          {% if s.tutee %}
+                            {{ s.tutee.get_full_name|default:s.tutee.username }}
+                          {% elif s.group %}
+                            {{ s.group.name }}
+                          {% else %}
+                            -
+                          {% endif %}
+                        </td>
+
+                        {# Tutor #}
                         <td>{{ s.tutor.get_full_name|default:s.tutor.username }}</td>
-                        <td>{{ s.session_type }}</td>
+
+                        {# Tipo de sesión (usa las choices: PLAN / EXTRA) #}
+                        <td>{{ s.get_kind_display }}</td>
+
+                        {# Estado de la sesión (usa las choices de Status) #}
                         <td>
                           {% if s.status == "COMPLETED" %}
                             <span class="badge bg-success">Completada</span>
-                          {% elif s.status == "PENDING" %}
-                            <span class="badge bg-warning text-dark">Pendiente</span>
-                          {% elif s.status == "CANCELLED" %}
+                          {% elif s.status == "SCHEDULED" %}
+                            <span class="badge bg-warning text-dark">Programada</span>
+                          {% elif s.status == "CANCELED" %}
                             <span class="badge bg-danger">Cancelada</span>
+                          {% elif s.status == "NO_SHOW" %}
+                            <span class="badge bg-secondary">Inasistencia</span>
                           {% else %}
-                            <span class="badge bg-secondary">{{ s.status }}</span>
+                            <span class="badge bg-light text-dark">{{ s.status }}</span>
                           {% endif %}
+                        </td>
+
+                        <td>
+                          <a href="/sessions/{{ s.id }}/"
+                            class="btn btn-sm btn-outline-primary">
+                            <i class="bi bi-clipboard-check me-1"></i> Pasar lista
+                          </a>
                         </td>
                       </tr>
                     {% empty %}
                       <tr>
-                        <td colspan="5" class="text-center text-muted">
+                        <td colspan="6" class="text-center text-muted">
                           No hay sesiones registradas recientemente.
                         </td>
                       </tr>
@@ -486,7 +513,10 @@
     function updateDateTime() {
       const now = new Date();
       const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-      document.getElementById('current-date').textContent = now.toLocaleDateString('es-ES', options);
+      const el = document.getElementById('current-date');
+      if (el) {
+        el.textContent = now.toLocaleDateString('es-ES', options);
+      }
     }
     setInterval(updateDateTime, 60000);
     updateDateTime();

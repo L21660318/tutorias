@@ -1,0 +1,63 @@
+{% extends "tutoring/dashboard.html" %}
+{% load static %}
+
+{% block title %}Mis reportes de acción tutorial{% endblock %}
+
+{% block content %}
+<h4 class="section-title">Mis reportes de acción tutorial</h4>
+
+<div class="mb-3 text-end">
+  <a href="{% url 'tutor_report_create' %}" class="btn btn-primary">
+    <i class="bi bi-file-earmark-plus me-1"></i> Nuevo reporte
+  </a>
+</div>
+
+<div class="card dashboard-card">
+  <div class="card-body">
+    {% if reports %}
+      <div class="table-responsive">
+        <table class="table table-hover align-middle">
+          <thead>
+            <tr>
+              <th>Fecha</th>
+              <th>Periodo</th>
+              <th>Título</th>
+              <th>Coordinador</th>
+              <th>Estado</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for r in reports %}
+              <tr>
+                <td>{{ r.created_at|date:"d/m/Y H:i" }}</td>
+                <td>{{ r.period }}</td>
+                <td>{{ r.title }}</td>
+                <td>
+                  {% if r.coordinator %}
+                    {{ r.coordinator.get_full_name|default:r.coordinator.username }}
+                  {% else %}
+                    <span class="text-muted">Sin asignar</span>
+                  {% endif %}
+                </td>
+                <td>
+                  {% if r.status == "SENT" %}
+                    <span class="badge bg-info text-dark">Enviado</span>
+                  {% elif r.status == "REVIEWED" %}
+                    <span class="badge bg-success">Revisado</span>
+                  {% elif r.status == "RETURNED" %}
+                    <span class="badge bg-warning text-dark">Devuelto</span>
+                  {% endif %}
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% else %}
+      <p class="text-muted mb-0">
+        Aún no has generado reportes de acción tutorial.
+      </p>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

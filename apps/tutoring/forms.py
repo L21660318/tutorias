@@ -4,7 +4,8 @@ from django import forms
 from django.contrib.auth import get_user_model
 
 from .models import Session, TuteeProfile
-
+from .models import TutorCoordinatorAssignment
+from .models import TutoringReport
 User = get_user_model()
 
 
@@ -30,3 +31,46 @@ class SessionForm(forms.ModelForm):
             self.fields["tutee"].queryset = User.objects.filter(
                 tutee_profile__assigned_tutor=tutor
             )
+
+class AssignTutorCoordinatorForm(forms.ModelForm):
+    class Meta:
+        model = TutorCoordinatorAssignment
+        fields = ['tutor', 'coordinator']
+
+    def __init__(self, *args, **kwargs):
+        jefe_depto = kwargs.pop('jefe_depto', None)  # por si luego quieres filtrar por departamento
+        super().__init__(*args, **kwargs)
+
+        # Filtramos por rol
+        self.fields['tutor'].queryset = User.objects.filter(role='TUTOR').order_by('first_name', 'last_name')
+        self.fields['coordinator'].queryset = User.objects.filter(role='COORDINADOR').order_by('first_name', 'last_name')
+
+        self.fields['tutor'].label = "Tutor"
+        self.fields['coordinator'].label = "Coordinador(a)"
+
+
+class TutoringReportForm(forms.ModelForm):
+    class Meta:
+        model = TutoringReport
+        # Tutor y coordinator los llenamos en la vista; aquí solo lo que el tutor escribe
+        fields = ['period', 'title', 'content']
+        widgets = {
+            'period': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Ej. Enero - Junio 2025'
+            }),
+            'title': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Ej. Informe semestral de acción tutorial'
+            }),
+            'content': forms.Textarea(attrs={
+                'class': 'form-control',
+                'rows': 6,
+                'placeholder': 'Describa las actividades, avances, problemáticas y resultados de la acción tutorial...'
+            }),
+        }
+        labels = {
+            'period': 'Periodo',
+            'title': 'Título del reporte',
+            'content': 'Contenido del reporte',
+        }
