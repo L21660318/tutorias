@@ -1,0 +1,92 @@
+{# apps/tutoring/templates/tutoring/interview_form.html #}
+{% extends "tutoring/dashboard.html" %}
+{% load static %}
+
+{% block title %}
+  {% if is_edit %}Editar Entrevista{% else %}Programar Entrevista{% endif %} - SIA Tutorías
+{% endblock %}
+
+{% block content %}
+<h4 class="section-title">
+  {% if is_edit %}Editar entrevista con alumno{% else %}Programar nueva entrevista{% endif %}
+</h4>
+
+<div class="row">
+  <div class="col-lg-7">
+    <div class="dashboard-card card">
+      <div class="card-body">
+        <form method="post" novalidate>
+          {% csrf_token %}
+
+          <div class="mb-3">
+            <label class="form-label">Alumno</label>
+            {{ form.tutee }}
+            {{ form.tutee.errors }}
+            <div class="form-text">
+              Solo aparecen los alumnos asignados a tus grupos de tutoría.
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Fecha y hora de la entrevista</label>
+            {{ form.scheduled_date }}
+            {{ form.scheduled_date.errors }}
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Tema / motivo</label>
+            {{ form.topic }}
+            {{ form.topic.errors }}
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Informe / resumen de la entrevista</label>
+            {{ form.summary }}
+            {{ form.summary.errors }}
+          </div>
+
+          {% if is_edit %}
+            <div class="form-check mb-3">
+              <input class="form-check-input" type="checkbox" value="1" id="markCompleted" name="mark_completed"
+                     {% if interview.status == "COMPLETED" %}checked{% endif %}>
+              <label class="form-check-label" for="markCompleted">
+                Marcar como entrevista realizada
+              </label>
+            </div>
+          {% endif %}
+
+          <button type="submit" class="btn btn-primary">
+            <i class="bi bi-save me-1"></i>
+            {% if is_edit %}Guardar cambios{% else %}Guardar entrevista{% endif %}
+          </button>
+
+          <a href="{% url 'interview_list' %}" class="btn btn-outline-secondary ms-2">
+            Cancelar
+          </a>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  {% if is_edit %}
+  <div class="col-lg-5 mt-4 mt-lg-0">
+    <div class="dashboard-card card">
+      <div class="card-body">
+        <h5 class="mb-3"><i class="bi bi-info-circle me-1"></i> Detalle</h5>
+        <p><strong>Alumno:</strong> {{ interview.tutee.get_full_name|default:interview.tutee.username }}</p>
+        <p><strong>Fecha programada:</strong> {{ interview.scheduled_date|date:"d/m/Y H:i" }}</p>
+        <p><strong>Estado actual:</strong>
+          {% if interview.status == "SCHEDULED" %}
+            <span class="badge bg-warning text-dark">Programada</span>
+          {% elif interview.status == "COMPLETED" %}
+            <span class="badge bg-success">Realizada</span>
+          {% elif interview.status == "CANCELED" %}
+            <span class="badge bg-danger">Cancelada</span>
+          {% endif %}
+        </p>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

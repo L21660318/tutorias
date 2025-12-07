@@ -1,745 +1,795 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Psicología - Sistema Confidencial</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <style>
-        :root {
-            --primary-color: #0F6097;
-            --primary-light: #3A8BC2;
-            --secondary-color: #50A6E1;
-            --accent-color: #A2D3F5;
-            --light-color: #f8f9fa;
-            --light-gray: #f0f2f5;
-            --dark-color: #343a40;
-            --success-color: #28a745;
-            --warning-color: #ffc107;
-            --danger-color: #dc3545;
-            --border-radius: 12px;
-            --box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-            --transition: all 0.3s ease;
-        }
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}SIA Tutorías - Psicología{% endblock %}</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    :root {
+      --primary-color: #0F6097;
+      --secondary-color: #50A6E1;
+      --accent-color: #A2D3F5;
+      --light-color: #f8f9fa;
+      --dark-color: #343a40;
+      --success-color: #28a745;
+      --warning-color: #ffc107;
+      --danger-color: #dc3545;
+      --info-color: #17a2b8;
+      --purple-color: #6f42c1;
+      --teal-color: #20c997;
+    }
 
-        body {
-            background-color: var(--light-gray);
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-            margin: 0;
-            line-height: 1.6;
-        }
+    body {
+      background-color: #f5f7fa;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      margin: 0;
+    }
 
-        .navbar {
-            background: linear-gradient(135deg, var(--primary-color) 0%, #0D4F7C 100%);
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            padding: 0.8rem 0;
-        }
+    .navbar {
+      background: linear-gradient(135deg, var(--primary-color) 0%, #0D4F7C 100%);
+      box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+      padding: 0.8rem 0;
+    }
 
-        .navbar-brand {
-            font-weight: 700;
-            font-size: 1.4rem;
-            display: flex;
-            align-items: center;
-            color: white;
-        }
+    .navbar-brand {
+      font-weight: 700;
+      font-size: 1.4rem;
+      display: flex;
+      align-items: center;
+      letter-spacing: 1px;
+      color: #fff;
+    }
 
-        .navbar-brand i {
-            margin-right: 10px;
-            font-size: 1.6rem;
-        }
+    .navbar-brand i {
+      margin-right: 10px;
+      font-size: 1.6rem;
+    }
 
-        .main-container {
-            flex: 1;
-            padding: 2rem 0;
-        }
+    .navbar-brand span.logo-text-main {
+      text-transform: uppercase;
+      margin-right: 6px;
+    }
 
-        .welcome-card {
-            background: white;
-            border-radius: var(--border-radius);
-            box-shadow: var(--box-shadow);
-            padding: 2rem;
-            text-align: center;
-            margin-bottom: 2rem;
-        }
+    .navbar-brand span.logo-text-sub {
+      font-size: 0.85rem;
+      opacity: 0.9;
+    }
 
-        .welcome-icon {
-            font-size: 3rem;
-            color: var(--primary-color);
-            margin-bottom: 1rem;
-        }
+    .nav-link {
+      font-weight: 500;
+      padding: 0.5rem 1rem !important;
+      border-radius: 4px;
+      margin: 0 2px;
+      transition: all 0.3s ease;
+      color: #fff;
+    }
 
-        .dashboard-card {
-            background: white;
-            border-radius: var(--border-radius);
-            box-shadow: var(--box-shadow);
-            transition: var(--transition);
-            height: 100%;
-            border: none;
-            overflow: hidden;
-            padding: 1.5rem;
-            text-align: center;
-        }
+    .nav-link:hover {
+      background-color: rgba(255, 255, 255, 0.15);
+      transform: translateY(-2px);
+      color: #fff;
+    }
 
-        .dashboard-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
-        }
+    .nav-link.active {
+      background-color: rgba(255, 255, 255, 0.2);
+      font-weight: 600;
+    }
 
-        .card-icon {
-            font-size: 2.5rem;
-            color: var(--primary-color);
-            margin-bottom: 1rem;
-        }
+    .user-dropdown {
+      margin-left: 15px;
+    }
 
-        .card-title {
-            font-weight: 700;
-            color: var(--primary-color);
-            margin-bottom: 1rem;
-            font-size: 1.1rem;
-        }
+    .user-avatar {
+      width: 35px;
+      height: 35px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 30%, var(--accent-color), var(--secondary-color));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: bold;
+      box-shadow: 0 0 0 2px rgba(255,255,255,0.4);
+    }
 
-        .stats-number {
-            font-size: 2.2rem;
-            font-weight: 700;
-            color: var(--dark-color);
-            margin: 0.5rem 0;
-        }
+    .role-badge {
+      font-size: 0.7rem;
+      border-radius: 999px;
+      padding: 0.15rem 0.6rem;
+      border: 1px solid rgba(0,0,0,0.08);
+    }
 
-        .stats-label {
-            color: #666;
-            font-weight: 500;
-            font-size: 0.9rem;
-        }
+    .main-container {
+      flex: 1;
+      padding: 2rem 0;
+    }
 
-        .quick-action-card {
-            background: white;
-            border-radius: var(--border-radius);
-            box-shadow: var(--box-shadow);
-            padding: 1.5rem;
-            text-align: center;
-            transition: var(--transition);
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-        }
+    .dashboard-card {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      height: 100%;
+      border: none;
+      overflow: hidden;
+    }
 
-        .quick-action-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
-            background-color: rgba(15, 96, 151, 0.05);
-        }
+    .dashboard-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+    }
 
-        .action-icon {
-            font-size: 2.5rem;
-            color: var(--primary-color);
-            margin-bottom: 1rem;
-        }
+    .card-icon {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+    }
 
-        .footer {
-            background-color: var(--primary-color);
-            color: white;
-            padding: 1.5rem 0;
-            margin-top: auto;
-            text-align: center;
-        }
+    .stats-number {
+      font-size: 2rem;
+      font-weight: 700;
+    }
 
-        .confidential-badge {
-            background-color: var(--danger-color);
-            color: white;
-            padding: 0.3rem 0.7rem;
-            border-radius: 20px;
-            font-size: 0.75rem;
-            font-weight: 600;
-        }
+    .stats-label {
+      font-weight: 500;
+    }
 
-        .session-card {
-            background: white;
-            border-radius: var(--border-radius);
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-            padding: 1.2rem;
-            margin-bottom: 1rem;
-            transition: var(--transition);
-            border-left: 4px solid var(--primary-color);
-        }
+    .quick-action-btn {
+      background: white;
+      border: 1px solid #e9ecef;
+      border-radius: 10px;
+      padding: 1.2rem 0.5rem;
+      text-align: center;
+      transition: all 0.3s ease;
+      color: var(--dark-color);
+      text-decoration: none;
+      display: block;
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+    }
+    .quick-actions-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1.2rem;
+    }
 
-        .session-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-        }
 
-        .session-urgent {
-            border-left-color: var(--danger-color);
-        }
+    .quick-action-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      text-decoration: none;
+      color: var(--dark-color);
+    }
 
-        .session-followup {
-            border-left-color: var(--warning-color);
-        }
+    .quick-action-btn i {
+      font-size: 1.8rem;
+      margin-bottom: 0.5rem;
+    }
 
-        .risk-indicator {
-            display: inline-block;
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            margin-left: 5px;
-        }
+    .action-1 {
+      border-top: 4px solid var(--info-color);
+    }
+    .action-1 i {
+      color: var(--info-color);
+    }
 
-        .risk-high {
-            background-color: var(--danger-color);
-        }
+    .action-2 {
+      border-top: 4px solid var(--danger-color);
+    }
+    .action-2 i {
+      color: var(--danger-color);
+    }
 
-        .risk-medium {
-            background-color: var(--warning-color);
-        }
+    .action-3 {
+      border-top: 4px solid var(--purple-color);
+    }
+    .action-3 i {
+      color: var(--purple-color);
+    }
 
-        .risk-low {
-            background-color: var(--success-color);
-        }
+    .action-4 {
+      border-top: 4px solid var(--teal-color);
+    }
+    .action-4 i {
+      color: var(--teal-color);
+    }
 
-        .btn-primary-custom {
-            background-color: var(--primary-color);
-            border-color: var(--primary-color);
-            border-radius: 8px;
-            font-weight: 500;
-            padding: 0.5rem 1.2rem;
-            transition: var(--transition);
-        }
+    .stat-1 .card-icon {
+      color: var(--info-color);
+    }
+    .stat-1 .stats-number {
+      color: var(--info-color);
+    }
 
-        .btn-primary-custom:hover {
-            background-color: #0D4F7C;
-            border-color: #0D4F7C;
-            transform: translateY(-2px);
-        }
+    .stat-2 .card-icon {
+      color: var(--success-color);
+    }
+    .stat-2 .stats-number {
+      color: var(--success-color);
+    }
 
-        .modal-header-custom {
-            background: linear-gradient(135deg, var(--primary-color) 0%, #0D4F7C 100%);
-            color: white;
-            border-radius: var(--border-radius) var(--border-radius) 0 0;
-        }
+    .stat-3 .card-icon {
+      color: var(--warning-color);
+    }
+    .stat-3 .stats-number {
+      color: var(--warning-color);
+    }
 
-        .chart-container {
-            position: relative;
-            height: 250px;
-            width: 100%;
-        }
+    .stat-4 .card-icon {
+      color: var(--purple-color);
+    }
+    .stat-4 .stats-number {
+      color: var(--purple-color);
+    }
 
-        @media (max-width: 768px) {
-            .main-container {
-                padding: 1rem 0;
-            }
+    .section-title {
+      color: var(--primary-color);
+      font-weight: 600;
+      margin-bottom: 1.5rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 2px solid var(--accent-color);
+    }
 
-            .dashboard-card {
-                padding: 1rem;
-            }
+    /* Psicología específico */
+    .session-card {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+      padding: 1.2rem;
+      margin-bottom: 1rem;
+      transition: all 0.3s ease;
+      border-left: 4px solid var(--primary-color);
+    }
 
-            .stats-number {
-                font-size: 1.8rem;
-            }
-        }
+    .session-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
 
-        .section-title {
-            color: var(--primary-color);
-            font-weight: 700;
-            margin-bottom: 1.5rem;
-            padding-bottom: 0.5rem;
-            border-bottom: 2px solid var(--accent-color);
-        }
+    .session-urgent {
+      border-left-color: var(--danger-color);
+    }
 
-        .nav-link {
-            font-weight: 500;
-            padding: 0.5rem 1rem !important;
-            border-radius: 4px;
-            margin: 0 2px;
-            color: white;
-            transition: var(--transition);
-        }
+    .session-followup {
+      border-left-color: var(--warning-color);
+    }
 
-        .nav-link:hover, .nav-link.active {
-            background-color: var(--secondary-color);
-            color: white;
-        }
+    .risk-indicator {
+      display: inline-block;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      margin-left: 5px;
+    }
 
-        .user-avatar {
-            width: 35px;
-            height: 35px;
-            border-radius: 50%;
-            background-color: var(--secondary-color);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: bold;
-        }
-    </style>
+    .risk-high {
+      background-color: var(--danger-color);
+    }
+
+    .risk-medium {
+      background-color: var(--warning-color);
+    }
+
+    .risk-low {
+      background-color: var(--success-color);
+    }
+
+    .confidential-badge {
+      background-color: var(--danger-color);
+      color: white;
+      padding: 0.3rem 0.7rem;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    .chart-container {
+      position: relative;
+      height: 260px;
+      width: 100%;
+    }
+
+    .footer {
+      background-color: var(--dark-color);
+      color: white;
+      padding: 1.5rem 0;
+      margin-top: auto;
+    }
+
+    @media (max-width: 768px) {
+      .navbar-brand span.logo-text-sub {
+        display: none;
+      }
+      .navbar-brand i {
+        margin-right: 0;
+        font-size: 1.8rem;
+      }
+    }
+  </style>
 </head>
 <body>
-
-<!-- Navbar -->
-<nav class="navbar navbar-expand-lg navbar-dark">
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-dark">
     <div class="container">
-        <a class="navbar-brand" href="#">
-            <i class="bi bi-heart-pulse"></i>
-            Departamento de Psicología
-        </a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarContent">
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                <li class="nav-item">
-                    <a class="nav-link active" href="#"><i class="bi bi-house-door me-1"></i> Inicio</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#"><i class="bi bi-people me-1"></i> Estudiantes</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#"><i class="bi bi-calendar-check me-1"></i> Sesiones</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#"><i class="bi bi-graph-up me-1"></i> Reportes</a>
-                </li>
+      <a class="navbar-brand" href="#">
+        <i class="bi bi-heart-pulse"></i>
+        <span class="logo-text-main">SIA</span>
+        <span class="logo-text-sub">Psicología</span>
+      </a>
+
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navbarContent">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link active" href="#"><i class="bi bi-house-door me-1"></i> Inicio</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#"><i class="bi bi-people me-1"></i> Estudiantes</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#"><i class="bi bi-calendar-check me-1"></i> Sesiones</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#"><i class="bi bi-graph-up me-1"></i> Reportes</a>
+          </li>
+        </ul>
+
+        <div class="d-flex align-items-center">
+          <div class="user-dropdown dropdown">
+            <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" data-bs-toggle="dropdown">
+              <div class="user-avatar me-2">
+                {{ request.user.first_name|slice:":1" }}{{ request.user.last_name|slice:":1" }}
+              </div>
+              <div class="d-flex flex-column align-items-start">
+                <span class="fw-semibold">{{ request.user.username }}</span>
+                <span class="badge bg-light text-dark role-badge">
+                  {{ request.user.get_role_display|default:"Psicólogo" }}
+                </span>
+              </div>
+            </a>
+            <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end">
+              <li><a class="dropdown-item" href="#"><i class="bi bi-person me-2"></i> Mi Perfil</a></li>
+              <li><a class="dropdown-item" href="#"><i class="bi bi-gear me-2"></i> Configuración</a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li>
+                <a class="dropdown-item" href="{% url 'logout' %}">
+                  <i class="bi bi-box-arrow-right me-2"></i> Cerrar Sesión
+                </a>
+              </li>
             </ul>
-            <div class="d-flex align-items-center">
-                <div class="dropdown ms-3">
-                    <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" data-bs-toggle="dropdown">
-                        <div class="user-avatar me-2">
-                            {{ request.user.first_name|slice:":1" }}{{ request.user.last_name|slice:":1" }}
-                        </div>
-                        <span>{{ request.user.username }}</span>
-                    </a>
-                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
-                        <li><a class="dropdown-item" href="#"><i class="bi bi-person me-2"></i>Mi perfil</a></li>
-                        <li><a class="dropdown-item" href="#"><i class="bi bi-gear me-2"></i>Configuración</a></li>
-                        <li><hr class="dropdown-divider"></li>
-                        <li>
-                            <a class="dropdown-item" href="{% url 'logout' %}">
-                                <i class="bi bi-box-arrow-right me-2"></i>Cerrar sesión
+          </div>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <div class="main-container">
+    <div class="container">
+      <!-- Acciones Rápidas -->
+      <div class="row mb-4">
+        <div class="col-12">
+            <h4 class="section-title">Acciones Rápidas</h4>
+        </div>
+
+        <div class="col-12">
+            <div class="quick-actions-grid">
+            <button class="quick-action-btn action-1" data-bs-toggle="modal" data-bs-target="#sessionModal">
+                <i class="bi bi-journal-plus"></i>
+                <div>Registrar Sesión</div>
+            </button>
+
+            <a href="#" class="quick-action-btn action-2">
+                <i class="bi bi-people"></i>
+                <div>Estudiantes Asignados</div>
+            </a>
+
+            <button class="quick-action-btn action-3" data-bs-toggle="modal" data-bs-target="#reportModal">
+                <i class="bi bi-file-earmark-text"></i>
+                <div>Generar Reporte</div>
+            </button>
+
+            <a href="#" class="quick-action-btn action-4">
+                <i class="bi bi-calendar-week"></i>
+                <div>Ver Calendario</div>
+            </a>
+            </div>
+        </div>
+        </div>
+
+
+      <!-- Stats Dashboard -->
+      <div class="row mb-4">
+        <div class="col-md-3 col-6 mb-4">
+          <div class="dashboard-card card stat-1">
+            <div class="card-body text-center">
+              <div class="card-icon">
+                <i class="bi bi-people"></i>
+              </div>
+              <h3 class="stats-number">{{ stats.students_count }}</h3>
+              <p class="stats-label">Estudiantes en seguimiento</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3 col-6 mb-4">
+          <div class="dashboard-card card stat-2">
+            <div class="card-body text-center">
+              <div class="card-icon">
+                <i class="bi bi-clock-history"></i>
+              </div>
+              <h3 class="stats-number">{{ stats.sessions_count }}</h3>
+              <p class="stats-label">Sesiones registradas</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3 col-6 mb-4">
+          <div class="dashboard-card card stat-3">
+            <div class="card-body text-center">
+              <div class="card-icon">
+                <i class="bi bi-exclamation-triangle"></i>
+              </div>
+              <h3 class="stats-number">{{ stats.priority_cases }}</h3>
+              <p class="stats-label">Casos de riesgo alto</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3 col-6 mb-4">
+          <div class="dashboard-card card stat-4">
+            <div class="card-body text-center">
+              <div class="card-icon">
+                <i class="bi bi-calendar-minus"></i>
+              </div>
+              <h3 class="stats-number">{{ stats.pending_schedule }}</h3>
+              <p class="stats-label">Pendientes de programar</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Gráfico + Sesiones pendientes -->
+      <div class="row mb-4">
+        <div class="col-lg-6 mb-4">
+          <div class="dashboard-card card">
+            <div class="card-body">
+              <h5 class="section-title mb-3" style="border-bottom:none;">Distribución por nivel de desempeño</h5>
+              <div class="chart-container">
+                <canvas id="performanceChart"></canvas>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-lg-6 mb-4">
+          <div class="dashboard-card card">
+            <div class="card-body">
+              <h5 class="section-title mb-3" style="border-bottom:none;">Sesiones pendientes de programar</h5>
+              {% if pending_sessions %}
+                <div class="table-responsive">
+                  <table class="table table-sm align-middle">
+                    <thead>
+                      <tr>
+                        <th>Estudiante</th>
+                        <th>Motivo</th>
+                        <th>Riesgo</th>
+                        <th>Acción</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {% for s in pending_sessions %}
+                        <tr>
+                          <td>{{ s.student.user.get_full_name|default:s.student.user.username }}</td>
+                          <td>{{ s.reason|truncatechars:60 }}</td>
+                          <td>
+                            {% if s.risk_level == 'high' %}
+                              <span class="badge bg-danger">Alto</span>
+                            {% elif s.risk_level == 'medium' %}
+                              <span class="badge bg-warning text-dark">Medio</span>
+                            {% else %}
+                              <span class="badge bg-success">Bajo</span>
+                            {% endif %}
+                          </td>
+                          <td>
+                            <a href="{% url 'psychologist_schedule_session' s.id %}" class="btn btn-sm btn-primary">
+                              Asignar fecha y hora
                             </a>
-                        </li>
-                    </ul>
+                          </td>
+                        </tr>
+                      {% endfor %}
+                    </tbody>
+                  </table>
                 </div>
+              {% else %}
+                <p class="text-muted mb-0">No tienes sesiones pendientes de programar.</p>
+              {% endif %}
             </div>
+          </div>
         </div>
-    </div>
-</nav>
+      </div>
 
-<!-- Main Content -->
-<div class="main-container">
+      <!-- Estudiantes asignados + Próximas sesiones -->
+      <div class="row mb-4">
+        <div class="col-lg-7 mb-4">
+          <div class="dashboard-card card">
+            <div class="card-body">
+              <h5 class="section-title mb-3" style="border-bottom:none;">Estudiantes asignados</h5>
+              {% if assigned_students %}
+                <div class="table-responsive">
+                  <table class="table table-sm align-middle">
+                    <thead>
+                      <tr>
+                        <th>Nombre</th>
+                        <th>Carrera</th>
+                        <th>Matrícula</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {% for st in assigned_students %}
+                        <tr>
+                          <td>{{ st.user.get_full_name|default:st.user.username }}</td>
+                          <td>{{ st.career.name }}</td>
+                          <td>{{ st.enrollment_id }}</td>
+                        </tr>
+                      {% endfor %}
+                    </tbody>
+                  </table>
+                </div>
+              {% else %}
+                <p class="text-muted mb-0">Aún no tienes estudiantes canalizados a tu cargo.</p>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+
+        <div class="col-lg-5 mb-4">
+          <div class="dashboard-card card">
+            <div class="card-body">
+              <h5 class="section-title mb-3" style="border-bottom:none;">Próximas sesiones</h5>
+              {% if upcoming_sessions %}
+                {% for s in upcoming_sessions %}
+                  <div class="session-card
+                    {% if s.session_type == 'urgent' %}session-urgent
+                    {% elif s.session_type == 'followup' %}session-followup{% endif %}">
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                      <h6 class="mb-0">
+                        {{ s.student.user.get_full_name|default:s.student.user.username }}
+                      </h6>
+                      <span class="risk-indicator
+                        {% if s.risk_level == 'high' %}risk-high
+                        {% elif s.risk_level == 'medium' %}risk-medium
+                        {% else %}risk-low{% endif %}">
+                      </span>
+                    </div>
+                    <p class="mb-1">
+                      <i class="bi bi-calendar me-2"></i>
+                      {% if s.session_date %}
+                        {{ s.session_date|date:"d/m/Y" }}
+                      {% else %}
+                        Sin fecha
+                      {% endif %}
+                      {% if s.session_time %}
+                        , {{ s.session_time|time:"H:i" }} hrs
+                      {% endif %}
+                    </p>
+                    <p class="mb-2">
+                      <strong>Motivo:</strong> {{ s.reason|truncatechars:80 }}
+                    </p>
+                    <button class="btn btn-sm btn-outline-primary w-100">Ver expediente</button>
+                  </div>
+                {% endfor %}
+              {% else %}
+                <p class="text-muted mb-0">No hay próximas sesiones programadas.</p>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Más Acciones -->
+      <div class="row mb-4">
+        <div class="col-12">
+          <h4 class="section-title">Más acciones</h4>
+        </div>
+        <div class="col-md-3 col-6 mb-3">
+          <div class="quick-action-btn">
+            <i class="bi bi-list-check"></i>
+            <div>Casos prioritarios: {{ stats.priority_cases }}</div>
+          </div>
+        </div>
+        <div class="col-md-3 col-6 mb-3">
+          <div class="quick-action-btn">
+            <i class="bi bi-bar-chart"></i>
+            <div>Ver estadísticas</div>
+          </div>
+        </div>
+        <div class="col-md-3 col-6 mb-3">
+          <div class="quick-action-btn">
+            <i class="bi bi-shield-lock"></i>
+            <div>Políticas de confidencialidad</div>
+          </div>
+        </div>
+        <div class="col-md-3 col-6 mb-3">
+          <div class="quick-action-btn">
+            <i class="bi bi-gear"></i>
+            <div>Configuración</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="text-end mb-2">
+        <span class="confidential-badge">SISTEMA CONFIDENCIAL</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer">
     <div class="container">
-        <!-- Tarjeta de bienvenida -->
-        <div class="welcome-card">
-            <div class="welcome-icon">
-                <i class="bi bi-shield-lock"></i>
-            </div>
-            <h2>Bienvenido(a), {{ request.user.get_full_name|default:request.user.username }}</h2>
-            <p class="lead">Sistema Confidencial de Seguimiento Psicológico</p>
-            <div class="alert alert-info mt-3">
-                <i class="bi bi-exclamation-triangle-fill me-2"></i>
-                <strong>Información Confidencial:</strong> Este sistema contiene datos sensibles de estudiantes.
-                Todo acceso está registrado y monitoreado.
-            </div>
+      <div class="row">
+        <div class="col-md-6 text-center text-md-start">
+          <p class="mb-0">&copy; 2025 SIA Tutorías - Departamento de Psicología</p>
         </div>
-
-        <!-- Resumen rápido -->
-        <div class="row g-4 mb-4">
-            <div class="col-md-3 col-6">
-                <div class="dashboard-card">
-                    <div class="card-icon"><i class="bi bi-people"></i></div>
-                    <div class="stats-number">{{ stats.students_count }}</div>
-                    <div class="stats-label">Estudiantes en seguimiento</div>
-                </div>
-            </div>
-            <div class="col-md-3 col-6">
-                <div class="dashboard-card">
-                    <div class="card-icon"><i class="bi bi-clock-history"></i></div>
-                    <div class="stats-number">{{ stats.sessions_count }}</div>
-                    <div class="stats-label">Sesiones registradas</div>
-                </div>
-            </div>
-            <div class="col-md-3 col-6">
-                <div class="dashboard-card">
-                    <div class="card-icon"><i class="bi bi-exclamation-triangle"></i></div>
-                    <div class="stats-number">{{ stats.priority_cases }}</div>
-                    <div class="stats-label">Casos de riesgo alto</div>
-                </div>
-            </div>
-            <div class="col-md-3 col-6">
-                <div class="dashboard-card">
-                    <div class="card-icon"><i class="bi bi-calendar-minus"></i></div>
-                    <div class="stats-number">{{ stats.pending_schedule }}</div>
-                    <div class="stats-label">Pendientes de programar fecha</div>
-                </div>
-            </div>
+        <div class="col-md-6 text-center text-md-end">
+          <p class="mb-0">
+            <a href="/about/" class="text-white text-decoration-none me-3">Acerca de SIA</a>
+            <a href="/contact/" class="text-white text-decoration-none me-3">Contacto</a>
+            <a href="/privacy/" class="text-white text-decoration-none">Privacidad</a>
+          </p>
         </div>
-
-        <!-- Acciones principales -->
-        <h3 class="section-title">Acciones Principales</h3>
-        <div class="row g-4 mb-5">
-            <div class="col-md-4">
-                <div class="quick-action-card" data-bs-toggle="modal" data-bs-target="#sessionModal">
-                    <div class="action-icon">
-                        <i class="bi bi-journal-plus"></i>
-                    </div>
-                    <h5>Registrar Sesión</h5>
-                    <p class="text-muted">Registrar nueva sesión con estudiante</p>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="quick-action-card">
-                    <div class="action-icon">
-                        <i class="bi bi-people"></i>
-                    </div>
-                    <h5>Estudiantes asignados</h5>
-                    <p class="text-muted">Total: {{ stats.students_count }}</p>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="quick-action-card" data-bs-toggle="modal" data-bs-target="#reportModal">
-                    <div class="action-icon">
-                        <i class="bi bi-file-earmark-text"></i>
-                    </div>
-                    <h5>Generar Reporte</h5>
-                    <p class="text-muted">Crear reporte para Subdirector Académico</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- Gráfico de desempeño -->
-        <div class="row g-4 mb-4">
-            <div class="col-12">
-                <div class="dashboard-card">
-                    <h5 class="card-title">Distribución por Nivel de Desempeño</h5>
-                    <div class="chart-container">
-                        <canvas id="performanceChart"></canvas>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Estudiantes asignados y próximas sesiones -->
-        <div class="row g-4">
-            <!-- Estudiantes asignados -->
-            <div class="col-lg-7">
-                <div class="dashboard-card" style="text-align:left;">
-                    <h5 class="card-title">Estudiantes asignados</h5>
-                    {% if assigned_students %}
-                        <div class="table-responsive">
-                            <table class="table table-sm align-middle">
-                                <thead>
-                                    <tr>
-                                        <th>Nombre</th>
-                                        <th>Carrera</th>
-                                        <th>Matrícula</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {% for st in assigned_students %}
-                                        <tr>
-                                            <td>{{ st.user.get_full_name|default:st.user.username }}</td>
-                                            <td>{{ st.career.name }}</td>
-                                            <td>{{ st.enrollment_id }}</td>
-                                        </tr>
-                                    {% endfor %}
-                                </tbody>
-                            </table>
-                        </div>
-                    {% else %}
-                        <p class="text-muted mb-0">Aún no tienes estudiantes canalizados a tu cargo.</p>
-                    {% endif %}
-                </div>
-            </div>
-                    <!-- NUEVO: Sesiones pendientes de programar -->
-                <div class="dashboard-card mt-4" style="text-align:left;">
-                    <h5 class="card-title">Sesiones pendientes de programar</h5>
-                    {% if pending_sessions %}
-                        <div class="table-responsive">
-                            <table class="table table-sm align-middle">
-                                <thead>
-                                    <tr>
-                                        <th>Estudiante</th>
-                                        <th>Motivo</th>
-                                        <th>Nivel de riesgo</th>
-                                        <th>Acción</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {% for s in pending_sessions %}
-                                        <tr>
-                                            <td>{{ s.student.user.get_full_name|default:s.student.user.username }}</td>
-                                            <td>{{ s.reason|truncatechars:60 }}</td>
-                                            <td>
-                                                {% if s.risk_level == 'high' %}
-                                                    <span class="badge bg-danger">Alto</span>
-                                                {% elif s.risk_level == 'medium' %}
-                                                    <span class="badge bg-warning text-dark">Medio</span>
-                                                {% else %}
-                                                    <span class="badge bg-success">Bajo</span>
-                                                {% endif %}
-                                            </td>
-                                            <td>
-                                                <a href="{% url 'psychologist_schedule_session' s.id %}"
-                                                class="btn btn-sm btn-primary">
-                                                    Asignar fecha y hora
-                                                </a>
-                                            </td>
-                                        </tr>
-                                    {% endfor %}
-                                </tbody>
-                            </table>
-                        </div>
-                    {% else %}
-                        <p class="text-muted mb-0">No tienes sesiones pendientes de programar.</p>
-                    {% endif %}
-                </div>
-
-            <!-- Próximas sesiones -->
-            <div class="col-lg-5">
-                <div class="dashboard-card">
-                    <h5 class="card-title">Próximas Sesiones</h5>
-
-                    {% if upcoming_sessions %}
-                        {% for s in upcoming_sessions %}
-                            <div class="session-card
-                                {% if s.session_type == 'urgent' %}session-urgent
-                                {% elif s.session_type == 'followup' %}session-followup{% endif %}">
-                                <div class="d-flex justify-content-between align-items-start mb-2">
-                                    <h6 class="mb-0">
-                                        {{ s.student.user.get_full_name|default:s.student.user.username }}
-                                    </h6>
-                                    <span class="risk-indicator
-                                        {% if s.risk_level == 'high' %}risk-high
-                                        {% elif s.risk_level == 'medium' %}risk-medium
-                                        {% else %}risk-low{% endif %}">
-                                    </span>
-                                </div>
-                                <p class="mb-1">
-                                    <i class="bi bi-calendar me-2"></i>
-                                    {% if s.session_date %}
-                                        {{ s.session_date|date:"d/m/Y" }}
-                                    {% else %}
-                                        Sin fecha
-                                    {% endif %}
-                                    {% if s.session_time %}
-                                        , {{ s.session_time|time:"H:i" }} hrs
-                                    {% endif %}
-                                </p>
-                                <p class="mb-2">
-                                    <strong>Motivo:</strong> {{ s.reason|truncatechars:80 }}
-                                </p>
-                                <button class="btn btn-sm btn-outline-primary w-100">Ver Expediente</button>
-                            </div>
-                        {% endfor %}
-                    {% else %}
-                        <p class="text-muted mb-0">No hay próximas sesiones programadas.</p>
-                    {% endif %}
-                </div>
-            </div>
-        </div>
-
-        <!-- Accesos rápidos adicionales -->
-        <h3 class="section-title mt-5">Más Acciones</h3>
-        <div class="row g-4">
-            <div class="col-md-3 col-6">
-                <div class="quick-action-card">
-                    <div class="action-icon">
-                        <i class="bi bi-calendar-week"></i>
-                    </div>
-                    <h5>Calendario</h5>
-                    <p class="text-muted">Ver agenda de sesiones</p>
-                </div>
-            </div>
-            <div class="col-md-3 col-6">
-                <div class="quick-action-card">
-                    <div class="action-icon">
-                        <i class="bi bi-list-check"></i>
-                    </div>
-                    <h5>Casos Prioritarios</h5>
-                    <p class="text-muted">Casos de riesgo alto: {{ stats.priority_cases }}</p>
-                </div>
-            </div>
-            <div class="col-md-3 col-6">
-                <div class="quick-action-card">
-                    <div class="action-icon">
-                        <i class="bi bi-bar-chart"></i>
-                    </div>
-                    <h5>Estadísticas</h5>
-                    <p class="text-muted">Ver análisis detallados</p>
-                </div>
-            </div>
-            <div class="col-md-3 col-6">
-                <div class="quick-action-card">
-                    <div class="action-icon">
-                        <i class="bi bi-gear"></i>
-                    </div>
-                    <h5>Configuración</h5>
-                    <p class="text-muted">Ajustes del sistema</p>
-                </div>
-            </div>
-        </div>
+      </div>
     </div>
-</div>
+  </footer>
 
-<!-- Footer -->
-<footer class="footer">
-    <div class="container">
-        <div class="row">
-            <div class="col-md-6">
-                &copy; 2025 Departamento de Psicología - Instituto Tecnológico Matelunia
-            </div>
-            <div class="col-md-6 text-md-end">
-                <span class="confidential-badge">SISTEMA CONFIDENCIAL</span>
-            </div>
-        </div>
-    </div>
-</footer>
-
-<!-- Modal para nueva sesión -->
-<div class="modal fade" id="sessionModal" tabindex="-1" aria-labelledby="sessionModalLabel" aria-hidden="true">
+  <!-- Modal para nueva sesión -->
+  <div class="modal fade" id="sessionModal" tabindex="-1" aria-labelledby="sessionModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header modal-header-custom">
-                <h5 class="modal-title" id="sessionModalLabel">Registrar Nueva Sesión</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <!-- Luego lo puedes cambiar a un form real de Django -->
-                <form>
-                    <div class="mb-3">
-                        <label for="sessionStudent" class="form-label">Estudiante</label>
-                        <select class="form-select" id="sessionStudent" required>
-                            <option selected disabled>Seleccionar estudiante</option>
-                            {% for st in assigned_students %}
-                                <option value="{{ st.id }}">
-                                    {{ st.user.get_full_name|default:st.user.username }} - {{ st.career.name }}
-                                </option>
-                            {% empty %}
-                                <option disabled>No tienes estudiantes asignados todavía</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label for="sessionDate" class="form-label">Fecha</label>
-                                <input type="date" class="form-control" id="sessionDate">
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label for="sessionTime" class="form-label">Hora</label>
-                                <input type="time" class="form-control" id="sessionTime">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="mb-3">
-                        <label for="sessionType" class="form-label">Tipo de Sesión</label>
-                        <select class="form-select" id="sessionType">
-                            <option value="individual">Individual</option>
-                            <option value="group">Grupal</option>
-                            <option value="urgent">Urgente</option>
-                            <option value="followup">Seguimiento</option>
-                        </select>
-                    </div>
-                    <div class="mb-3">
-                        <label for="sessionReason" class="form-label">Motivo de la Sesión</label>
-                        <textarea class="form-control" id="sessionReason" rows="3"></textarea>
-                    </div>
-                    <div class="mb-3 form-check">
-                        <input type="checkbox" class="form-check-input" id="sessionConfidential" checked>
-                        <label class="form-check-label" for="sessionConfidential">
-                            Marcar como información confidencial
-                        </label>
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                <button type="button" class="btn btn-primary-custom">Guardar Sesión</button>
-            </div>
+      <div class="modal-content">
+        <div class="modal-header" style="background: linear-gradient(135deg, var(--primary-color) 0%, #0D4F7C 100%); color:#fff;">
+          <h5 class="modal-title" id="sessionModalLabel">Registrar nueva sesión</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
+        <div class="modal-body">
+          <!-- Luego lo conectas con Django -->
+          <form>
+            <div class="mb-3">
+              <label for="sessionStudent" class="form-label">Estudiante</label>
+              <select class="form-select" id="sessionStudent" required>
+                <option selected disabled>Seleccionar estudiante</option>
+                {% for st in assigned_students %}
+                  <option value="{{ st.id }}">
+                    {{ st.user.get_full_name|default:st.user.username }} - {{ st.career.name }}
+                  </option>
+                {% empty %}
+                  <option disabled>No tienes estudiantes asignados todavía</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="row">
+              <div class="col-md-6">
+                <div class="mb-3">
+                  <label for="sessionDate" class="form-label">Fecha</label>
+                  <input type="date" class="form-control" id="sessionDate">
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="mb-3">
+                  <label for="sessionTime" class="form-label">Hora</label>
+                  <input type="time" class="form-control" id="sessionTime">
+                </div>
+              </div>
+            </div>
+            <div class="mb-3">
+              <label for="sessionType" class="form-label">Tipo de sesión</label>
+              <select class="form-select" id="sessionType">
+                <option value="individual">Individual</option>
+                <option value="group">Grupal</option>
+                <option value="urgent">Urgente</option>
+                <option value="followup">Seguimiento</option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label for="sessionReason" class="form-label">Motivo de la sesión</label>
+              <textarea class="form-control" id="sessionReason" rows="3"></textarea>
+            </div>
+            <div class="mb-3 form-check">
+              <input type="checkbox" class="form-check-input" id="sessionConfidential" checked>
+              <label class="form-check-label" for="sessionConfidential">
+                Marcar como información confidencial
+              </label>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+          <button type="button" class="btn btn-primary">Guardar sesión</button>
+        </div>
+      </div>
     </div>
-</div>
+  </div>
 
-<!-- Modal para reportes -->
-<div class="modal fade" id="reportModal" tabindex="-1" aria-labelledby="reportModalLabel" aria-hidden="true">
+  <!-- Modal para reportes -->
+  <div class="modal fade" id="reportModal" tabindex="-1" aria-labelledby="reportModalLabel" aria-hidden="true">
     <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header modal-header-custom">
-                <h5 class="modal-title" id="reportModalLabel">Generar Reporte</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form>
-                    <div class="mb-3">
-                        <label for="reportPeriod" class="form-label">Periodo del Reporte</label>
-                        <select class="form-select" id="reportPeriod">
-                            <option selected>Enero - Junio 2025</option>
-                            <option>Agosto - Diciembre 2024</option>
-                            <option>Personalizado</option>
-                        </select>
-                    </div>
-                    <div class="mb-3">
-                        <label for="reportFormat" class="form-label">Formato</label>
-                        <select class="form-select" id="reportFormat">
-                            <option>PDF Ejecutivo</option>
-                            <option selected>PDF Detallado</option>
-                            <option>Excel con estadísticas</option>
-                        </select>
-                    </div>
-                    <div class="alert alert-info">
-                        <i class="bi bi-info-circle me-2"></i>
-                        El reporte se generará sin información personal identificable para proteger la confidencialidad.
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                <button type="button" class="btn btn-primary-custom">Generar Reporte</button>
-            </div>
+      <div class="modal-content">
+        <div class="modal-header" style="background: linear-gradient(135deg, var(--primary-color) 0%, #0D4F7C 100%); color:#fff;">
+          <h5 class="modal-title" id="reportModalLabel">Generar reporte</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
+        <div class="modal-body">
+          <form>
+            <div class="mb-3">
+              <label for="reportPeriod" class="form-label">Periodo del reporte</label>
+              <select class="form-select" id="reportPeriod">
+                <option selected>Enero - Junio 2025</option>
+                <option>Agosto - Diciembre 2024</option>
+                <option>Personalizado</option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label for="reportFormat" class="form-label">Formato</label>
+              <select class="form-select" id="reportFormat">
+                <option>PDF Ejecutivo</option>
+                <option selected>PDF Detallado</option>
+                <option>Excel con estadísticas</option>
+              </select>
+            </div>
+            <div class="alert alert-info">
+              <i class="bi bi-info-circle me-2"></i>
+              El reporte se generará sin información personal identificable para proteger la confidencialidad.
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+          <button type="button" class="btn btn-primary">Generar reporte</button>
+        </div>
+      </div>
     </div>
-</div>
+  </div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    const performanceCtx = document.getElementById('performanceChart').getContext('2d');
-    const performanceChart = new Chart(performanceCtx, {
-        type: 'doughnut',
-        data: {
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const ctx = document.getElementById('performanceChart');
+      if (ctx) {
+        const performanceCtx = ctx.getContext('2d');
+        const performanceChart = new Chart(performanceCtx, {
+          type: 'doughnut',
+          data: {
             labels: ['Excelente', 'Bueno', 'Regular', 'Bajo', 'Crítico'],
             datasets: [{
-                data: [15, 25, 35, 15, 10],
-                backgroundColor: [
-                    '#198754',
-                    '#20c997',
-                    '#ffc107',
-                    '#fd7e14',
-                    '#dc3545'
-                ],
-                borderWidth: 2,
-                borderColor: '#fff'
+              data: [15, 25, 35, 15, 10],
+              backgroundColor: [
+                '#198754',
+                '#20c997',
+                '#ffc107',
+                '#fd7e14',
+                '#dc3545'
+              ],
+              borderWidth: 2,
+              borderColor: '#fff'
             }]
-        },
-        options: {
+          },
+          options: {
             responsive: true,
             maintainAspectRatio: false,
             plugins: {
-                legend: {
-                    position: 'bottom'
-                }
+              legend: {
+                position: 'bottom'
+              }
             }
-        }
-    });
+          }
+        });
+      }
 
-    console.log('Dashboard de psicología cargado para {{ request.user.username }}');
-});
-</script>
+      console.log('Dashboard de psicología cargado para {{ request.user.username }}');
+    });
+  </script>
 </body>
 </html>

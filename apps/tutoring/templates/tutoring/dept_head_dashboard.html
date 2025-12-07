@@ -1,0 +1,56 @@
+{% extends "tutoring/base_sia.html" %}
+
+{% block title %}Reportes de acción tutorial del departamento{% endblock %}
+{% block nav_reports_active %}active{% endblock %}
+
+{% block content %}
+<h4 class="section-title">Reportes de acción tutorial enviados al Jefe de Departamento</h4>
+
+<div class="mb-3">
+  <span class="badge bg-primary">
+    Total: {{ reports|length }} reportes
+  </span>
+</div>
+
+<div class="table-responsive">
+  <table class="table table-hover align-middle">
+    <thead>
+      <tr>
+        <th>Fecha envío al Jefe</th>
+        <th>Tutor</th>
+        <th>Coordinador(a)</th>
+        <th>Periodo</th>
+        <th>Título</th>
+        <th>Excel</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for r in reports %}
+        <tr>
+          <td>{{ r.sent_to_head_at|date:"d/m/Y H:i" }}</td>
+          <td>{{ r.tutor.get_full_name|default:r.tutor.username }}</td>
+          <td>{{ r.coordinator.get_full_name|default:r.coordinator.username }}</td>
+          <td>{{ r.period }}</td>
+          <td>{{ r.title }}</td>
+          <td>
+            {% if r.attachment %}
+              <a href="{{ r.attachment.url }}" target="_blank"
+                 class="btn btn-sm btn-outline-success">
+                <i class="bi bi-file-earmark-excel"></i> Descargar
+              </a>
+            {% else %}
+              <span class="text-muted">—</span>
+            {% endif %}
+          </td>
+        </tr>
+      {% empty %}
+        <tr>
+          <td colspan="6" class="text-center text-muted">
+            Aún no hay reportes enviados al Jefe de Departamento.
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

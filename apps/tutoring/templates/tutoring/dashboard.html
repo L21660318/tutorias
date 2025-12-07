@@ -1,525 +1,264 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>{% block title %}Sistema Integral de Tutorías (PIT){% endblock %}</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-  <style>
-    :root {
-      --primary-color: #0F6097;
-      --secondary-color: #50A6E1;
-      --accent-color: #A2D3F5;
-      --light-color: #f8f9fa;
-      --dark-color: #343a40;
-      --success-color: #28a745;
-      --warning-color: #ffc107;
-      --danger-color: #dc3545;
-      --info-color: #17a2b8;
-      --purple-color: #6f42c1;
-      --teal-color: #20c997;
-    }
+{# apps/tutoring/templates/tutoring/dashboard.html #}
+{% extends "tutoring/base_sia.html" %}
 
-    body {
-      background-color: #f5f7fa;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      display: flex;
-      flex-direction: column;
-      min-height: 100vh;
-    }
+{% block title %}SIA Tutorías - Panel del Tutor{% endblock %}
+{% block nav_tutoring_active %}active{% endblock %}
 
-    .navbar {
-      background: linear-gradient(135deg, var(--primary-color) 0%, #0D4F7C 100%);
-      box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
-      padding: 0.8rem 0;
-    }
+{% block content %}
 
-    .navbar-brand {
-      font-weight: 700;
-      font-size: 1.4rem;
-      display: flex;
-      align-items: center;
-    }
+  <!-- Acciones Rápidas -->
+  <div class="row mb-4">
+    <div class="col-12">
+      <h4 class="section-title">Acciones Rápidas</h4>
+    </div>
 
-    .navbar-brand i {
-      margin-right: 10px;
-      font-size: 1.6rem;
-    }
-
-    .nav-link {
-      font-weight: 500;
-      padding: 0.5rem 1rem !important;
-      border-radius: 4px;
-      margin: 0 2px;
-      transition: all 0.3s ease;
-    }
-
-    .nav-link:hover {
-      background-color: rgba(255, 255, 255, 0.15);
-      transform: translateY(-2px);
-    }
-
-    .nav-link.active {
-      background-color: rgba(255, 255, 255, 0.2);
-      font-weight: 600;
-    }
-
-    .user-dropdown {
-      margin-left: 15px;
-    }
-
-    .user-avatar {
-      width: 35px;
-      height: 35px;
-      border-radius: 50%;
-      background-color: var(--secondary-color);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: white;
-      font-weight: bold;
-    }
-
-    .main-container {
-      flex: 1;
-      padding: 2rem 0;
-    }
-
-    .dashboard-card {
-      background: white;
-      border-radius: 12px;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-      height: 100%;
-      border: none;
-      overflow: hidden;
-    }
-
-    .dashboard-card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
-    }
-
-    .card-icon {
-      font-size: 2.5rem;
-      margin-bottom: 1rem;
-    }
-
-    .stats-number {
-      font-size: 2rem;
-      font-weight: 700;
-    }
-
-    .stats-label {
-      font-weight: 500;
-    }
-
-    .welcome-section {
-      background: linear-gradient(120deg, var(--primary-color), var(--secondary-color));
-      color: white;
-      border-radius: 12px;
-      padding: 2rem;
-      margin-bottom: 2rem;
-      box-shadow: 0 5px 15px rgba(15, 96, 151, 0.2);
-    }
-
-    .alert-badge {
-      position: absolute;
-      top: -5px;
-      right: -5px;
-      background-color: var(--danger-color);
-      color: white;
-      border-radius: 50%;
-      width: 20px;
-      height: 20px;
-      font-size: 0.7rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .footer {
-      background-color: var(--dark-color);
-      color: white;
-      padding: 1.5rem 0;
-      margin-top: auto;
-    }
-
-    .quick-action-btn {
-      background: white;
-      border: 1px solid #e9ecef;
-      border-radius: 10px;
-      padding: 1.2rem 0.5rem;
-      text-align: center;
-      transition: all 0.3s ease;
-      color: var(--dark-color);
-      text-decoration: none;
-      display: block;
-      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
-    }
-
-    .quick-action-btn:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-      text-decoration: none;
-      color: var(--dark-color);
-    }
-
-    .quick-action-btn i {
-      font-size: 1.8rem;
-      margin-bottom: 0.5rem;
-    }
-
-    .action-1 {
-      border-top: 4px solid var(--info-color);
-    }
-    .action-1 i {
-      color: var(--info-color);
-    }
-
-    .action-2 {
-      border-top: 4px solid var(--danger-color);
-    }
-    .action-2 i {
-      color: var(--danger-color);
-    }
-
-    .action-3 {
-      border-top: 4px solid var(--purple-color);
-    }
-    .action-3 i {
-      color: var(--purple-color);
-    }
-
-    .action-4 {
-      border-top: 4px solid var(--teal-color);
-    }
-    .action-4 i {
-      color: var(--teal-color);
-    }
-
-    .stat-1 .card-icon {
-      color: var(--info-color);
-    }
-    .stat-1 .stats-number {
-      color: var(--info-color);
-    }
-
-    .stat-2 .card-icon {
-      color: var(--success-color);
-    }
-    .stat-2 .stats-number {
-      color: var(--success-color);
-    }
-
-    .stat-3 .card-icon {
-      color: var(--warning-color);
-    }
-    .stat-3 .stats-number {
-      color: var(--warning-color);
-    }
-
-    .stat-4 .card-icon {
-      color: var(--purple-color);
-    }
-    .stat-4 .stats-number {
-      color: var(--purple-color);
-    }
-
-    .section-title {
-      color: var(--primary-color);
-      font-weight: 600;
-      margin-bottom: 1.5rem;
-      padding-bottom: 0.5rem;
-      border-bottom: 2px solid var(--accent-color);
-    }
-
-    @media (max-width: 768px) {
-      .navbar-brand span {
-        display: none;
-      }
-      .navbar-brand i {
-        margin-right: 0;
-        font-size: 1.8rem;
-      }
-      .welcome-section {
-        text-align: center;
-      }
-    }
-  </style>
-</head>
-<body>
-  <!-- Navbar -->
-  <nav class="navbar navbar-expand-lg navbar-dark">
-    <div class="container">
-      <a class="navbar-brand" href="/">
-        <i class="bi bi-mortarboard-fill"></i>
-        <span>PIT Tutorías</span>
+    <!-- Nueva Sesión -->
+    <div class="col-md-3 col-6 mb-3">
+      <a href="#"
+         class="quick-action-btn action-1"
+         data-bs-toggle="modal"
+         data-bs-target="#actionModal"
+         data-url="{% url 'tutoring_session_new' %}"
+         data-title="Nueva sesión de tutoría">
+        <i class="bi bi-calendar-plus"></i>
+        <div>Nueva Sesión</div>
       </a>
+    </div>
 
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
-        <span class="navbar-toggler-icon"></span>
-      </button>
+    <!-- Ver Alertas -->
+    <div class="col-md-3 col-6 mb-3">
+      <a href="#"
+         class="quick-action-btn action-2"
+         data-bs-toggle="modal"
+         data-bs-target="#actionModal"
+         data-url="/alerts/"
+         data-title="Alertas del tutorado">
+        <i class="bi bi-exclamation-triangle"></i>
+        <div>Ver Alertas <span class="badge bg-danger">{{ alerts_count }}</span></div>
+      </a>
+    </div>
 
-      <div class="collapse navbar-collapse" id="navbarContent">
-        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-          <li class="nav-item">
-            <a class="nav-link active" href="/"><i class="bi bi-house-door me-1"></i> Inicio</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/tutoring/"><i class="bi bi-people-fill me-1"></i> Tutorías</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/academic/"><i class="bi bi-journal-bookmark-fill me-1"></i> Académico</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/reports/"><i class="bi bi-graph-up me-1"></i> Reportes</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/alerts/">
-              <i class="bi bi-bell-fill me-1"></i> Alertas
-              <span class="alert-badge">{{ alerts_count }}</span>
-            </a>
-          </li>
-        </ul>
+    <!-- Generar Reporte -->
+    <div class="col-md-3 col-6 mb-3">
+      <a href="#"
+         class="quick-action-btn action-3"
+         data-bs-toggle="modal"
+         data-bs-target="#actionModal"
+         data-url="{% url 'tutor_report_create' %}"
+         data-title="Generar reporte de acción tutorial">
+        <i class="bi bi-file-earmark-text"></i>
+        <div>Generar Reporte</div>
+      </a>
+    </div>
 
-        <div class="d-flex align-items-center">
-          <div class="user-dropdown dropdown">
-            <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" data-bs-toggle="dropdown">
-              <div class="user-avatar me-2">
-                {{ request.user.first_name|slice:":1" }}{{ request.user.last_name|slice:":1" }}
-              </div>
-              <span>{{ request.user.username }}</span>
-            </a>
-            <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end">
-              <li><a class="dropdown-item" href="/profile/"><i class="bi bi-person-circle me-2"></i> Mi Perfil</a></li>
-              <li><a class="dropdown-item" href="/settings/"><i class="bi bi-gear me-2"></i> Configuración</a></li>
-              <li><hr class="dropdown-divider"></li>
-              {% if request.user.is_staff %}
-                <li><hr class="dropdown-divider"></li>
-              {% endif %}
-              <li><a class="dropdown-item" href="{% url 'logout' %}">
-                    <i class="bi bi-box-arrow-right me-2"></i> Cerrar Sesión
-                  </a></li>
-            </ul>
+        <!-- Mis reportes -->
+    <div class="col-md-3 col-6 mb-3">
+      <a href="#"
+         class="quick-action-btn action-1"
+         data-bs-toggle="modal"
+         data-bs-target="#actionModal"
+         data-url="{% url 'tutor_report_list' %}"
+         data-title="Mis reportes de acción tutorial">
+        <i class="bi bi-folder2-open"></i>
+        <div>Mis reportes</div>
+      </a>
+    </div>
+
+
+    <!-- Asignar a Psicólogo -->
+    <div class="col-md-3 col-6 mb-3">
+      <a href="#"
+         class="quick-action-btn action-4"
+         data-bs-toggle="modal"
+         data-bs-target="#actionModal"
+         data-url="{% url 'psychology_assign_student' %}"
+         data-title="Asignar alumno a psicólogo">
+        <i class="bi bi-heart-pulse"></i>
+        <div>Asignar a Psicólogo</div>
+      </a>
+    </div>
+
+    <!-- Entrevistas con alumnos -->
+    <div class="col-md-3 col-6 mb-3">
+      <a href="#"
+         class="quick-action-btn action-3"
+         data-bs-toggle="modal"
+         data-bs-target="#actionModal"
+         data-url="{% url 'interview_list' %}"
+         data-title="Entrevistas con alumnos">
+        <i class="bi bi-person-lines-fill"></i>
+        <div>Entrevistas con alumnos</div>
+      </a>
+    </div>
+  </div>
+
+  <!-- Stats Dashboard -->
+  <div class="row">
+    <div class="col-md-3 col-6 mb-4">
+      <div class="dashboard-card card stat-1">
+        <div class="card-body text-center">
+          <div class="card-icon">
+            <i class="bi bi-people-fill"></i>
           </div>
+          <h3 class="stats-number">{{ stats.students_count }}</h3>
+          <p class="stats-label">Estudiantes tutorados</p>
         </div>
       </div>
     </div>
-  </nav>
-
-  <!-- Main Content -->
-  <div class="main-container">
-    <div class="container">
-      <!-- Welcome Section -->
-      <div class="welcome-section">
-        <div class="row align-items-center">
-          <div class="col-md-8">
-            <h2>¡Bienvenido, {{ request.user.first_name }}!</h2>
-            <p class="mb-0">Sistema Integral de Tutorías Académicas - Instituto Tecnológico Matelunia</p>
+    <div class="col-md-3 col-6 mb-4">
+      <div class="dashboard-card card stat-2">
+        <div class="card-body text-center">
+          <div class="card-icon">
+            <i class="bi bi-person-check"></i>
           </div>
-          <div class="col-md-4 text-md-end">
-            <span class="badge bg-light text-dark">{{ request.user.get_role_display }}</span>
-            <p class="mb-0 mt-2" id="current-date"></p>
-          </div>
+          <h3 class="stats-number">{{ stats.tutors_count }}</h3>
+          <p class="stats-label">Tutores activos</p>
         </div>
       </div>
-
-      <!-- Quick Actions -->
-      <div class="row mb-4">
-        <div class="col-12">
-          <h4 class="section-title">Acciones Rápidas</h4>
-        </div>
-        <div class="col-md-3 col-6 mb-3">
-          <a href="{% url 'tutoring_session_new' %}" class="quick-action-btn action-1">
-              <i class="bi bi-calendar-plus"></i>
-              <div>Nueva Sesión</div>
-          </a>
-        </div>
-        <div class="col-md-3 col-6 mb-3">
-          <a href="/alerts/" class="quick-action-btn action-2">
-            <i class="bi bi-exclamation-triangle"></i>
-            <div>Ver Alertas <span class="badge bg-danger">{{ alerts_count }}</span></div>
-          </a>
-        </div>
-        <div class="col-md-3 col-6 mb-3">
-          <a href="{% url 'tutor_report_create' %}" class="quick-action-btn action-3">
-            <i class="bi bi-file-earmark-text"></i>
-            <div>Generar Reporte</div>
-          </a>
-        </div>
-        <div class="col-md-3 col-6 mb-3">
-          <a href="{% url 'psychology_assign_student' %}" class="quick-action-btn action-4">
-            <i class="bi bi-heart-pulse"></i>
-            <div>Asignar a Psicólogo</div>
-          </a>
+    </div>
+    <div class="col-md-3 col-6 mb-4">
+      <div class="dashboard-card card stat-3">
+        <div class="card-body text-center">
+          <div class="card-icon">
+            <i class="bi bi-calendar-event"></i>
+          </div>
+          <h3 class="stats-number">{{ stats.sessions_this_month }}</h3>
+          <p class="stats-label">Sesiones este mes</p>
         </div>
       </div>
-
-      <!-- Stats Dashboard -->
-      <div class="row">
-        <div class="col-md-3 col-6 mb-4">
-          <div class="dashboard-card card stat-1">
-            <div class="card-body text-center">
-              <div class="card-icon">
-                <i class="bi bi-people-fill"></i>
-              </div>
-              <h3 class="stats-number">{{ stats.students_count }}</h3>
-              <p class="stats-label">Estudiantes tutorados</p>
-            </div>
+    </div>
+    <div class="col-md-3 col-6 mb-4">
+      <div class="dashboard-card card stat-4">
+        <div class="card-body text-center">
+          <div class="card-icon">
+            <i class="bi bi-clipboard-check"></i>
           </div>
-        </div>
-        <div class="col-md-3 col-6 mb-4">
-          <div class="dashboard-card card stat-2">
-            <div class="card-body text-center">
-              <div class="card-icon">
-                <i class="bi bi-person-check"></i>
-              </div>
-              <h3 class="stats-number">{{ stats.tutors_count }}</h3>
-              <p class="stats-label">Tutores activos</p>
-            </div>
-          </div>
-        </div>
-        <div class="col-md-3 col-6 mb-4">
-          <div class="dashboard-card card stat-3">
-            <div class="card-body text-center">
-              <div class="card-icon">
-                <i class="bi bi-calendar-event"></i>
-              </div>
-              <h3 class="stats-number">{{ stats.sessions_this_month }}</h3>
-              <p class="stats-label">Sesiones este mes</p>
-            </div>
-          </div>
-        </div>
-        <div class="col-md-3 col-6 mb-4">
-          <div class="dashboard-card card stat-4">
-            <div class="card-body text-center">
-              <div class="card-icon">
-                <i class="bi bi-clipboard-check"></i>
-              </div>
-              <h3 class="stats-number">{{ stats.program_progress }}%</h3>
-              <p class="stats-label">Avance del programa</p>
-            </div>
-          </div>
+          <h3 class="stats-number">{{ stats.program_progress }}%</h3>
+          <p class="stats-label">Avance del programa</p>
         </div>
       </div>
+    </div>
+  </div>
 
-      <!-- Main Content Block -->
-      <div class="row">
-        <div class="col-12">
-          <div class="dashboard-card card">
-            <div class="card-body">
-              {% block content %}
-              <h4 class="section-title">Resumen de Actividades Recientes</h4>
-              <div class="table-responsive">
-                <table class="table table-hover">
-                  <thead>
-                    <tr>
-                      <th>Fecha</th>
-                      <th>Estudiante / Grupo</th>
-                      <th>Tutor</th>
-                      <th>Tipo</th>
-                      <th>Estado</th>
-                      <th>Acciones</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {% for s in recent_sessions %}
-                      <tr>
-                        {# Fecha programada #}
-                        <td>{{ s.scheduled_date|date:"d/m/Y H:i" }}</td>
-
-                        {# Estudiante (si es sesión individual) o nombre del grupo si no hay tutee #}
-                        <td>
-                          {% if s.tutee %}
-                            {{ s.tutee.get_full_name|default:s.tutee.username }}
-                          {% elif s.group %}
-                            {{ s.group.name }}
-                          {% else %}
-                            -
-                          {% endif %}
-                        </td>
-
-                        {# Tutor #}
-                        <td>{{ s.tutor.get_full_name|default:s.tutor.username }}</td>
-
-                        {# Tipo de sesión (usa las choices: PLAN / EXTRA) #}
-                        <td>{{ s.get_kind_display }}</td>
-
-                        {# Estado de la sesión (usa las choices de Status) #}
-                        <td>
-                          {% if s.status == "COMPLETED" %}
-                            <span class="badge bg-success">Completada</span>
-                          {% elif s.status == "SCHEDULED" %}
-                            <span class="badge bg-warning text-dark">Programada</span>
-                          {% elif s.status == "CANCELED" %}
-                            <span class="badge bg-danger">Cancelada</span>
-                          {% elif s.status == "NO_SHOW" %}
-                            <span class="badge bg-secondary">Inasistencia</span>
-                          {% else %}
-                            <span class="badge bg-light text-dark">{{ s.status }}</span>
-                          {% endif %}
-                        </td>
-
-                        <td>
-                          <a href="/sessions/{{ s.id }}/"
-                            class="btn btn-sm btn-outline-primary">
-                            <i class="bi bi-clipboard-check me-1"></i> Pasar lista
-                          </a>
-                        </td>
-                      </tr>
-                    {% empty %}
-                      <tr>
-                        <td colspan="6" class="text-center text-muted">
-                          No hay sesiones registradas recientemente.
-                        </td>
-                      </tr>
-                    {% endfor %}
-                  </tbody>
-                </table>
-              </div>
-              <div class="text-center mt-3">
-                <a href="/tutoring/sessions/" class="btn btn-primary">Ver Todas las Sesiones</a>
-              </div>
-              {% endblock %}
-            </div>
+  <!-- Resumen de actividades recientes -->
+  <div class="row">
+    <div class="col-12">
+      <div class="dashboard-card card">
+        <div class="card-body">
+          <h4 class="section-title">Resumen de Actividades Recientes</h4>
+          <div class="table-responsive">
+            <table class="table table-hover">
+              <thead>
+                <tr>
+                  <th>Fecha</th>
+                  <th>Estudiante / Grupo</th>
+                  <th>Tutor</th>
+                  <th>Tipo</th>
+                  <th>Estado</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for s in recent_sessions %}
+                  <tr>
+                    <td>{{ s.scheduled_date|date:"d/m/Y H:i" }}</td>
+                    <td>
+                      {% if s.tutee %}
+                        {{ s.tutee.get_full_name|default:s.tutee.username }}
+                      {% elif s.group %}
+                        {{ s.group.name }}
+                      {% else %}
+                        -
+                      {% endif %}
+                    </td>
+                    <td>{{ s.tutor.get_full_name|default:s.tutor.username }}</td>
+                    <td>{{ s.get_kind_display }}</td>
+                    <td>
+                      {% if s.status == "COMPLETED" %}
+                        <span class="badge bg-success">Completada</span>
+                      {% elif s.status == "SCHEDULED" %}
+                        <span class="badge bg-warning text-dark">Programada</span>
+                      {% elif s.status == "CANCELED" %}
+                        <span class="badge bg-danger">Cancelada</span>
+                      {% elif s.status == "NO_SHOW" %}
+                        <span class="badge bg-secondary">Inasistencia</span>
+                      {% else %}
+                        <span class="badge bg-light text-dark">{{ s.status }}</span>
+                      {% endif %}
+                    </td>
+                    <td>
+                      <a href="/sessions/{{ s.id }}/" class="btn btn-sm btn-outline-primary">
+                        <i class="bi bi-clipboard-check me-1"></i> Pasar lista
+                      </a>
+                    </td>
+                  </tr>
+                {% empty %}
+                  <tr>
+                    <td colspan="6" class="text-center text-muted">
+                      No hay sesiones registradas recientemente.
+                    </td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+          <div class="text-center mt-3">
+            <a href="/tutoring/sessions/" class="btn btn-primary">Ver Todas las Sesiones</a>
           </div>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- Footer -->
-  <footer class="footer">
-    <div class="container">
-      <div class="row">
-        <div class="col-md-6 text-center text-md-start">
-          <p class="mb-0">&copy; 2025 Programa Institucional de Tutorías - Instituto Tecnológico Matelunia</p>
+  <!-- Modal genérico para Acciones Rápidas -->
+  <div class="modal fade" id="actionModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-scrollable">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="actionModalLabel">Acción</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
         </div>
-        <div class="col-md-6 text-center text-md-end">
-          <p class="mb-0">
-            <a href="/about/" class="text-white text-decoration-none me-3">Acerca del PIT</a>
-            <a href="/contact/" class="text-white text-decoration-none me-3">Contacto</a>
-            <a href="/privacy/" class="text-white text-decoration-none">Privacidad</a>
-          </p>
+        <div class="modal-body p-0">
+          <iframe id="actionModalFrame"
+                  src="about:blank"
+                  frameborder="0"
+                  style="width: 100%; min-height: 75vh;"></iframe>
         </div>
       </div>
     </div>
-  </footer>
+  </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-  <script>
-    function updateDateTime() {
-      const now = new Date();
-      const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-      const el = document.getElementById('current-date');
-      if (el) {
-        el.textContent = now.toLocaleDateString('es-ES', options);
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+  const actionModal = document.getElementById('actionModal');
+
+  if (actionModal) {
+    actionModal.addEventListener('show.bs.modal', function (event) {
+      const button = event.relatedTarget;
+      if (!button) return;
+
+      const url = button.getAttribute('data-url');
+      const title = button.getAttribute('data-title') || 'Acción';
+      const frame = document.getElementById('actionModalFrame');
+      const titleEl = document.getElementById('actionModalLabel');
+
+      if (titleEl) {
+        titleEl.textContent = title;
       }
-    }
-    setInterval(updateDateTime, 60000);
-    updateDateTime();
-  </script>
-</body>
-</html>
+
+      if (frame && url) {
+        frame.src = url;
+      }
+    });
+
+    actionModal.addEventListener('hidden.bs.modal', function () {
+      const frame = document.getElementById('actionModalFrame');
+      if (frame) {
+        frame.src = 'about:blank';
+      }
+    });
+  }
+</script>
+{% endblock %}

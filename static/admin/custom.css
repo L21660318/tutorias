@@ -1,0 +1,323 @@
+:root {
+    --primary-color: #0F6097;
+    --secondary-color: #50A6E1;
+    --accent-color: #A2D3F5;
+    --light-color: #f8f9fa;
+    --dark-color: #343a40;
+}
+
+/* ====== BODY GENERAL ====== */
+body {
+    background-color: var(--light-color);
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+/* ====== HEADER TIPO PIT ====== */
+#header {
+    background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+    padding: 12px 20px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+}
+
+#header #site-name a {
+    color: #fff;
+    font-size: 22px;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+/* Branding PIT */
+.pit-branding {
+    display: flex;
+    align-items: center;
+}
+
+.pit-brand-link {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+}
+
+.pit-logo {
+    height: 38px;
+    width: auto;
+}
+
+.pit-brand-text {
+    display: flex;
+    flex-direction: column;
+}
+
+.pit-title {
+    color: #fff;
+    font-size: 20px;
+    font-weight: 700;
+}
+
+.pit-subtitle {
+    color: #e3f2fd;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* Usuario / logout arriba a la derecha */
+#user-tools {
+    color: #e3f2fd;
+}
+
+#user-tools a {
+    color: #fff;
+    font-weight: 500;
+}
+
+/* ====== CONTENIDO GENERAL ====== */
+#content {
+    padding: 20px;
+}
+
+/* Caja principal del dashboard */
+.dashboard .module,
+.app-auth .module,
+.app-list .module {
+    border-radius: 12px;
+    border: 1px solid #dde3ea;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+}
+
+/* Títulos de módulos */
+.module h2,
+.module caption {
+    background: var(--primary-color);
+    color: #fff;
+    padding: 8px 12px;
+    font-weight: 600;
+}
+
+/* ====== TABLAS ====== */
+#changelist table {
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid #dde3ea;
+    background-color: #fff;
+}
+
+#changelist table thead th {
+    background-color: var(--accent-color);
+    color: #0b3453;
+    font-weight: 600;
+}
+
+#changelist table tbody tr:nth-child(even) {
+    background-color: #f4f8fc;
+}
+
+/* ====== BOTONES (GUARDAR, AÑADIR, ETC.) ====== */
+.submit-row input[type="submit"],
+.submit-row input[name="_continue"],
+.submit-row input[name="_addanother"],
+.submit-row input[name="_saveasnew"] {
+    background: var(--primary-color);
+    border-color: var(--primary-color);
+    color: #fff;
+    font-weight: 600;
+    border-radius: 999px;
+    padding: 6px 16px;
+}
+
+.submit-row input[type="submit"]:hover,
+.submit-row input[name="_continue"]:hover,
+.submit-row input[name="_addanother"]:hover,
+.submit-row input[name="_saveasnew"]:hover {
+    background: var(--secondary-color);
+    border-color: var(--secondary-color);
+}
+
+/* Botones de acciones arriba de la lista */
+.object-tools a.addlink {
+    background: var(--secondary-color);
+    border-radius: 999px;
+}
+
+/* ====== FILTROS LATERALES ====== */
+#changelist-filter {
+    border-radius: 10px;
+    border: 1px solid #dde3ea;
+    background-color: #fff;
+}
+
+#changelist-filter h2 {
+    background: var(--primary-color);
+    color: #fff;
+}
+
+/* ====== LOGIN ====== */
+.login #container {
+    border-radius: 16px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+    border: none;
+}
+
+.login #header {
+    text-align: center;
+}
+
+.login #header h1 a {
+    font-size: 22px;
+}
+
+
+/* ====== DASHBOARD PIT ====== */
+.pit-dashboard {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.pit-dashboard-title {
+    font-size: 26px;
+    font-weight: 700;
+    color: var(--dark-color);
+    margin-bottom: 4px;
+}
+
+.pit-dashboard-desc {
+    color: #6c757d;
+    margin-bottom: 20px;
+}
+
+/* Tarjetas grandes de acciones rápidas */
+.pit-quick-actions {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    gap: 16px;
+    margin-bottom: 30px;
+}
+
+.pit-card {
+    background-color: #fff;
+    border-radius: 18px;
+    padding: 16px 18px;
+    box-shadow: 0 6px 16px rgba(15, 96, 151, 0.09);
+    border: 1px solid #dde3ea;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    text-decoration: none;
+    transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+}
+
+.pit-card--primary {
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    border-color: transparent;
+}
+
+.pit-card--primary .pit-card-title,
+.pit-card--primary .pit-card-text,
+.pit-card--primary .pit-card-icon {
+    color: #fff;
+}
+
+.pit-card-icon {
+    font-size: 32px;
+    color: var(--primary-color);
+    flex-shrink: 0;
+}
+
+.pit-card-body {
+    display: flex;
+    flex-direction: column;
+}
+
+.pit-card-title {
+    font-size: 18px;
+    margin: 0 0 4px;
+}
+
+.pit-card-text {
+    margin: 0;
+    font-size: 13px;
+    color: #6c757d;
+}
+
+.pit-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 24px rgba(15, 96, 151, 0.18);
+    border-color: var(--secondary-color);
+}
+
+/* Sección de módulos */
+.pit-section-title {
+    font-size: 18px;
+    margin: 10px 0 12px;
+    color: var(--dark-color);
+    font-weight: 600;
+}
+
+.pit-app-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 16px;
+    margin-bottom: 40px;
+}
+
+.pit-app-card {
+    background-color: #fff;
+    border-radius: 14px;
+    border: 1px solid #dde3ea;
+    padding: 12px 14px;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.03);
+}
+
+.pit-app-title {
+    font-size: 15px;
+    font-weight: 600;
+    margin: 0 0 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.pit-app-icon {
+    color: var(--primary-color);
+}
+
+.pit-model-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.pit-model-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px;
+    margin-bottom: 6px;
+}
+
+.pit-model-link {
+    text-decoration: none;
+    color: var(--dark-color);
+    font-size: 13px;
+}
+
+.pit-model-link i {
+    margin-right: 4px;
+    color: var(--secondary-color);
+}
+
+.pit-model-link:hover {
+    text-decoration: underline;
+}
+
+.pit-tag {
+    font-size: 11px;
+    padding: 2px 8px;
+    border-radius: 999px;
+    background-color: var(--accent-color);
+    color: #0b3453;
+    text-decoration: none;
+    white-space: nowrap;
+}
+

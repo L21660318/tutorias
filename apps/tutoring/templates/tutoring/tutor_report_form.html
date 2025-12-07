@@ -6,11 +6,15 @@
 {% block content %}
 <h4 class="section-title">Generar reporte de acción tutorial</h4>
 
-<div class="row">
-  <div class="col-lg-7">
-    <div class="card dashboard-card">
+<!-- Agregamos margen inferior para que no se traslape con el footer -->
+<div class="row mb-5">
+
+  <!-- Columna izquierda: formulario -->
+  <div class="col-lg-7 mb-4">
+    <div class="card dashboard-card h-100">
       <div class="card-body">
-        <form method="post" novalidate>
+
+        <form method="post" enctype="multipart/form-data" novalidate>
           {% csrf_token %}
 
           <div class="mb-3">
@@ -25,6 +29,13 @@
             {{ form.title.errors }}
           </div>
 
+          {% if report and report.feedback %}
+            <div class="alert alert-info">
+              <strong>Retroalimentación del coordinador:</strong><br>
+              {{ report.feedback|linebreaks }}
+            </div>
+          {% endif %}
+
           <div class="mb-3">
             <label class="form-label">Contenido del reporte</label>
             {{ form.content }}
@@ -35,16 +46,29 @@
             </div>
           </div>
 
+          <div class="mb-3">
+            <label class="form-label">Archivo PDF del reporte (opcional)</label>
+            {{ form.attachment }}
+            {{ form.attachment.errors }}
+            <small class="form-text text-muted">
+              Adjunta tu reporte en formato <strong>.pdf</strong>.
+            </small>
+          </div>
+
           <button type="submit" class="btn btn-primary">
             <i class="bi bi-send-fill me-1"></i> Enviar al coordinador
           </button>
         </form>
+
       </div>
     </div>
   </div>
 
-  <div class="col-lg-5">
-    <div class="card dashboard-card">
+  <!-- Columna derecha: detalles + plantilla -->
+  <div class="col-lg-5 mb-4">
+
+    <!-- Card detalles -->
+    <div class="card dashboard-card mb-3">
       <div class="card-body">
         <h5 class="mb-3">
           <i class="bi bi-info-circle me-1"></i> Detalles de envío
@@ -64,11 +88,32 @@
 
         <hr>
         <p class="small text-muted mb-0">
-          Este reporte quedará registrado como parte de la evidencia de la acción tutorial.
-          El coordinador podrá revisarlo y marcarlo como revisado.
+          Este reporte quedará registrado como evidencia de la acción tutorial. 
+          El coordinador podrá revisarlo y marcarlo como revisado o devuelto.
         </p>
       </div>
     </div>
+
+    <!-- Card plantilla Excel -->
+    <div class="card dashboard-card">
+      <div class="card-body">
+        <h5 class="mb-3">
+          <i class="bi bi-file-earmark-spreadsheet me-1"></i> Plantilla de reporte en Excel
+        </h5>
+
+        <p class="mb-2">
+          Si lo deseas, puedes capturar la información en la plantilla oficial
+          y subir luego el PDF generado.
+        </p>
+
+        <a href="{% static 'tutoring/plantillas/plantilla_reporte_tutoria.xlsx' %}"
+           class="btn btn-outline-success">
+          <i class="bi bi-download me-1"></i> Descargar plantilla Excel
+        </a>
+      </div>
+    </div>
+
   </div>
 </div>
+
 {% endblock %}

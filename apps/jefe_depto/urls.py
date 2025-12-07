@@ -8,4 +8,5 @@ urlpatterns = [
         views.assign_tutor_to_coordinator,
         name='assign_tutor_to_coordinator'
     ),
+    path("", views.jefe_depto_view, name="jefe_depto_dashboard"),
 ]

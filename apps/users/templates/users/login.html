@@ -20,14 +20,14 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            background: var(--light-color); /* Fondo claro */
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             position: relative;
             padding: 20px;
             overflow: hidden;
         }
 
-        /* Formas de fondo */
+        /* Formas de fondo sutiles */
         .bg-shapes {
             position: absolute;
             inset: 0;
@@ -38,19 +38,20 @@
         .shape {
             position: absolute;
             border-radius: 50%;
-            opacity: 0.12;
+            opacity: 0.08;
         }
-        .shape-1 { width: 250px; height: 250px; background: var(--accent-color); top: -70px; left: -70px; }
-        .shape-2 { width: 180px; height: 180px; background: var(--light-color); bottom: -40px; right: 15%; }
-        .shape-3 { width: 140px; height: 140px; background: var(--accent-color); top: 25%; right: -40px; }
+        .shape-1 { width: 220px; height: 220px; background: var(--primary-color); top: -70px; left: -70px; }
+        .shape-2 { width: 160px; height: 160px; background: var(--secondary-color); bottom: -40px; right: 10%; }
+        .shape-3 { width: 120px; height: 120px; background: var(--accent-color); top: 25%; right: -40px; }
 
         /* Caja del login */
         .login-box {
             width: 420px;
-            background: white;
+            background: #ffffff; /* Blanco adentro */
             border-radius: 18px;
             padding: 40px 35px;
-            box-shadow: 0 15px 40px rgba(0,0,0,0.25);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+            border: 2px solid var(--primary-color); /* Línea azul alrededor */
             animation: fadeIn 0.8s ease;
         }
 
@@ -71,6 +72,12 @@
             font-weight: 700;
             margin-bottom: 25px;
             font-size: 1.8rem;
+        }
+
+        label {
+            font-weight: 600;
+            color: var(--dark-color);
+            margin-bottom: 5px;
         }
 
         .form-control {
@@ -159,14 +166,36 @@
         <form method="post">
             {% csrf_token %}
 
-            <div class="mb-3 input-icon">
-                <i class="bi bi-person-fill"></i>
-                <input type="text" name="username" class="form-control" placeholder="Usuario" required>
+            <!-- Usuario -->
+            <div class="mb-3">
+                <label for="id_username">Usuario:</label>
+                <div class="input-icon">
+                    <i class="bi bi-person-fill"></i>
+                    <input
+                        type="text"
+                        id="id_username"
+                        name="username"
+                        class="form-control"
+                        placeholder="Ejemplo: 12345678"
+                        required
+                    >
+                </div>
             </div>
 
-            <div class="mb-3 input-icon">
-                <i class="bi bi-lock-fill"></i>
-                <input type="password" name="password" class="form-control" placeholder="Contraseña" required>
+            <!-- Contraseña -->
+            <div class="mb-3">
+                <label for="id_password">Contraseña:</label>
+                <div class="input-icon">
+                    <i class="bi bi-lock-fill"></i>
+                    <input
+                        type="password"
+                        id="id_password"
+                        name="password"
+                        class="form-control"
+                        placeholder="Ejemplo: TuContraseña123*"
+                        required
+                    >
+                </div>
             </div>
 
             <a href="/password_reset/" class="forgot-password">¿Olvidaste tu contraseña?</a>

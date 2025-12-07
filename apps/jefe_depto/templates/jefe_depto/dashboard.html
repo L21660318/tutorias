@@ -1,9 +1,10 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="es">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Jefe de Departamento - PIT Tutorías</title>
+<title>Jefe de Departamento - SIA</title>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -275,6 +276,14 @@ body {
     background-color: #0D4F7C;
     border-color: #0D4F7C;
 }
+
+/* GRID accesos rápidos */
+.quick-actions-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1.2rem;
+    margin-top: 1rem;
+}
 </style>
 </head>
 <body>
@@ -284,7 +293,7 @@ body {
     <div class="container">
         <a class="navbar-brand" href="/">
             <i class="bi bi-mortarboard-fill"></i>
-            PIT Tutorías
+            SIA
         </a>
 
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
@@ -412,7 +421,7 @@ body {
                 </div>
             </div>
 
-            <!-- NUEVA TARJETA: Designar coordinador(a) -->
+            <!-- Designar coordinador(a) -->
             <div class="col-md-6 col-lg-4">
                 <div class="dashboard-card">
                     <div class="card-icon"><i class="bi bi-person-badge"></i></div>
@@ -426,22 +435,23 @@ body {
                 </div>
             </div>
 
+            <!-- Asignar tutor a coordinador -->
             <div class="col-md-6 col-lg-4">
                 <div class="dashboard-card card">
                     <div class="card-body">
-                    <div class="card-icon"><i class="bi bi-people-fill"></i></div>
-                    <h5 class="card-title">Asignar tutor a coordinador</h5>
-                    <p class="card-text">
-                        Define qué tutor reporta con qué coordinador para el seguimiento de informes de tutoría.
-                    </p>
-                    <a href="{% url 'assign_tutor_to_coordinator' %}" class="btn btn-primary-custom">
-                        <i class="bi bi-link-45deg me-1"></i> Asignar tutor
-                    </a>
+                        <div class="card-icon"><i class="bi bi-people-fill"></i></div>
+                        <h5 class="card-title">Asignar tutor a coordinador</h5>
+                        <p class="card-text">
+                            Define qué tutor reporta con qué coordinador para el seguimiento de informes de tutoría.
+                        </p>
+                        <a href="{% url 'assign_tutor_to_coordinator' %}" class="btn btn-primary-custom">
+                            <i class="bi bi-link-45deg me-1"></i> Asignar tutor
+                        </a>
                     </div>
                 </div>
             </div>
 
-
+            <!-- Constancias tutores -->
             <div class="col-md-6 col-lg-4">
                 <div class="dashboard-card">
                     <div class="card-icon"><i class="bi bi-file-medical-fill"></i></div>
@@ -458,6 +468,7 @@ body {
                 </div>
             </div>
 
+            <!-- Constancias estudiantes -->
             <div class="col-md-6 col-lg-4">
                 <div class="dashboard-card">
                     <div class="card-icon"><i class="bi bi-journal-check"></i></div>
@@ -575,60 +586,78 @@ body {
 
         <!-- Últimos informes y tutores pendientes -->
         <div class="row mt-4 g-4">
+            <!-- Informes reales enviados al Jefe -->
             <div class="col-lg-6">
                 <div class="dashboard-card">
                     <div class="d-flex justify-content-between align-items-center mb-3">
                         <h5 class="card-title mb-0">Últimos Informes Recibidos</h5>
                         <div class="filter-options">
                             <button class="filter-btn active">Todos</button>
-                            <button class="filter-btn">Pendientes</button>
-                            <button class="filter-btn">Aprobados</button>
+                            <button class="filter-btn">Enviados</button>
+                            <button class="filter-btn">Revisados</button>
                         </div>
                     </div>
                     <div class="table-responsive">
                         <table class="table table-hover">
                             <thead>
                                 <tr>
-                                    <th>Programa</th>
-                                    <th>Fecha</th>
+                                    <th>Tutor</th>
+                                    <th>Periodo</th>
+                                    <th>Fecha envío</th>
                                     <th>Estado</th>
                                     <th>Acciones</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <!-- Ejemplo estático; luego puedes iterar sobre recent_reports -->
-                                <tr>
-                                    <td>Ingeniería</td>
-                                    <td>15/01/2025</td>
-                                    <td><span class="status-completed">Completado</span></td>
-                                    <td>
-                                        <button class="btn btn-sm btn-outline-primary"><i class="bi bi-eye"></i></button>
-                                        <button class="btn btn-sm btn-outline-success"><i class="bi bi-download"></i></button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>Matemáticas</td>
-                                    <td>18/01/2025</td>
-                                    <td><span class="status-pending">Pendiente</span></td>
-                                    <td>
-                                        <button class="btn btn-sm btn-outline-primary"><i class="bi bi-eye"></i></button>
-                                        <button class="btn btn-sm btn-outline-warning"><i class="bi bi-pencil"></i></button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>Física</td>
-                                    <td>20/01/2025</td>
-                                    <td><span class="status-completed">Completado</span></td>
-                                    <td>
-                                        <button class="btn btn-sm btn-outline-primary"><i class="bi bi-eye"></i></button>
-                                        <button class="btn btn-sm btn-outline-success"><i class="bi bi-download"></i></button>
-                                    </td>
-                                </tr>
+                                {% for r in reports %}
+                                    <tr>
+                                        <td>{{ r.tutor.get_full_name|default:r.tutor.username }}</td>
+                                        <td>{{ r.period }}</td>
+                                        <td>
+                                            {% if r.sent_to_head_at %}
+                                                {{ r.sent_to_head_at|date:"d/m/Y" }}
+                                            {% else %}
+                                                {{ r.created_at|date:"d/m/Y" }}
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {% if r.status == "SENT_TO_HEAD" %}
+                                                <span class="status-pending">Enviado por coordinación</span>
+                                            {% elif r.status == "REVIEWED" %}
+                                                <span class="status-completed">Revisado</span>
+                                            {% elif r.status == "RETURNED" %}
+                                                <span class="status-overdue">Devuelto al tutor</span>
+                                            {% else %}
+                                                <span class="badge bg-secondary">
+                                                    {{ r.get_status_display }}
+                                                </span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {% if r.attachment %}
+                                                <a href="{{ r.attachment.url }}" target="_blank"
+                                                   class="btn btn-sm btn-outline-success" title="Descargar Excel">
+                                                    <i class="bi bi-file-earmark-excel"></i>
+                                                </a>
+                                            {% else %}
+                                                <span class="text-muted">Sin archivo</span>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                {% empty %}
+                                    <tr>
+                                        <td colspan="5" class="text-center text-muted">
+                                            Aún no hay informes enviados por la coordinación.
+                                        </td>
+                                    </tr>
+                                {% endfor %}
                             </tbody>
                         </table>
                     </div>
                 </div>
             </div>
+
+            <!-- Tutores pendientes de constancia (dummy) -->
             <div class="col-lg-6">
                 <div class="dashboard-card">
                     <div class="d-flex justify-content-between align-items-center mb-3">
@@ -646,7 +675,6 @@ body {
                                 </tr>
                             </thead>
                             <tbody>
-                                <!-- Ejemplo estático; luego puedes iterar sobre pending_tutors -->
                                 <tr>
                                     <td>Juan Pérez</td>
                                     <td>Ingeniería</td>
@@ -677,8 +705,63 @@ body {
                 </div>
             </div>
         </div>
+        <!-- NUEVO: Reportes de cumplimiento de tutores (PDF) -->
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="dashboard-card">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="card-title mb-0">Reportes de Cumplimiento de Tutores</h5>
+                    <span class="badge bg-primary">
+                    {{ compliance_reports|length }} reporte{{ compliance_reports|length|pluralize:"s" }}
+                    </span>
+                </div>
 
-        <!-- Próximos eventos -->
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle">
+                    <thead>
+                        <tr>
+                        <th>Coordinación</th>
+                        <th>Periodo</th>
+                        <th>Fecha de generación</th>
+                        <th>Archivo</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for r in compliance_reports %}
+                        <tr>
+                            <td>
+                            {{ r.coordinator.get_full_name|default:r.coordinator.username }}
+                            </td>
+                            <td>{{ r.period }}</td>
+                            <td>{{ r.generated_at|date:"d/m/Y H:i" }}</td>
+                            <td>
+                            {% if r.pdf %}
+                                <a href="{{ r.pdf.url }}" target="_blank"
+                                class="btn btn-sm btn-outline-danger">
+                                <i class="bi bi-file-earmark-pdf"></i> Ver PDF
+                                </a>
+                            {% else %}
+                                <span class="text-muted">Sin archivo</span>
+                            {% endif %}
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="4" class="text-center text-muted">
+                            Aún no hay reportes de cumplimiento generados por la coordinación.
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                    </table>
+                </div>
+                </div>
+            </div>
+        </div>
+
+
+
+        <!-- Próximos eventos PIT -->
         <div class="row mt-4 g-4">
             <div class="col-lg-12">
                 <div class="dashboard-card">
@@ -701,7 +784,6 @@ body {
                                 </tr>
                             </thead>
                             <tbody>
-                                <!-- Ejemplo estático; luego puedes iterar sobre upcoming_events -->
                                 <tr>
                                     <td>Capacitación Tutores</td>
                                     <td>15/10/2025</td>
@@ -743,30 +825,34 @@ body {
         </div>
 
         <!-- Accesos rápidos -->
-        <div class="row mt-4 g-4">
-            <div class="col-md-3 col-6">
-                <button class="quick-action-btn dashboard-card w-100 py-4" data-bs-toggle="modal" data-bs-target="#tutorModal">
-                    <i class="bi bi-plus-circle-fill" style="font-size:2rem;color:var(--primary-color)"></i>
-                    <p class="mt-2">Nuevo Tutor</p>
-                </button>
+        <div class="row mt-4">
+            <div class="col-12">
+                <h5 class="card-title mb-2" style="color: var(--primary-color); border-bottom: 2px solid var(--accent-color); padding-bottom: .5rem;">
+                    Accesos Rápidos
+                </h5>
             </div>
-            <div class="col-md-3 col-6">
-                <button class="quick-action-btn dashboard-card w-100 py-4" data-bs-toggle="modal" data-bs-target="#reportModal">
-                    <i class="bi bi-file-earmark-plus-fill" style="font-size:2rem;color:var(--primary-color)"></i>
-                    <p class="mt-2">Nuevo Informe</p>
-                </button>
-            </div>
-            <div class="col-md-3 col-6">
-                <button class="quick-action-btn dashboard-card w-100 py-4" data-bs-toggle="modal" data-bs-target="#eventModal">
-                    <i class="bi bi-calendar-plus-fill" style="font-size:2rem;color:var(--primary-color)"></i>
-                    <p class="mt-2">Nuevo Evento</p>
-                </button>
-            </div>
-            <div class="col-md-3 col-6">
-                <button class="quick-action-btn dashboard-card w-100 py-4" data-bs-toggle="modal" data-bs-target="#settingsModal">
-                    <i class="bi bi-gear-fill" style="font-size:2rem;color:var(--primary-color)"></i>
-                    <p class="mt-2">Configuración PIT</p>
-                </button>
+            <div class="col-12">
+                <div class="quick-actions-grid">
+                    <button class="quick-action-btn dashboard-card w-100 py-4" data-bs-toggle="modal" data-bs-target="#tutorModal">
+                        <i class="bi bi-plus-circle-fill" style="font-size:2rem;color:var(--primary-color)"></i>
+                        <p class="mt-2 mb-0">Nuevo Tutor</p>
+                    </button>
+
+                    <button class="quick-action-btn dashboard-card w-100 py-4" data-bs-toggle="modal" data-bs-target="#reportModal">
+                        <i class="bi bi-file-earmark-plus-fill" style="font-size:2rem;color:var(--primary-color)"></i>
+                        <p class="mt-2 mb-0">Nuevo Informe</p>
+                    </button>
+
+                    <button class="quick-action-btn dashboard-card w-100 py-4" data-bs-toggle="modal" data-bs-target="#eventModal">
+                        <i class="bi bi-calendar-plus-fill" style="font-size:2rem;color:var(--primary-color)"></i>
+                        <p class="mt-2 mb-0">Nuevo Evento</p>
+                    </button>
+
+                    <button class="quick-action-btn dashboard-card w-100 py-4" data-bs-toggle="modal" data-bs-target="#settingsModal">
+                        <i class="bi bi-gear-fill" style="font-size:2rem;color:var(--primary-color)"></i>
+                        <p class="mt-2 mb-0">Configuración PIT</p>
+                    </button>
+                </div>
             </div>
         </div>
 
@@ -778,10 +864,9 @@ body {
     &copy; 2025 Programa Institucional de Tutorías - {{ institute_name|default:"Instituto Tecnológico Matelunia" }}
 </footer>
 
-<!-- Modales (acciones rápidas, tutor, informe, evento, configuración) -->
-<!-- Puedes dejar estos igual; solo son de front, no tocan la BD directamente -->
+<!-- Modales -->
 
-<!-- Modal para acciones rápidas -->
+<!-- Modal Acciones rápidas -->
 <div class="modal fade" id="quickActionsModal" tabindex="-1" aria-labelledby="quickActionsModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
@@ -837,7 +922,7 @@ body {
     </div>
 </div>
 
-<!-- Modal para nuevo tutor -->
+<!-- Modal nuevo tutor -->
 <div class="modal fade" id="tutorModal" tabindex="-1" aria-labelledby="tutorModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -846,7 +931,6 @@ body {
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <!-- Aquí luego puedes conectar con un formulario real -->
                 <form>
                     <div class="mb-3">
                         <label for="tutorName" class="form-label">Nombre completo</label>
@@ -880,7 +964,7 @@ body {
     </div>
 </div>
 
-<!-- Modal para nuevo informe -->
+<!-- Modal nuevo informe -->
 <div class="modal fade" id="reportModal" tabindex="-1" aria-labelledby="reportModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -932,7 +1016,7 @@ body {
     </div>
 </div>
 
-<!-- Modal para nuevo evento -->
+<!-- Modal nuevo evento -->
 <div class="modal fade" id="eventModal" tabindex="-1" aria-labelledby="eventModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -978,12 +1062,12 @@ body {
     </div>
 </div>
 
-<!-- Modal para configuración -->
+<!-- Modal configuración -->
 <div class="modal fade" id="settingsModal" tabindex="-1" aria-labelledby="settingsModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header modal-header-custom">
-                <h5 class="modal-title" id="settingsModalLabel">Configuración del PIT</h5>
+                <h5 class="modal-title" id="settingsModalLabel">Configuración del SIA</h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -1051,7 +1135,6 @@ body {
                 </div>
             </div>
             <div class="modal-footer">
-                <!-- Aquí luego puedes conectar este botón a una vista que guarde la config -->
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
                 <button type="button" class="btn btn-primary-custom">Guardar Configuración</button>
             </div>
@@ -1086,14 +1169,12 @@ document.addEventListener('DOMContentLoaded', function() {
             responsive: true,
             maintainAspectRatio: false,
             scales: {
-                y: {
-                    beginAtZero: true
-                }
+                y: { beginAtZero: true }
             }
         }
     });
 
-    // Funcionalidad para las tareas pendientes
+    // Checkbox tareas
     const taskCheckboxes = document.querySelectorAll('.task-checkbox');
     taskCheckboxes.forEach(checkbox => {
         checkbox.addEventListener('change', function() {
@@ -1108,20 +1189,19 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // Funcionalidad para los filtros
+    // Filtros (solo visual)
     const filterBtns = document.querySelectorAll('.filter-btn');
     filterBtns.forEach(btn => {
         btn.addEventListener('click', function() {
             filterBtns.forEach(b => b.classList.remove('active'));
             this.classList.add('active');
-            // Aquí iría la lógica para filtrar la tabla
+            // Aquí podrías filtrar la tabla por estado (JS o backend).
         });
     });
 
-    // Simulación de búsqueda
+    // Búsqueda (simulada)
     const searchInput = document.querySelector('.search-box input');
     searchInput.addEventListener('input', function() {
-        // Aquí iría la lógica para buscar en el contenido
         console.log('Buscando:', this.value);
     });
 });

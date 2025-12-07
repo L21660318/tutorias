@@ -168,3 +168,33 @@ def assign_tutor_to_coordinator(request):
         'assignments': assignments,
     }
     return render(request, 'jefe_depto/assign_tutor_to_coordinator.html', context)
+
+
+from apps.tutoring.models import TutorComplianceReport
+
+@login_required
+def jefe_depto_view(request):
+    if not is_jefe_depto(request.user):
+        messages.error(request, "No tienes permisos para acceder a este panel.")
+        return redirect("home")
+
+    stats = {}
+    alerts_count = 0
+    reports = []
+
+    # ✅ usar generated_at (campo que sí existe)
+    compliance_reports = (
+        TutorComplianceReport.objects
+        .select_related("coordinator", "period")
+        .order_by("-generated_at")
+    )
+
+    context = {
+        "stats": stats,
+        "alerts_count": alerts_count,
+        "reports": reports,
+        "compliance_reports": compliance_reports,
+        "institute_name": "Instituto Tecnológico Matelunia",
+    }
+
+    return render(request, "jefe_depto/dashboard.html", context)

@@ -1,51 +1,76 @@
-{% extends "tutoring/dashboard.html" %}
-{% load static %}
+{% extends "tutoring/base_sia.html" %}
 
-{% block title %}Reportes de tutores{% endblock %}
+{% block title %}Reportes de acción tutorial recibidos{% endblock %}
+{% block nav_tutoring_active %}active{% endblock %}
 
 {% block content %}
-<h4 class="section-title">Reportes recibidos de tutores</h4>
+  <h4 class="section-title">Reportes de acción tutorial recibidos</h4>
 
-<div class="card dashboard-card">
-  <div class="card-body">
-    {% if reports %}
-      <div class="table-responsive">
-        <table class="table table-hover align-middle">
-          <thead>
-            <tr>
-              <th>Fecha</th>
-              <th>Periodo</th>
-              <th>Tutor</th>
-              <th>Título</th>
-              <th>Estado</th>
-            </tr>
-          </thead>
-          <tbody>
-            {% for r in reports %}
-              <tr>
-                <td>{{ r.created_at|date:"d/m/Y H:i" }}</td>
-                <td>{{ r.period }}</td>
-                <td>{{ r.tutor.get_full_name|default:r.tutor.username }}</td>
-                <td>{{ r.title }}</td>
-                <td>
-                  {% if r.status == "SENT" %}
-                    <span class="badge bg-info text-dark">Enviado</span>
-                  {% elif r.status == "REVIEWED" %}
-                    <span class="badge bg-success">Revisado</span>
-                  {% elif r.status == "RETURNED" %}
-                    <span class="badge bg-warning text-dark">Devuelto</span>
-                  {% endif %}
-                </td>
-              </tr>
-            {% endfor %}
-          </tbody>
-        </table>
-      </div>
-    {% else %}
-      <p class="text-muted mb-0">
-        No tienes reportes de tutores registrados.
-      </p>
-    {% endif %}
+  <div class="mb-3">
+    <span class="badge bg-info">
+      Total: {{ reports|length }} reportes
+    </span>
   </div>
-</div>
+
+  <div class="table-responsive">
+    <table class="table table-hover align-middle">
+      <thead>
+        <tr>
+          <th>Fecha</th>
+          <th>Tutor</th>
+          <th>Periodo</th>
+          <th>Título</th>
+          <th>Estado</th>
+          <th>Excel</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for r in reports %}
+          <tr>
+            <td>{{ r.created_at|date:"d/m/Y H:i" }}</td>
+            <td>{{ r.tutor.get_full_name|default:r.tutor.username }}</td>
+            <td>{{ r.period }}</td>
+            <td>{{ r.title }}</td>
+
+            <td>
+              {% if r.status == "SENT" %}
+                <span class="badge bg-warning text-dark">Enviado</span>
+              {% elif r.status == "REVIEWED" %}
+                <span class="badge bg-success">Revisado</span>
+              {% elif r.status == "RETURNED" %}
+                <span class="badge bg-danger">Devuelto</span>
+              {% else %}
+                <span class="badge bg-secondary">{{ r.status }}</span>
+              {% endif %}
+            </td>
+
+            <td>
+              {% if r.attachment %}
+                <a href="{{ r.attachment.url }}" target="_blank"
+                  class="btn btn-sm btn-outline-secondary">
+                  <i class="bi bi-file-earmark-spreadsheet"></i> Ver Excel
+                </a>
+              {% else %}
+                <span class="text-muted">—</span>
+              {% endif %}
+            </td>
+
+            <td>
+              <a href="{% url 'coordinator_report_detail' r.id %}" class="btn btn-sm btn-primary">
+                <i class="bi bi-eye me-1"></i> Revisar
+              </a>
+            </td>
+
+          </tr>
+        {% empty %}
+          <tr>
+            <td colspan="7" class="text-center text-muted">
+              No tienes reportes de acción tutorial asignados.
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
 {% endblock %}

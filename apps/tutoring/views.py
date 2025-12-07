@@ -9,9 +9,9 @@ from .forms import SessionForm
 
 from .models import Session, Alert, TuteeProfile, SessionAttendance
 from apps.academic.models import Period
+from .models import TutoringReport, TutorCoordinatorAssignment, TutoringInterview  # añade TutoringInterview
+from .forms import SessionForm, TutoringReportForm, TutoringInterviewForm        # añade TutoringInterviewForm
 
-from .models import TutoringReport, TutorCoordinatorAssignment
-from .forms import TutoringReportForm
 from django.contrib.auth import get_user_model
 
 User = get_user_model()
@@ -22,7 +22,7 @@ def is_tutor(user):
 
 
 def is_coordac(user):
-    return getattr(user, 'role', None) == 'COORDAC'
+    return getattr(user, 'role', None) in ('COORDAC', 'COORDINADOR')
 
 @login_required
 def dashboard_view(request):
@@ -236,7 +236,7 @@ def tutor_report_create(request):
         )
 
     if request.method == 'POST':
-        form = TutoringReportForm(request.POST)
+        form = TutoringReportForm(request.POST, request.FILES)  # 👈 importante
         if form.is_valid():
             report = form.save(commit=False)
             report.tutor = request.user
@@ -276,10 +276,283 @@ def coordinator_report_inbox(request):
         messages.error(request, "Solo los coordinadores académicos pueden ver esta sección.")
         return redirect('home')
 
-    reports = TutoringReport.objects.filter(
-        coordinator=request.user
-    ).select_related('tutor')
+    reports = (TutoringReport.objects
+               .filter(coordinator=request.user)
+               .select_related('tutor'))
 
     return render(request, 'tutoring/coordinator_report_inbox.html', {
+        'reports': reports,
+    })
+
+
+@login_required
+def interview_list(request):
+    if not is_tutor(request.user):
+        messages.error(request, "Solo los tutores pueden ver sus entrevistas.")
+        return redirect('home')
+
+    interviews = (TutoringInterview.objects
+                  .filter(tutor=request.user)
+                  .select_related('tutee')
+                  .order_by('-scheduled_date'))
+
+    context = {
+        'interviews': interviews,
+    }
+    return render(request, 'tutoring/interview_list.html', context)
+
+
+@login_required
+def interview_create(request):
+    if not is_tutor(request.user):
+        messages.error(request, "Solo los tutores pueden programar entrevistas.")
+        return redirect('home')
+
+    if request.method == 'POST':
+        form = TutoringInterviewForm(request.POST, tutor=request.user)
+        if form.is_valid():
+            interview = form.save(commit=False)
+            interview.tutor = request.user
+            interview.status = TutoringInterview.Status.SCHEDULED
+            interview.save()
+            messages.success(request, "Entrevista programada correctamente.")
+            return redirect('interview_list')
+    else:
+        form = TutoringInterviewForm(tutor=request.user)
+
+    return render(request, 'tutoring/interview_form.html', {
+        'form': form,
+        'is_edit': False,
+    })
+
+
+@login_required
+def interview_update(request, pk):
+    if not is_tutor(request.user):
+        messages.error(request, "Solo los tutores pueden editar sus entrevistas.")
+        return redirect('home')
+
+    interview = get_object_or_404(
+        TutoringInterview,
+        pk=pk,
+        tutor=request.user
+    )
+
+    if request.method == 'POST':
+        form = TutoringInterviewForm(request.POST, instance=interview, tutor=request.user)
+        if form.is_valid():
+            interview = form.save(commit=False)
+
+            # Si el tutor marca como completada en el formulario (opcional)
+            if request.POST.get('mark_completed') == '1':
+                interview.status = TutoringInterview.Status.COMPLETED
+
+            interview.save()
+            messages.success(request, "Entrevista actualizada correctamente.")
+            return redirect('interview_list')
+    else:
+        form = TutoringInterviewForm(instance=interview, tutor=request.user)
+
+    return render(request, 'tutoring/interview_form.html', {
+        'form': form,
+        'is_edit': True,
+        'interview': interview,
+    })
+
+@login_required
+def tutor_report_update(request, pk):
+    if not is_tutor(request.user):
+        messages.error(request, "No tienes permisos para editar este reporte.")
+        return redirect('home')
+
+    report = get_object_or_404(TutoringReport, pk=pk, tutor=request.user)
+
+    if request.method == 'POST':
+        form = TutoringReportForm(request.POST, request.FILES, instance=report)
+        if form.is_valid():
+            report = form.save(commit=False)
+
+            # Si el reporte estaba devuelto, al editarlo se vuelve a enviar
+            if report.status == 'RETURNED':
+                report.status = 'SENT'
+                # opcional: limpiar feedback anterior
+                # report.feedback = ""
+                # report.feedback_at = None
+
+            report.save()
+            messages.success(request, "Reporte actualizado y enviado nuevamente al coordinador.")
+            return redirect('tutor_report_list')
+    else:
+        form = TutoringReportForm(instance=report)
+
+    return render(request, 'tutoring/tutor_report_form.html', {
+        'form': form,
+        'report': report,
+        'is_edit': True,
+    })
+
+
+
+# coordinador manage
+
+from django.utils import timezone
+from django.views.decorators.http import require_http_methods
+from django.core.exceptions import PermissionDenied
+# ... el resto de imports que ya tienes ...
+
+
+@login_required
+@require_http_methods(["GET", "POST"])
+def coordinator_report_detail(request, pk):
+    """
+    Vista de detalle para que el COORDAC revise un reporte,
+    deje retroalimentación y cambie el estado.
+    """
+    if not is_coordac(request.user):
+        # Si NO es coordinador académico, no debe entrar aquí
+        raise PermissionDenied("No tienes permisos para revisar reportes de tutoría.")
+
+    report = get_object_or_404(
+        TutoringReport,
+        pk=pk,
+        coordinator=request.user  # sólo los que le llegan a ESTE coordinador
+    )
+
+    if request.method == "POST":
+        # Leemos los campos del formulario simple de retroalimentación
+        nuevo_estado = request.POST.get("status")
+        feedback = request.POST.get("feedback", "").strip()
+
+        # Solo aceptamos estados válidos
+        estados_validos = dict(TutoringReport.STATUS_CHOICES).keys()
+        if nuevo_estado in estados_validos:
+            report.status = nuevo_estado
+
+        # Guardamos retroalimentación (campo que agregamos abajo en el modelo)
+        report.feedback = feedback
+        report.save()
+
+        messages.success(request, "Reporte actualizado correctamente.")
+        return redirect("coordinator_report_inbox")
+
+    return render(request, "tutoring/coordinator_report_detail.html", {
+        "report": report,
+    })
+
+
+@login_required
+@require_http_methods(["GET", "POST"])
+def coordinator_report_detail(request, pk):
+    """
+    Vista de detalle para que el COORDAC revise un reporte,
+    deje retroalimentación, cambie el estado y pueda enviarlo al Jefe de Depto.
+    """
+    if not is_coordac(request.user):
+        messages.error(request, "Solo los coordinadores académicos pueden ver esta sección.")
+        return redirect('home')
+
+    report = get_object_or_404(
+        TutoringReport,
+        pk=pk,
+        coordinator=request.user
+    )
+
+    if request.method == 'POST':
+        action = request.POST.get('action')              # 'review' | 'return' | 'send_head'
+        feedback = request.POST.get('feedback', '').strip()
+
+        # Actualizamos retroalimentación siempre
+        report.feedback = feedback
+        report.feedback_at = timezone.now()
+
+        if action == 'review':
+            report.status = 'REVIEWED'
+            messages.success(request, "Reporte marcado como revisado.")
+
+        elif action == 'return':
+            report.status = 'RETURNED'
+            messages.info(request, "Reporte devuelto al tutor para ajustes.")
+
+        elif action == 'send_head':
+            report.status = 'SENT_TO_HEAD'
+            report.sent_to_head_at = timezone.now()
+            messages.success(request, "Reporte enviado al Jefe de Departamento.")
+
+        else:
+            messages.error(request, "Acción inválida.")
+            return redirect('coordinator_report_detail', pk=report.pk)
+
+        report.save()
+        return redirect('coordinator_report_inbox')
+
+    return render(request, 'tutoring/coordinator_report_detail.html', {
+        'report': report,
+    })
+
+
+# jefe dpto
+
+def is_jefe_depto(user):
+    return getattr(user, 'role', None) == 'JEFEDEPTO'
+
+
+@login_required
+def dept_head_dashboard(request):
+    if not is_jefe_depto(request.user):
+        messages.error(request, "Solo el Jefe de Departamento puede acceder a este panel.")
+        return redirect('home')
+
+    # Stats dummy (luego los cambias por reales)
+    stats = {
+        "campanias_total": 5,
+        "campanias_activas": 3,
+        "metas_tutores_avance": 75,
+        "informes_pendientes": 2,
+        "informes_semestrales": 12,
+        "informes_completados": 10,
+        "constancias_tutores": 8,
+        "constancias_tutores_pendientes": 3,
+        "tutores_registrados": 35,
+        "tutores_nuevos": 5,
+        "constancias_estudiantes": 140,
+        "constancias_estudiantes_variacion": "+15% vs anterior",
+        "constancias_tutores_urgentes": 3,
+    }
+
+    # 🔹 PRUEBA: ver TODOS los reportes (sin filtrar por estado)
+    reports = (
+        TutoringReport.objects
+        .select_related('tutor', 'coordinator')
+        .order_by('-sent_to_head_at', '-created_at')
+    )
+
+    context = {
+        "stats": stats,
+        "alerts_count": 0,
+        "pending_reports_count": reports.count(),
+        "reports": reports,
+        "institute_name": "Instituto Tecnológico de Matehuala",
+        "department_name": "Departamento de Ciencias Básicas",
+        "current_semester": "Ene-Jun 2025",
+    }
+
+    # 👇 MUY IMPORTANTE: usar el template correcto
+    return render(request, "jefe_depto/dashboard.html", context)
+
+
+@login_required
+def dept_head_report_list(request):
+    if not is_jefe_depto(request.user):
+        messages.error(request, "Solo el Jefe de Departamento puede acceder a estos reportes.")
+        return redirect('home')
+
+    reports = (
+        TutoringReport.objects
+        .filter(status='SENT_TO_HEAD')
+        .select_related('tutor', 'coordinator')
+        .order_by('-sent_to_head_at', '-created_at')
+    )
+
+    return render(request, 'tutoring/dept_head_report_list.html', {
         'reports': reports,
     })

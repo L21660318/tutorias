@@ -1,0 +1,121 @@
+{% extends "admin/base_site.html" %}
+{% load i18n %}
+
+{% block content %}
+<div class="pit-dashboard">
+  <h1 class="pit-dashboard-title">Panel principal</h1>
+  <p class="pit-dashboard-desc">
+    Elige qué quieres administrar. Todo está organizado por secciones claras.
+  </p>
+
+  <!-- 🔹 ACCIONES RÁPIDAS (tarjetas grandes) -->
+  <div class="pit-quick-actions">
+
+    {# ========= USUARIOS (users.User) ========= #}
+    {% url 'admin:users_user_changelist' as users_url %}
+    {% if users_url %}
+    <a href="{{ users_url }}" class="pit-card pit-card--primary">
+      <i class="bi bi-people-fill pit-card-icon"></i>
+      <div class="pit-card-body">
+        <h2 class="pit-card-title">Usuarios</h2>
+        <p class="pit-card-text">Altas, bajas y edición de usuarios del sistema.</p>
+      </div>
+    </a>
+    {% endif %}
+
+    {# ========= SESIONES DE TUTORÍA (tutoring.Session) ========= #}
+    {% url 'admin:tutoring_session_changelist' as session_url %}
+    {% if session_url %}
+    <a href="{{ session_url }}" class="pit-card">
+      <i class="bi bi-calendar-check-fill pit-card-icon"></i>
+      <div class="pit-card-body">
+        <h2 class="pit-card-title">Sesiones de tutoría</h2>
+        <p class="pit-card-text">Consulta y administra las sesiones registradas.</p>
+      </div>
+    </a>
+    {% endif %}
+
+    {# ========= TUTORADOS (tutoring.TuteeProfile) ========= #}
+    {% url 'admin:tutoring_tuteeprofile_changelist' as tutee_url %}
+    {% if tutee_url %}
+    <a href="{{ tutee_url }}" class="pit-card">
+      <i class="bi bi-mortarboard-fill pit-card-icon"></i>
+      <div class="pit-card-body">
+        <h2 class="pit-card-title">Tutorados</h2>
+        <p class="pit-card-text">Información académica y de contacto de los tutorados.</p>
+      </div>
+    </a>
+    {% endif %}
+
+    {# ========= ALERTAS (tutoring.Alert) ========= #}
+    {% url 'admin:tutoring_alert_changelist' as alert_url %}
+    {% if alert_url %}
+    <a href="{{ alert_url }}" class="pit-card">
+      <i class="bi bi-exclamation-triangle-fill pit-card-icon"></i>
+      <div class="pit-card-body">
+        <h2 class="pit-card-title">Alertas</h2>
+        <p class="pit-card-text">Revisar y dar seguimiento a alertas importantes.</p>
+      </div>
+    </a>
+    {% endif %}
+
+    {# ========= CARRERAS (academic.Career) ========= #}
+    {% url 'admin:academic_career_changelist' as career_url %}
+    {% if career_url %}
+    <a href="{{ career_url }}" class="pit-card">
+      <i class="bi bi-diagram-3-fill pit-card-icon"></i>
+      <div class="pit-card-body">
+        <h2 class="pit-card-title">Carreras</h2>
+        <p class="pit-card-text">Gestión de programas educativos y ofertas académicas.</p>
+      </div>
+    </a>
+    {% endif %}
+
+    {# ========= PERIODOS (academic.Period) ========= #}
+    {% url 'admin:academic_period_changelist' as period_url %}
+    {% if period_url %}
+    <a href="{{ period_url }}" class="pit-card">
+      <i class="bi bi-clock-history pit-card-icon"></i>
+      <div class="pit-card-body">
+        <h2 class="pit-card-title">Periodos</h2>
+        <p class="pit-card-text">Configuración de ciclos escolares y periodos de tutoría.</p>
+      </div>
+    </a>
+    {% endif %}
+
+  </div>
+
+  <!-- 🔹 LISTA DE TODAS LAS APPS/MÓDULOS EN FORMA BONITA -->
+  <h2 class="pit-section-title">Todos los módulos</h2>
+
+  <div class="pit-app-grid">
+    {% for app in app_list %}
+      <section class="pit-app-card">
+        <h3 class="pit-app-title">
+          <i class="bi bi-folder-fill pit-app-icon"></i>
+          {{ app.name }}
+        </h3>
+        <ul class="pit-model-list">
+          {% for model in app.models %}
+            <li class="pit-model-item">
+              {% if model.admin_url %}
+                <a href="{{ model.admin_url }}" class="pit-model-link">
+                  <i class="bi bi-list-ul"></i> {{ model.name }}
+                </a>
+              {% else %}
+                <span class="pit-model-name">{{ model.name }}</span>
+              {% endif %}
+
+              {% if model.add_url %}
+                <a href="{{ model.add_url }}" class="pit-tag">
+                  <i class="bi bi-plus-circle"></i> Agregar
+                </a>
+              {% endif %}
+            </li>
+          {% endfor %}
+        </ul>
+      </section>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

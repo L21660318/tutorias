@@ -1,0 +1,27 @@
+{% extends "admin/base.html" %}
+{% load static %}
+
+{% block title %}PIT Tutorías – Administración{% endblock %}
+
+{% block extrahead %}
+  {{ block.super }}
+  <!-- Íconos Bootstrap -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+  <!-- Tu CSS -->
+  <link rel="stylesheet" href="{% static 'admin/custom.css' %}">
+{% endblock %}
+
+{% block branding %}
+<div class="pit-branding">
+  <a href="{% url 'admin:index' %}" class="pit-brand-link">
+    <div class="pit-brand-text">
+      <span class="pit-title">SIA Tutorías</span>
+      <span class="pit-subtitle">Panel de administración</span>
+    </div>
+  </a>
+</div>
+{% endblock %}
+
+{% block nav-global %}
+{# Aquí podrías poner enlaces extra si algún día los necesitas #}
+{% endblock %}

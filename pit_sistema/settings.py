@@ -58,7 +58,7 @@ ROOT_URLCONF = 'pit_sistema.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / "templates"],  # 👈 AQUÍ EL CAMBIO
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -70,6 +70,7 @@ TEMPLATES = [
         },
     },
 ]
+
 
 WSGI_APPLICATION = 'pit_sistema.wsgi.application'
 
@@ -115,6 +116,7 @@ LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_TZ = True
+X_FRAME_OPTIONS = 'SAMEORIGIN'
 
 # ---------------------------
 # Archivos media y estáticos

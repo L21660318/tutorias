@@ -564,11 +564,79 @@ body {
                     </div>
                 </div>
             </div>
+            <!-- NUEVO: Reportes de Cumplimiento de Tutores (PDF) -->
+            <div class="row mt-4">
+                <div class="col-12">
+                    <div class="dashboard-card">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h5 class="card-title mb-0">Reportes de Cumplimiento de Tutores</h5>
+                            <span class="badge bg-primary">
+                                {{ compliance_reports|length }} reporte{{ compliance_reports|length|pluralize:"s" }}
+                            </span>
+                        </div>
+
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle">
+                                <thead>
+                                    <tr>
+                                        <th>Coordinación</th>
+                                        <th>Periodo</th>
+                                        <th>Fecha de generación</th>
+                                        <th>Archivo</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for r in compliance_reports %}
+                                        <tr>
+                                            <td>
+                                                {{ r.coordinator.get_full_name|default:r.coordinator.username }}
+                                            </td>
+                                            <td>{{ r.period }}</td>
+                                            <td>{{ r.created_at|date:"d/m/Y H:i" }}</td>
+                                            <td>
+                                                {% if r.pdf %}
+                                                    <a href="{{ r.pdf.url }}" target="_blank"
+                                                    class="btn btn-sm btn-outline-danger">
+                                                        <i class="bi bi-file-earmark-pdf"></i> Ver PDF
+                                                    </a>
+                                                {% else %}
+                                                    <span class="text-muted">Sin archivo</span>
+                                                {% endif %}
+                                            </td>
+                                        </tr>
+                                    {% empty %}
+                                        <tr>
+                                            <td colspan="4" class="text-center text-muted">
+                                                Aún no hay reportes de cumplimiento generados.
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
             <div class="col-lg-6">
                 <div class="dashboard-card">
                     <div class="d-flex justify-content-between align-items-center mb-3">
                         <h5 class="card-title mb-0">Informes Semestrales Recibidos</h5>
-                        <button class="btn btn-sm btn-primary-custom">Integrar Concentrado</button>
+                        <div class="btn-group">
+                            <!-- Botón que ya tenías -->
+                            <button class="btn btn-sm btn-primary-custom">
+                                Integrar Concentrado
+                            </button>
+
+                            <!-- NUEVO: botón para generar reporte de cumplimiento de tutores -->
+                            <a href="{% url 'coordac_tutor_compliance_pdf' %}" 
+                            target="_blank"
+                            class="btn btn-sm btn-outline-primary">
+                                <i class="bi bi-file-earmark-pdf me-1"></i>
+                                Reporte de Cumplimiento
+                            </a>
+                        </div>
                     </div>
                     <div class="table-responsive">
                         <table class="table table-hover">

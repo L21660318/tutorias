@@ -293,13 +293,14 @@ User = settings.AUTH_USER_MODEL
 from django.conf import settings
 from django.db import models
 from django.core.exceptions import ValidationError
-
+from django.core.validators import FileExtensionValidator
 
 class TutoringReport(models.Model):
     STATUS_CHOICES = [
         ('SENT', 'Enviado al coordinador'),
         ('REVIEWED', 'Revisado'),
         ('RETURNED', 'Devuelto al tutor'),
+        ('SENT_TO_HEAD', 'Enviado al Jefe de Departamento'),
     ]
 
     tutor = models.ForeignKey(
@@ -315,18 +316,43 @@ class TutoringReport(models.Model):
         related_name='received_tutoring_reports'
     )
 
-    # Periodo / rango del reporte (texto libre por ahora)
+    # Periodo del reporte
     period = models.CharField("Periodo", max_length=100)
 
     title = models.CharField("Título del reporte", max_length=200)
     content = models.TextField("Descripción / contenido del reporte")
 
+    # ⬇⬇⬇ AQUÍ EL CAMBIO: Excel en lugar de PDF
+    attachment = models.FileField(
+        upload_to="tutoring/reports_excels/",
+        null=True,
+        blank=True,
+        verbose_name="Archivo Excel",
+        validators=[
+            FileExtensionValidator(allowed_extensions=['xlsx', 'xls'])
+        ],
+        help_text="Sube el archivo Excel del reporte (formato .xlsx o .xls)."
+    )
+
+    # 📝 Retroalimentación del coordinador
+    feedback = models.TextField(
+        "Retroalimentación del coordinador",
+        blank=True
+    )
+    feedback_at = models.DateTimeField(
+        "Fecha de retroalimentación",
+        null=True,
+        blank=True
+    )
+
     status = models.CharField(
         "Estado",
-        max_length=10,
+        max_length=20,
         choices=STATUS_CHOICES,
         default='SENT'
     )
+
+    sent_to_head_at = models.DateTimeField(null=True, blank=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -339,38 +365,160 @@ class TutoringReport(models.Model):
     def __str__(self):
         return f"{self.title} - {self.tutor}"
 
+    # -----------------------------
+    # 🔍 Validaciones
+    # -----------------------------
     def clean(self):
-        """
-        Validamos roles, pero SOLO si ya hay tutor/coordinador asignados.
-        Así evitamos el error 'TutoringReport has no tutor'.
-        """
         super().clean()
 
-        # Validar tutor SOLO si existe tutor_id
+        # Validar tutor
         if self.tutor_id and getattr(self.tutor, 'role', None) != 'TUTOR':
             raise ValidationError({
                 "tutor": "El usuario seleccionado no tiene el rol TUTOR."
             })
 
-        # Validar coordinador SOLO si existe coordinator_id
+        # Validar coordinador
         if self.coordinator_id and getattr(self.coordinator, 'role', None) != 'COORDAC':
             raise ValidationError({
                 "coordinator": "El usuario seleccionado no tiene el rol COORDAC."
             })
 
+    # -----------------------------
+    # 💾 Guardado con asignación automática
+    # -----------------------------
     def save(self, *args, **kwargs):
-        """
-        Si no hay coordinador asignado explícitamente, buscamos en
-        TutorCoordinatorAssignment el coordinador de este tutor.
-        """
-        # Import aquí para evitar problemas de orden de carga
+        # Import local para evitar errores de carga circular
         from apps.tutoring.models import TutorCoordinatorAssignment
 
+        # Si no hay coordinador asignado, buscar el correspondiente al tutor
         if self.tutor_id and self.coordinator_id is None:
             assignment = TutorCoordinatorAssignment.objects.filter(
                 tutor_id=self.tutor_id
             ).select_related('coordinator').first()
+
             if assignment:
                 self.coordinator = assignment.coordinator
 
         super().save(*args, **kwargs)
+
+
+class TutoringInterview(models.Model):
+    class Status(models.TextChoices):
+        SCHEDULED = "SCHEDULED", "Programada"
+        COMPLETED = "COMPLETED", "Realizada"
+        CANCELED = "CANCELED", "Cancelada"
+
+    tutor = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        limit_choices_to={'role': 'TUTOR'},
+        related_name='interviews_as_tutor'
+    )
+    tutee = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        limit_choices_to={'role': 'TUTEE'},
+        related_name='interviews_as_tutee',
+        verbose_name="Tutorado"
+    )
+
+    scheduled_date = models.DateTimeField("Fecha y hora de la entrevista")
+
+    topic = models.CharField(
+        "Tema / motivo de la entrevista",
+        max_length=255,
+        blank=True
+    )
+
+    summary = models.TextField(
+        "Informe de la entrevista (lo hablado con el alumno)",
+        blank=True
+    )
+
+    status = models.CharField(
+        "Estado",
+        max_length=20,
+        choices=Status.choices,
+        default=Status.SCHEDULED
+    )
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['-scheduled_date']
+        verbose_name = "Entrevista de tutoría"
+        verbose_name_plural = "Entrevistas de tutoría"
+
+    def __str__(self):
+        return f"Entrevista con {self.tutee} ({self.scheduled_date:%d/%m/%Y %H:%M})"
+    
+
+
+
+
+from django.db import models
+from django.conf import settings
+from apps.academic.models import Period
+
+class TutorCompliance(models.Model):
+    STATUS_CHOICES = [
+        ("COMPLIED", "Cumplió con los objetivos"),
+        ("NOT_COMPLIED", "No cumplió con los objetivos"),
+    ]
+
+    coordinator = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="tutor_compliances",
+    )
+    tutor = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="compliance_records",
+    )
+    period = models.ForeignKey(
+        Period,
+        on_delete=models.CASCADE,
+        related_name="tutor_compliances",
+    )
+    status = models.CharField(
+        max_length=20,
+        choices=STATUS_CHOICES,
+    )
+    comments = models.TextField(blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        unique_together = ("coordinator", "tutor", "period")
+
+    def __str__(self):
+        return f"{self.tutor} - {self.period} - {self.get_status_display()}"
+
+from django.conf import settings
+from django.db import models
+from apps.academic.models import Period
+
+
+class TutorComplianceReport(models.Model):
+    coordinator = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="tutor_compliance_reports",
+    )
+    period = models.ForeignKey(
+        Period,
+        on_delete=models.CASCADE,
+        related_name="tutor_compliance_reports",
+    )
+    pdf = models.FileField(
+        upload_to="tutor_compliance_reports/"
+    )
+    generated_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ("coordinator", "period")
+
+    def __str__(self):
+        return f"Reporte {self.coordinator} - {self.period}"
