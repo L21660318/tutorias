@@ -1,3 +1,5 @@
+{% load static %}
+{% load socialaccount %}
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -20,21 +22,19 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            background: var(--light-color); /* Fondo claro */
+            background: var(--light-color);
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             position: relative;
             padding: 20px;
             overflow: hidden;
         }
 
-        /* Formas de fondo sutiles */
         .bg-shapes {
             position: absolute;
             inset: 0;
             z-index: -1;
             overflow: hidden;
         }
-
         .shape {
             position: absolute;
             border-radius: 50%;
@@ -44,14 +44,13 @@
         .shape-2 { width: 160px; height: 160px; background: var(--secondary-color); bottom: -40px; right: 10%; }
         .shape-3 { width: 120px; height: 120px; background: var(--accent-color); top: 25%; right: -40px; }
 
-        /* Caja del login */
         .login-box {
             width: 420px;
-            background: #ffffff; /* Blanco adentro */
+            background: #ffffff;
             border-radius: 18px;
             padding: 40px 35px;
             box-shadow: 0 15px 40px rgba(0,0,0,0.15);
-            border: 2px solid var(--primary-color); /* Línea azul alrededor */
+            border: 2px solid var(--primary-color);
             animation: fadeIn 0.8s ease;
         }
 
@@ -70,7 +69,7 @@
             text-align: center;
             color: var(--primary-color);
             font-weight: 700;
-            margin-bottom: 25px;
+            margin-bottom: 15px;
             font-size: 1.8rem;
         }
 
@@ -144,31 +143,79 @@
             font-size: .9rem;
             color: var(--dark-color);
         }
+
+        .divider {
+            display: flex;
+            align-items: center;
+            text-align: center;
+            margin: 18px 0;
+            font-size: 0.9rem;
+            color: #6c757d;
+        }
+        .divider::before,
+        .divider::after {
+            content: "";
+            flex: 1;
+            border-bottom: 1px solid #dee2e6;
+        }
+        .divider:not(:empty)::before {
+            margin-right: .75em;
+        }
+        .divider:not(:empty)::after {
+            margin-left: .75em;
+        }
+
+        .btn-microsoft {
+            height: 46px;
+            border-radius: 10px;
+            border: 1px solid #dadce0;
+            background: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-weight: 500;
+            color: #444;
+        }
+        .btn-microsoft:hover {
+            background: #f5f5f5;
+        }
+        .btn-microsoft img {
+            width: 20px;
+            height: 20px;
+        }
     </style>
 </head>
 <body>
 
-    <!-- Formas del fondo -->
     <div class="bg-shapes">
         <div class="shape shape-1"></div>
         <div class="shape shape-2"></div>
         <div class="shape shape-3"></div>
     </div>
 
-    <!-- Login centrado -->
     <div class="login-box">
 
-        {% load static %}
         <img src="{% static 'img/logo.png' %}" class="logo" alt="Logo">
 
         <h1 class="login-title">Iniciar Sesión</h1>
 
+        {% if messages %}
+            <div class="mb-3">
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }} mb-2">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
         <form method="post">
             {% csrf_token %}
 
-            <!-- Usuario -->
+            <!-- Usuario o correo -->
             <div class="mb-3">
-                <label for="id_username">Usuario:</label>
+                <label for="id_username">Usuario o correo institucional:</label>
                 <div class="input-icon">
                     <i class="bi bi-person-fill"></i>
                     <input
@@ -176,7 +223,7 @@
                         id="id_username"
                         name="username"
                         class="form-control"
-                        placeholder="Ejemplo: 12345678"
+                        placeholder="Ejemplo: usuario o nombre.apellido@matehuala.tecnm.mx"
                         required
                     >
                 </div>
@@ -202,6 +249,14 @@
 
             <button type="submit" class="btn btn-login w-100">Entrar</button>
         </form>
+
+        <div class="divider">o continúa con</div>
+
+        <!-- Botón Microsoft -->
+        <a href="{% provider_login_url 'microsoft' %}" class="btn btn-microsoft w-100">
+            <img src="{% static 'img/microsoft-logo.png' %}" alt="Microsoft">
+            Iniciar sesión con Microsoft
+        </a>
 
         <p class="footer-text">© 2025 Programa Institucional de Tutorías - ITMH</p>
 

@@ -10,12 +10,16 @@ from django.conf.urls.static import static
 from apps.users import views as user_views
 from apps.users.views import CustomLoginView
 from apps.jefe_depto import views as jefe_views
+from apps.users.views import post_login_redirect
 
 urlpatterns = [
     path('admin/', admin.site.urls),
 
     # 👇 CAMBIAR ESTA LÍNEA
     path('', CustomLoginView.as_view(), name='login'),
+    path('post-login/', post_login_redirect, name='post_login'),
+
+    path('accounts/', include('allauth.urls')),
 
     path('logout/', LogoutView.as_view(), name='logout'),
     #------------- Tutoring URLs --------------

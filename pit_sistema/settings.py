@@ -28,6 +28,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    'django.contrib.sites',
+
+
     # Tus apps
     'apps.users.apps.UsersConfig',
     'apps.academic.apps.AcademicConfig',
@@ -38,7 +41,16 @@ INSTALLED_APPS = [
     'apps.tutee.apps.TuteeConfig',
     'apps.jefe_deptodes.apps.JefeDeptodesConfig',
     'apps.psychologist.apps.PsychologistConfig',
+
+    # Allauth
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.microsoft',
 ]
+
+SITE_ID = 1
+
 
 # ---------------------------
 # Middleware
@@ -49,6 +61,7 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'allauth.account.middleware.AccountMiddleware',  # 👈 AGREGA ESTO
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
@@ -99,6 +112,12 @@ SESSION_ENGINE = "django.contrib.sessions.backends.signed_cookies"
 SESSION_COOKIE_AGE = 3600  # 1 hora
 SESSION_SAVE_EVERY_REQUEST = True
 
+
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',  # tu login clásico
+    'allauth.account.auth_backends.AuthenticationBackend',  # allauth
+]
+
 # ---------------------------
 # Password validation
 # ---------------------------
@@ -134,5 +153,12 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'users.User'
 
 LOGIN_URL = 'login'
-LOGIN_REDIRECT_URL = '/tutoring/'
+LOGIN_REDIRECT_URL = '/post-login/'
 LOGOUT_REDIRECT_URL = '/'
+ACCOUNT_LOGOUT_REDIRECT_URL = '/'
+
+ACCOUNT_EMAIL_VERIFICATION = "none"   # como tú prefieras
+ACCOUNT_AUTHENTICATION_METHOD = "username_email"
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_ADAPTER = 'apps.users.adapters.TecnmAccountAdapter'
+
