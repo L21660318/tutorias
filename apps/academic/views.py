@@ -200,3 +200,55 @@ def academic_assign_coordinator(request):
         "departments": departments,
         "coordinators": coordinators,
     })
+
+
+from apps.tutoring.models import TutorGroupCertificate
+
+
+@login_required
+def subac_group_certificates_list(request):
+    # Solo SUBAC puede entrar aquí
+    if getattr(request.user, "role", None) != "SUBAC":
+        return redirect("/")  # o lanza 403 si quieres
+
+    certificates = (
+        TutorGroupCertificate.objects
+        .select_related("group", "tutor", "coordinator", "period")
+        .order_by("-uploaded_at")
+    )
+
+    context = {
+        "certificates": certificates,
+    }
+    return render(request, "academic/subac_group_certificates.html", context)
+
+
+@login_required
+def subac_validate_group_certificate(request, pk):
+    if getattr(request.user, "role", None) != "SUBAC":
+        return redirect("/")
+
+    certificate = get_object_or_404(TutorGroupCertificate, pk=pk)
+
+    if request.method == "POST":
+        action = request.POST.get("action")
+
+        if action == "approve":
+            certificate.status = "APPROVED"
+            msg = "Constancia aprobada correctamente."
+        elif action == "reject":
+            certificate.status = "REJECTED"
+            msg = "Constancia marcada como rechazada."
+        else:
+            messages.error(request, "Acción no válida.")
+            return redirect("subac_group_certificates")
+
+        certificate.validated_by = request.user
+        certificate.validated_at = timezone.now()
+        certificate.save()
+
+        messages.success(request, msg)
+        return redirect("subac_group_certificates")
+
+    # Si llega por GET, solo redirige a la lista
+    return redirect("subac_group_certificates")

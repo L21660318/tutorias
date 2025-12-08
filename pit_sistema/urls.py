@@ -1,8 +1,8 @@
 from django.contrib import admin
 from django.urls import path, include
 from apps.coordinst.views import coordinst_report_list
-from apps.tutoring.views import dept_head_dashboard,dept_head_report_list,coordinator_report_detail, interview_create,interview_list ,dashboard_view, create_session, interview_update, tutor_report_update, tutoring_session_detail, tutor_report_create, tutor_report_list, coordinator_report_inbox
-from apps.academic.views import academic_view, plan_tutor_sessions_view, academic_assign_coordinator
+from apps.tutoring.views import dept_head_dashboard,dept_head_report_list,coordinator_report_detail, interview_create,interview_list ,dashboard_view, create_session, interview_update, tutor_certificates_view, tutor_report_update, tutoring_session_detail, tutor_report_create, tutor_report_list, coordinator_report_inbox
+from apps.academic.views import academic_view, plan_tutor_sessions_view, academic_assign_coordinator, subac_group_certificates_list, subac_validate_group_certificate
 # from apps.users.views import CustomLoginView   # 👈 ya no lo usamos por ahora
 from django.contrib.auth.views import LogoutView, LoginView
 from django.conf import settings
@@ -36,6 +36,7 @@ urlpatterns = [
     path('reports/inbox/', coordinator_report_inbox,name='coordinator_report_inbox'),
     path('reports/<int:pk>/', coordinator_report_detail, name='coordinator_report_detail'),
     path('dept-head/reports/', dept_head_report_list, name='dept_head_report_list'),
+    path("certificates/", tutor_certificates_view, name="tutor_certificates"),
     
     #------------------------------------------
 
@@ -43,6 +44,16 @@ urlpatterns = [
     path('academic/', academic_view, name='academic'),
     path('plan-sessions/', plan_tutor_sessions_view, name='academic_plan_sessions'),
     path('academic/department-coordinator/', academic_assign_coordinator, name='academic_assign_coordinator'),
+    path(
+        "group-certificates/",
+        subac_group_certificates_list,
+        name="subac_group_certificates"
+    ),
+    path(
+        "group-certificates/<int:pk>/validate/",
+        subac_validate_group_certificate,
+        name="subac_validate_group_certificate"
+    ),
     #----------------------------------------------
    #------------------ Jefe de Depto URLs ----------------
     path('jefe_depto/', jefe_views.jefe_depto_view, name='jefe_depto_dashboard'),
@@ -60,6 +71,7 @@ urlpatterns = [
         jefe_views.assign_tutor_to_coordinator,   # 👈 ESTA VISTA YA LA DEBES TENER EN apps.jefe_depto.views
         name='assign_tutor_to_coordinator'        # 👈 ESTE NAME ES EL QUE PIDE EL TEMPLATE
     ),
+
     #------------- CORDINACIÓN INSTITUCIONAL URLs --------------
     path('coordinst/', include('apps.coordinst.urls')),
     path("reports/", coordinst_report_list, name="coordinst_report_list"),

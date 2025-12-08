@@ -522,3 +522,103 @@ class TutorComplianceReport(models.Model):
 
     def __str__(self):
         return f"Reporte {self.coordinator} - {self.period}"
+    
+
+
+from django.core.validators import FileExtensionValidator
+
+
+class TutorGroupCertificate(models.Model):
+    """
+    Constancia de cumplimiento por grupo de tutoría.
+    La sube COORDINST, la valida SUBAC y la ve el tutor dueño del grupo.
+    """
+
+    STATUS_CHOICES = [
+        ("PENDING", "Pendiente validación SUBAC"),
+        ("APPROVED", "Validada por SUBAC"),
+        ("REJECTED", "Rechazada por SUBAC"),
+    ]
+
+    coordinator = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="issued_group_certificates",
+        verbose_name="Coordinador institucional",
+        limit_choices_to={'role': 'COORDINST'}
+    )
+
+    tutor = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="group_certificates",
+        verbose_name="Tutor",
+        limit_choices_to={'role': 'TUTOR'}
+    )
+
+    group = models.ForeignKey(
+        TutorGroup,
+        on_delete=models.CASCADE,
+        related_name="certificates",
+        verbose_name="Grupo de tutoría"
+    )
+
+    period = models.ForeignKey(
+        Period,
+        on_delete=models.CASCADE,
+        related_name="group_certificates",
+        verbose_name="Período"
+    )
+
+    pdf = models.FileField(
+        upload_to="tutoring/group_certificates/",
+        verbose_name="Constancia (PDF)",
+        validators=[FileExtensionValidator(allowed_extensions=["pdf"])]
+    )
+
+    uploaded_at = models.DateTimeField(auto_now_add=True)
+
+    # 🔹 nuevo: flujo de validación SUBAC
+    status = models.CharField(
+        max_length=10,
+        choices=STATUS_CHOICES,
+        default="PENDING",
+        verbose_name="Estado"
+    )
+    validated_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="validated_group_certificates",
+        verbose_name="Validado por",
+        limit_choices_to={'role': 'SUBAC'}
+    )
+    validated_at = models.DateTimeField(
+        null=True,
+        blank=True,
+        verbose_name="Fecha de validación"
+    )
+
+    class Meta:
+        verbose_name = "Constancia por grupo"
+        verbose_name_plural = "Constancias por grupo"
+        unique_together = ("tutor", "group", "period")
+
+    def __str__(self):
+        return f"Constancia {self.group} - {self.tutor} - {self.period}"
+
+    def clean(self):
+        super().clean()
+
+        # ⚠️ Cuando se está creando todavía, deja pasar
+        if not self.group_id or not self.tutor_id:
+            return
+        if not self.group.tutor_id:
+            return
+
+        # Tutor de la constancia debe coincidir con el tutor del grupo
+        if self.group.tutor_id != self.tutor_id:
+            raise ValidationError({
+                "tutor": "El tutor de la constancia debe coincidir con el tutor asignado al grupo."
+            })

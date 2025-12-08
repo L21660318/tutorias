@@ -1,193 +1,440 @@
+{# apps/tutoring/templates/tutoring/base_sia.html #}
 <!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>{% block title %}Sistema Integral de Tutorías (PIT){% endblock %}</title>
+  <title>{% block title %}SIA Tutorías{% endblock %}</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-    <style>
-    :root {
-      --primary-color: #0F6097;
-      --secondary-color: #50A6E1;
-      --accent-color: #A2D3F5;
-      --light-color: #f8f9fa;
-      --dark-color: #343a40;
-      --success-color: #28a745;
-      --warning-color: #ffc107;
-      --danger-color: #dc3545;
+<style>
+  :root {
+    --primary-color: #0F6097;
+    --secondary-color: #50A6E1;
+    --accent-color: #A2D3F5;
+    --light-color: #f8f9fa;
+    --dark-color: #343a40;
+    --success-color: #28a745;
+    --warning-color: #ffc107;
+    --danger-color: #dc3545;
+    --info-color: #17a2b8;
+    --purple-color: #6f42c1;
+    --teal-color: #20c997;
+  }
+
+  body {
+    background-color: #f5f7fa;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    margin: 0;
+  }
+
+  /* NAVBAR */
+  .navbar {
+    background: linear-gradient(135deg, var(--primary-color) 0%, #0D4F7C 100%);
+    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+    padding: 0.8rem 0;
+  }
+
+  .navbar-brand {
+    font-weight: 700;
+    font-size: 1.4rem;
+    display: flex;
+    align-items: center;
+    letter-spacing: 1px;
+    color: white;
+  }
+
+  .navbar-brand i {
+    margin-right: 10px;
+    font-size: 1.6rem;
+  }
+
+  .navbar-brand span.logo-text-main {
+    text-transform: uppercase;
+    margin-right: 6px;
+  }
+
+  .navbar-brand span.logo-text-sub {
+    font-size: 0.85rem;
+    opacity: 0.9;
+  }
+
+  .nav-link {
+    font-weight: 500;
+    padding: 0.5rem 1rem !important;
+    border-radius: 4px;
+    margin: 0 2px;
+    color: white;
+    transition: all 0.3s ease;
+  }
+
+  .nav-link:hover {
+    background-color: rgba(255, 255, 255, 0.15);
+    transform: translateY(-2px);
+    color: white;
+  }
+
+  .nav-link.active {
+    background-color: rgba(255, 255, 255, 0.2);
+    font-weight: 600;
+    color: white;
+  }
+
+  .user-dropdown {
+    margin-left: 15px;
+  }
+
+  .user-avatar {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 30% 30%, var(--accent-color), var(--secondary-color));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: bold;
+    box-shadow: 0 0 0 2px rgba(255,255,255,0.4);
+    font-size: 0.9rem;
+  }
+
+  .role-badge {
+    font-size: 0.7rem;
+    border-radius: 999px;
+    padding: 0.15rem 0.6rem;
+    border: 1px solid rgba(0,0,0,0.08);
+  }
+
+  /* LAYOUT GENERAL */
+  .main-container {
+    flex: 1;
+    padding: 2rem 0 5rem 0;
+  }
+
+  /* SECCIÓN DE BIENVENIDA */
+  .welcome-section {
+    background: linear-gradient(120deg, var(--primary-color), var(--secondary-color));
+    color: white;
+    border-radius: 12px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 5px 15px rgba(15, 96, 151, 0.2);
+  }
+
+  /* TARJETAS / CARDS */
+  .dashboard-card {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    height: 100%;
+    border: none;
+    overflow: hidden;
+    padding: 1.5rem;
+    text-align: center;
+  }
+
+  .dashboard-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+  }
+
+  .card-icon {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    color: var(--primary-color);
+  }
+
+  .card-title {
+    font-weight: 700;
+    color: var(--primary-color);
+    margin-bottom: 1rem;
+  }
+
+  .card-text {
+    color: var(--dark-color);
+    line-height: 1.5;
+  }
+
+  .stats-number {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--dark-color);
+  }
+
+  .stats-label {
+    color: #333;
+    font-weight: 500;
+  }
+
+  /* ESTADOS / COLORES DE ESTADÍSTICAS */
+  .stat-1 .card-icon,
+  .stat-1 .stats-number {
+    color: var(--info-color);
+  }
+
+  .stat-2 .card-icon,
+  .stat-2 .stats-number {
+    color: var(--success-color);
+  }
+
+  .stat-3 .card-icon,
+  .stat-3 .stats-number {
+    color: var(--warning-color);
+  }
+
+  .stat-4 .card-icon,
+  .stat-4 .stats-number {
+    color: var(--purple-color);
+  }
+
+  .section-title {
+    color: var(--primary-color);
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--accent-color);
+  }
+
+  /* FOOTER */
+  .footer {
+    background-color: var(--primary-color);
+    color: white;
+    padding: 1.5rem 0;
+    margin-top: auto;
+    text-align: center;
+  }
+
+  /* TABLAS */
+  .table thead th {
+    background-color: var(--primary-color);
+    color: white;
+  }
+
+  /* BOTONES DE ACCIÓN RÁPIDA */
+  .quick-action-btn {
+    background: white;
+    border: 1px solid #e9ecef;
+    border-radius: 10px;
+    padding: 1.2rem 0.5rem;
+    text-align: center;
+    transition: all 0.3s ease;
+    color: var(--dark-color);
+    text-decoration: none;
+    display: block;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+    cursor: pointer;
+  }
+
+  .quick-action-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    text-decoration: none;
+    color: var(--dark-color);
+    background-color: rgba(80, 166, 225, 0.1);
+  }
+
+  .quick-action-btn i {
+    font-size: 1.8rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .action-1 {
+    border-top: 4px solid var(--info-color);
+  }
+  .action-1 i {
+    color: var(--info-color);
+  }
+
+  .action-2 {
+    border-top: 4px solid var(--danger-color);
+  }
+  .action-2 i {
+    color: var(--danger-color);
+  }
+
+  .action-3 {
+    border-top: 4px solid var(--purple-color);
+  }
+  .action-3 i {
+    color: var(--purple-color);
+  }
+
+  .action-4 {
+    border-top: 4px solid var(--teal-color);
+  }
+  .action-4 i {
+    color: var(--teal-color);
+  }
+
+  /* BADGES, CHARTS, TAREAS, FILTROS */
+  .badge-status {
+    font-size: 0.7rem;
+    padding: 0.3rem 0.6rem;
+  }
+
+  .chart-container {
+    position: relative;
+    height: 250px;
+    width: 100%;
+  }
+
+  .notification-badge {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background-color: var(--danger-color);
+    color: white;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.7rem;
+  }
+
+  .task-item {
+    display: flex;
+    align-items: center;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid #eee;
+  }
+
+  .task-item:last-child {
+    border-bottom: none;
+  }
+
+  .task-checkbox {
+    margin-right: 10px;
+  }
+
+  .task-text {
+    flex-grow: 1;
+  }
+
+  .task-priority {
+    font-size: 0.7rem;
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+    margin-left: 10px;
+  }
+
+  .priority-high {
+    background-color: var(--danger-color);
+    color: white;
+  }
+
+  .priority-medium {
+    background-color: var(--warning-color);
+    color: black;
+  }
+
+  .priority-low {
+    background-color: var(--success-color);
+    color: white;
+  }
+
+  .search-box {
+    position: relative;
+  }
+
+  .search-box input {
+    padding-right: 40px;
+  }
+
+  .search-box i {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--primary-color);
+  }
+
+  .filter-options {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+    flex-wrap: wrap;
+  }
+
+  .filter-btn {
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 20px;
+    padding: 5px 15px;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+  }
+
+  .filter-btn.active {
+    background-color: var(--primary-color);
+    color: white;
+    border-color: var(--primary-color);
+  }
+
+  .progress-bar-custom {
+    background-color: var(--primary-color);
+  }
+
+  .status-pending {
+    color: var(--warning-color);
+    font-weight: 500;
+  }
+
+  .status-completed {
+    color: var(--success-color);
+    font-weight: 500;
+  }
+
+  .status-overdue {
+    color: var(--danger-color);
+    font-weight: 500;
+  }
+
+  /* MODALES Y BOTONES */
+  .modal-header-custom {
+    background: linear-gradient(135deg, var(--primary-color) 0%, #0D4F7C 100%);
+    color: white;
+  }
+
+  .btn-primary-custom {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+    color: #fff;
+  }
+
+  .btn-primary-custom:hover {
+    background-color: #0D4F7C;
+    border-color: #0D4F7C;
+    color: #fff;
+  }
+
+  .program-badge {
+    font-size: 0.75rem;
+    margin-right: 5px;
+    margin-bottom: 5px;
+  }
+
+  /* RESPONSIVE */
+  @media (max-width: 768px) {
+    .navbar-brand span.logo-text-sub {
+      display: none;
     }
-    
-    body {
-      background-color: white; /* Fondo blanco */
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      display: flex;
-      flex-direction: column;
-      min-height: 100vh;
-    }
-    
-    .navbar {
-      background: linear-gradient(135deg, var(--primary-color) 0%, #0D4F7C 100%);
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-      padding: 0.8rem 0;
-    }
-    
-    .navbar-brand {
-      font-weight: 700;
-      font-size: 1.4rem;
-      display: flex;
-      align-items: center;
-    }
-    
     .navbar-brand i {
-      margin-right: 10px;
-      font-size: 1.6rem;
-    }
-    
-    .nav-link {
-      font-weight: 500;
-      padding: 0.5rem 1rem !important;
-      border-radius: 4px;
-      margin: 0 2px;
-      transition: all 0.3s ease;
-    }
-    
-    .nav-link:hover {
-      background-color: rgba(255, 255, 255, 0.15);
-      transform: translateY(-2px);
-    }
-    
-    .nav-link.active {
-      background-color: var(--secondary-color);
-    }
-    
-    .user-dropdown {
-      margin-left: 15px;
-    }
-    
-    .user-avatar {
-      width: 35px;
-      height: 35px;
-      border-radius: 50%;
-      background-color: var(--secondary-color);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: white;
-      font-weight: bold;
-    }
-    
-    .main-container {
-      flex: 1;
-      padding: 2rem 0;
-    }
-    
-    .dashboard-card {
-      background: var(--accent-color); /* Azul #A2D3F5 */
-      border-radius: 12px;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-      height: 100%;
-      border: none;
-      overflow: hidden;
-    }
-    
-    .dashboard-card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
-    }
-    
-    .card-icon {
-      font-size: 2.5rem;
-      color: var(--primary-color);
-      margin-bottom: 1rem;
-    }
-    
-    .stats-number {
-      font-size: 2rem;
-      font-weight: 700;
-      color: var(--dark-color);
-    }
-    
-    .stats-label {
-      color: #333;
-      font-weight: 500;
-    }
-    
-    .welcome-section {
-      background: linear-gradient(120deg, var(--primary-color), var(--secondary-color));
-      color: white;
-      border-radius: 12px;
-      padding: 2rem;
-      margin-bottom: 2rem;
-    }
-    
-    .alert-badge {
-      position: absolute;
-      top: -5px;
-      right: -5px;
-      background-color: var(--danger-color);
-      color: white;
-      border-radius: 50%;
-      width: 20px;
-      height: 20px;
-      font-size: 0.7rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    
-    .footer {
-      background-color: var(--primary-color);
-      color: white;
-      padding: 1.5rem 0;
-      margin-top: auto;
-    }
-    
-    .quick-action-btn {
-      background: white;
-      border: 1px solid #e9ecef;
-      border-radius: 8px;
-      padding: 1rem;
-      text-align: center;
-      transition: all 0.3s ease;
-      color: var(--dark-color);
-      text-decoration: none;
-      display: block;
-    }
-    
-    .quick-action-btn:hover {
-      background-color: var(--secondary-color);
-      color: white;
-      transform: translateY(-3px);
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-    }
-    
-    .quick-action-btn i {
+      margin-right: 0;
       font-size: 1.8rem;
-      margin-bottom: 0.5rem;
-      color: var(--secondary-color);
     }
-    
-    .quick-action-btn:hover i {
-      color: white;
+    .welcome-section {
+      text-align: center;
     }
-    
-    @media (max-width: 768px) {
-      .navbar-brand span {
-        display: none;
-      }
-      
-      .navbar-brand i {
-        margin-right: 0;
-        font-size: 1.8rem;
-      }
-      
-      .welcome-section {
-        text-align: center;
-      }
-    }
-  </style>
+  }
+</style>
+
+
 </head>
 <body>
   <!-- Navbar -->
@@ -195,48 +442,60 @@
     <div class="container">
       <a class="navbar-brand" href="/">
         <i class="bi bi-mortarboard-fill"></i>
-        <span>PIT Tutorías</span>
+        <span class="logo-text-main">SIA</span>
       </a>
-      
+
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
         <span class="navbar-toggler-icon"></span>
       </button>
-      
+
       <div class="collapse navbar-collapse" id="navbarContent">
         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
           <li class="nav-item">
-            <a class="nav-link active" href="/"><i class="bi bi-house-door me-1"></i> Inicio</a>
+            <a class="nav-link {% block nav_home_active %}{% endblock %}" href="/"><i class="bi bi-house-door me-1"></i> Inicio</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="/tutoring/"><i class="bi bi-people-fill me-1"></i> Tutorías</a>
+            <a class="nav-link {% block nav_tutoring_active %}{% endblock %}" href="/tutoring/"><i class="bi bi-people-fill me-1"></i> Tutorías</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="/academic/"><i class="bi bi-journal-bookmark-fill me-1"></i> Académico</a>
+            <a class="nav-link {% block nav_academic_active %}{% endblock %}" href="/academic/"><i class="bi bi-journal-bookmark-fill me-1"></i> Académico</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="/reports/"><i class="bi bi-graph-up me-1"></i> Reportes</a>
+            <a class="nav-link {% block nav_reports_active %}{% endblock %}" href="/reports/"><i class="bi bi-graph-up me-1"></i> Reportes</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="/alerts/">
+            <a class="nav-link {% block nav_alerts_active %}{% endblock %}" href="/alerts/">
               <i class="bi bi-bell-fill me-1"></i> Alertas
-              <span class="alert-badge">3</span>
+              <span class="badge bg-danger">{{ alerts_count }}</span>
             </a>
           </li>
         </ul>
-        
+
         <div class="d-flex align-items-center">
           <div class="user-dropdown dropdown">
             <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" data-bs-toggle="dropdown">
-              <div class="user-avatar me-2">DT</div>
-              <span>Diego</span>
+              <div class="user-avatar me-2">
+                {{ request.user.first_name|slice:":1" }}{{ request.user.last_name|slice:":1" }}
+              </div>
+              <div class="d-flex flex-column align-items-start">
+                <span class="fw-semibold">{{ request.user.username }}</span>
+                <span class="badge bg-light text-dark role-badge">
+                  {{ request.user.get_role_display }}
+                </span>
+              </div>
             </a>
             <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end">
               <li><a class="dropdown-item" href="/profile/"><i class="bi bi-person-circle me-2"></i> Mi Perfil</a></li>
               <li><a class="dropdown-item" href="/settings/"><i class="bi bi-gear me-2"></i> Configuración</a></li>
               <li><hr class="dropdown-divider"></li>
-              <li><a class="dropdown-item" href="/admin/"><i class="bi bi-speedometer2 me-2"></i> Panel de Admin</a></li>
-              <li><hr class="dropdown-divider"></li>
-              <li><a class="dropdown-item" href="/logout/"><i class="bi bi-box-arrow-right me-2"></i> Cerrar Sesión</a></li>
+              {% if request.user.is_staff %}
+                <li><hr class="dropdown-divider"></li>
+              {% endif %}
+              <li>
+                <a class="dropdown-item" href="{% url 'logout' %}">
+                  <i class="bi bi-box-arrow-right me-2"></i> Cerrar Sesión
+                </a>
+              </li>
             </ul>
           </div>
         </div>
@@ -244,160 +503,22 @@
     </div>
   </nav>
 
-  <!-- Main Content -->
+  <!-- Mensajes flash -->
+  <div class="container mt-3">
+    {% if messages %}
+      {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+          {{ message }}
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+        </div>
+      {% endfor %}
+    {% endif %}
+  </div>
+
+  <!-- Contenido principal -->
   <div class="main-container">
     <div class="container">
-      <!-- Welcome Section -->
-      <div class="welcome-section">
-        <div class="row align-items-center">
-          <div class="col-md-8">
-            <h2>¡Bienvenido</h2>
-            <p class="mb-0">Sistema Integral de Tutorías Académicas - Instituto Tecnológico Matelunia</p>
-          </div>
-          <div class="col-md-4 text-md-end">
-            <span class="badge bg-warning text-dark">Coordinador</span>
-            <p class="mb-0 mt-2">Martes, 17 de Septiembre de 2025</p>
-          </div>
-        </div>
-      </div>
-
-      <!-- Quick Actions -->
-      <div class="row mb-4">
-        <div class="col-12">
-          <h4 class="mb-3">Acciones Rápidas</h4>
-        </div>
-        <div class="col-md-3 col-6 mb-3">
-          <a href="/tutoring/sessions/new/" class="quick-action-btn">
-            <i class="bi bi-calendar-plus"></i>
-            <div>Nueva Sesión</div>
-          </a>
-        </div>
-        <div class="col-md-3 col-6 mb-3">
-          <a href="/alerts/" class="quick-action-btn">
-            <i class="bi bi-exclamation-triangle"></i>
-            <div>Ver Alertas <span class="badge bg-danger">3</span></div>
-          </a>
-        </div>
-        <div class="col-md-3 col-6 mb-3">
-          <a href="/reports/generate/" class="quick-action-btn">
-            <i class="bi bi-file-earmark-text"></i>
-            <div>Generar Reporte</div>
-          </a>
-        </div>
-        <div class="col-md-3 col-6 mb-3">
-          <a href="/academic/students/" class="quick-action-btn">
-            <i class="bi bi-person-plus"></i>
-            <div>Agregar Tutorado</div>
-          </a>
-        </div>
-      </div>
-
-      <!-- Stats Dashboard -->
-      <div class="row">
-        <div class="col-md-3 col-6 mb-4">
-          <div class="dashboard-card card">
-            <div class="card-body text-center">
-              <div class="card-icon">
-                <i class="bi bi-people-fill"></i>
-              </div>
-              <h3 class="stats-number">142</h3>
-              <p class="stats-label">Estudiantes Tutorados</p>
-            </div>
-          </div>
-        </div>
-        <div class="col-md-3 col-6 mb-4">
-          <div class="dashboard-card card">
-            <div class="card-body text-center">
-              <div class="card-icon">
-                <i class="bi bi-person-check"></i>
-              </div>
-              <h3 class="stats-number">15</h3>
-              <p class="stats-label">Tutores Activos</p>
-            </div>
-          </div>
-        </div>
-        <div class="col-md-3 col-6 mb-4">
-          <div class="dashboard-card card">
-            <div class="card-body text-center">
-              <div class="card-icon">
-                <i class="bi bi-calendar-event"></i>
-              </div>
-              <h3 class="stats-number">327</h3>
-              <p class="stats-label">Sesiones Este Mes</p>
-            </div>
-          </div>
-        </div>
-        <div class="col-md-3 col-6 mb-4">
-          <div class="dashboard-card card">
-            <div class="card-body text-center">
-              <div class="card-icon">
-                <i class="bi bi-clipboard-check"></i>
-              </div>
-              <h3 class="stats-number">86%</h3>
-              <p class="stats-label">Avance del Programa</p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Main Content Block -->
-      <div class="row">
-        <div class="col-12">
-          <div class="dashboard-card card">
-            <div class="card-body">
-              {% block content %}
-              <h4 class="card-title">Resumen de Actividades Recientes</h4>
-              <div class="table-responsive">
-                <table class="table table-hover">
-                  <thead>
-                    <tr>
-                      <th>Fecha</th>
-                      <th>Estudiante</th>
-                      <th>Tutor</th>
-                      <th>Tipo</th>
-                      <th>Estado</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td>16/09/2025</td>
-                      <td>María González</td>
-                      <td>Dr. Carlos Ruiz</td>
-                      <td>Sesión Regular</td>
-                      <td><span class="badge bg-success">Completada</span></td>
-                    </tr>
-                    <tr>
-                      <td>15/09/2025</td>
-                      <td>Javier López</td>
-                      <td>Dra. Ana Martínez</td>
-                      <td>Sesión de Crisis</td>
-                      <td><span class="badge bg-warning text-dark">En Seguimiento</span></td>
-                    </tr>
-                    <tr>
-                      <td>14/09/2025</td>
-                      <td>Laura Rodríguez</td>
-                      <td>Dr. Carlos Ruiz</td>
-                      <td>Revisión de Avance</td>
-                      <td><span class="badge bg-success">Completada</span></td>
-                    </tr>
-                    <tr>
-                      <td>13/09/2025</td>
-                      <td>Roberto Sánchez</td>
-                      <td>Mtro. Luis García</td>
-                      <td>Sesión Regular</td>
-                      <td><span class="badge bg-danger">Cancelada</span></td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-              <div class="text-center mt-3">
-                <a href="/tutoring/sessions/" class="btn btn-primary">Ver Todas las Sesiones</a>
-              </div>
-              {% endblock %}
-            </div>
-          </div>
-        </div>
-      </div>
+      {% block content %}{% endblock %}
     </div>
   </div>
 
@@ -406,11 +527,11 @@
     <div class="container">
       <div class="row">
         <div class="col-md-6 text-center text-md-start">
-          <p class="mb-0">&copy; 2025 Programa Institucional de Tutorías - Instituto Tecnológico Matelunia</p>
+          <p class="mb-0">&copy; 2025 SIA Tutorías - Instituto Tecnológico Matelunia</p>
         </div>
         <div class="col-md-6 text-center text-md-end">
           <p class="mb-0">
-            <a href="/about/" class="text-white text-decoration-none me-3">Acerca del PIT</a>
+            <a href="/about/" class="text-white text-decoration-none me-3">Acerca de SIA</a>
             <a href="/contact/" class="text-white text-decoration-none me-3">Contacto</a>
             <a href="/privacy/" class="text-white text-decoration-none">Privacidad</a>
           </p>
@@ -420,15 +541,6 @@
   </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-  <script>
-    // Actualizar la hora actual
-    function updateDateTime() {
-      const now = new Date();
-      const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-      document.getElementById('current-date').textContent = now.toLocaleDateString('es-ES', options);
-    }
-    setInterval(updateDateTime, 60000);
-    updateDateTime();
-  </script>
+  {% block extra_scripts %}{% endblock %}
 </body>
 </html>

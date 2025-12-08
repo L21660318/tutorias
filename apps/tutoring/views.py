@@ -7,7 +7,7 @@ from datetime import timedelta
 from django.contrib import messages
 from .forms import SessionForm
 
-from .models import Session, Alert, TuteeProfile, SessionAttendance
+from .models import Session, Alert, TuteeProfile, SessionAttendance, TutorGroup, TutorGroupCertificate
 from apps.academic.models import Period
 from .models import TutoringReport, TutorCoordinatorAssignment, TutoringInterview  # añade TutoringInterview
 from .forms import SessionForm, TutoringReportForm, TutoringInterviewForm        # añade TutoringInterviewForm
@@ -79,12 +79,21 @@ def dashboard_view(request):
         is_resolved=False,
     ).distinct().count()
 
+    my_certificates = (
+        TutorGroupCertificate.objects
+        .filter(tutor=request.user)
+        .select_related("group", "period", "coordinator")
+        .order_by("-uploaded_at")
+    )
+
+
     context = {
         "stats": {
             "students_count": students_count,
             "tutors_count": tutors_count,
             "sessions_this_month": sessions_this_month,
             "program_progress": program_progress,
+            "my_group_certificates": my_certificates,
         },
         "recent_sessions": recent_sessions,
         "alerts_count": alerts_count,
@@ -556,3 +565,22 @@ def dept_head_report_list(request):
     return render(request, 'tutoring/dept_head_report_list.html', {
         'reports': reports,
     })
+
+
+from apps.tutoring.models import TutorGroupCertificate
+
+@login_required
+def tutor_certificates_view(request):
+    tutor = request.user
+
+    certificates = (
+        TutorGroupCertificate.objects
+        .filter(tutor=tutor, status="APPROVED")
+        .select_related("group", "period")
+        .order_by("-period__id")   # o por campo de fecha real de Period
+    )
+
+    context = {
+        "certificates": certificates,
+    }
+    return render(request, "tutoring/tutor_certificates.html", context)

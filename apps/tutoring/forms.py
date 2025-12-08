@@ -119,3 +119,25 @@ class TutoringInterviewForm(forms.ModelForm):
                 })
             else:
                 field.widget.attrs.update({'class': 'form-control'})
+
+
+
+# apps/tutoring/forms.py
+
+from django import forms
+from .models import TutorGroupCertificate, TutorGroup
+
+class TutorGroupCertificateForm(forms.ModelForm):
+    class Meta:
+        model = TutorGroupCertificate
+        fields = ["group", "pdf"]
+
+    def __init__(self, *args, **kwargs):
+        user = kwargs.pop("user", None)
+        super().__init__(*args, **kwargs)
+
+        # Opcional: aquí podrías filtrar por grupos de cierto periodo o depto.
+        if user is not None:
+            self.fields["group"].queryset = (
+                TutorGroup.objects.select_related("tutor", "period")
+            )

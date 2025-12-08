@@ -1,5 +1,5 @@
 {# apps/tutoring/templates/tutoring/dashboard.html #}
-{% extends "tutoring/base_sia.html" %}
+{% extends "base.html" %}
 
 {% block title %}SIA Tutorías - Panel del Tutor{% endblock %}
 {% block nav_tutoring_active %}active{% endblock %}
@@ -90,6 +90,10 @@
         <div>Entrevistas con alumnos</div>
       </a>
     </div>
+    <a href="{% url 'tutor_certificates' %}" class="btn btn-sm btn-primary">
+        <i class="bi bi-award me-1"></i> Ver mis constancias
+    </a>
+
   </div>
 
   <!-- Stats Dashboard -->
@@ -209,6 +213,38 @@
       </div>
     </div>
   </div>
+  <h5 class="card-title">Mis constancias por grupo</h5>
+  <table class="table table-striped">
+      <thead>
+          <tr>
+              <th>Grupo</th>
+              <th>Periodo</th>
+              <th>Emitida por</th>
+              <th>Fecha</th>
+              <th>Archivo</th>
+          </tr>
+      </thead>
+      <tbody>
+          {% for c in my_group_certificates %}
+          <tr>
+              <td>{{ c.group.name }}</td>
+              <td>{{ c.period }}</td>
+              <td>{{ c.coordinator.get_full_name }}</td>
+              <td>{{ c.uploaded_at|date:"d/m/Y" }}</td>
+              <td>
+                  <a href="{{ c.pdf.url }}" target="_blank" class="btn btn-sm btn-outline-primary">
+                      <i class="bi bi-file-earmark-pdf"></i> Descargar
+                  </a>
+              </td>
+          </tr>
+          {% empty %}
+          <tr>
+              <td colspan="5" class="text-center">Aún no tienes constancias.</td>
+          </tr>
+          {% endfor %}
+      </tbody>
+  </table>
+
 
   <!-- Modal genérico para Acciones Rápidas -->
   <div class="modal fade" id="actionModal" tabindex="-1" aria-hidden="true">
@@ -227,6 +263,8 @@
       </div>
     </div>
   </div>
+
+
 
 {% endblock %}
 

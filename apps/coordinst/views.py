@@ -2,7 +2,7 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from django.contrib import messages
-from apps.tutoring.models import TutoringReport
+from apps.tutoring.models import TutorGroupCertificate, TutoringReport
 
 from apps.tutoring.models import TutorComplianceReport  
 
@@ -27,11 +27,19 @@ def coordinst_dashboard(request):
         .order_by("-generated_at")
     )
 
+    certificates = (
+        TutorGroupCertificate.objects
+        .filter(coordinator=request.user)
+        .select_related("tutor", "group", "period")
+        .order_by("-uploaded_at")
+    )
+
 
     context = {
         "stats": stats,
         "compliance_reports": compliance_reports,  # 👈 PASARLOS AL TEMPLATE
-    }
+        "group_certificates": certificates,
+                }
 
     return render(request, 'coordinst/dashboard.html', context)
 
@@ -56,4 +64,28 @@ def coordinst_report_list(request):
     }
     return render(request, "coordinst/report_list.html", context)
 
+# apps/coordinst/views.py
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.auth.decorators import login_required
+from apps.tutoring.forms import TutorGroupCertificateForm
+from apps.tutoring.models import TutorGroupCertificate
 
+# apps/coordinst/views.py
+@login_required
+def upload_group_certificate(request):
+    if request.user.role != "COORDINST":
+        return redirect("/")  # o 403
+
+    if request.method == "POST":
+        form = TutorGroupCertificateForm(request.POST, request.FILES, user=request.user)
+        if form.is_valid():
+            cert = form.save(commit=False)
+            cert.coordinator = request.user
+            cert.tutor = form.cleaned_data["group"].tutor
+            cert.period = form.cleaned_data["group"].period
+            cert.save()
+            return redirect("coordinst:dashboard")  # 👈 AQUÍ EL CAMBIO
+    else:
+        form = TutorGroupCertificateForm(user=request.user)
+
+    return render(request, "coordinst/upload_group_certificate.html", {"form": form})
